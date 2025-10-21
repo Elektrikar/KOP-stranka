@@ -4,7 +4,7 @@ session_start();
 // create users db table
 // NON PRODUCTION: For demo only
 $adminUser = 'admin';
-$adminPass = 'admin'; // Change this to a strong password
+$adminPass = 'admin'; // Change this to a strong password in the database later
 
 $rateLimitKey = 'login_attempts_' . hash('sha256', $_SERVER['REMOTE_ADDR']);
 $maxAttempts = 5;
