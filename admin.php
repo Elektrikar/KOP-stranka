@@ -2,7 +2,7 @@
 session_start();
 
 // create users db table
-// NON PRODUCTION: For demo purposes only
+// NON PRODUCTION: For demo only
 $adminUser = 'admin';
 $adminPass = 'admin'; // Change this to a strong password
 
