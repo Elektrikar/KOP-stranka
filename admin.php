@@ -10,8 +10,7 @@ $rateLimitKey = 'login_attempts_' . hash('sha256', $_SERVER['REMOTE_ADDR']);
 $maxAttempts = 5;
 $lockoutTime = 900;
 
-function checkRateLimit()
-{
+function checkRateLimit() {
     global $rateLimitKey, $maxAttempts, $lockoutTime;
 
     if (!isset($_SESSION[$rateLimitKey])) {
@@ -28,8 +27,7 @@ function checkRateLimit()
     return $attempts['count'] < $maxAttempts;
 }
 
-function incrementRateLimit()
-{
+function incrementRateLimit() {
     global $rateLimitKey;
 
     if (!isset($_SESSION[$rateLimitKey])) {
@@ -39,22 +37,19 @@ function incrementRateLimit()
     }
 }
 
-function generateCSRFToken()
-{
+function generateCSRFToken() {
     if (empty($_SESSION['csrf_token'])) {
         $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
     }
     return $_SESSION['csrf_token'];
 }
 
-function validateCSRFToken($token)
-{
+function validateCSRFToken($token) {
     return isset($_SESSION['csrf_token']) &&
         hash_equals($_SESSION['csrf_token'], $token);
 }
 
-function sanitizeInput($input)
-{
+function sanitizeInput($input) {
     return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
 }
 
@@ -137,7 +132,9 @@ $csrfToken = generateCSRFToken();
 $remainingAttempts = $maxAttempts;
 if (isset($_SESSION[$rateLimitKey])) {
     $remainingAttempts = $maxAttempts - $_SESSION[$rateLimitKey]['count'];
-    if ($remainingAttempts < 0) $remainingAttempts = 0;
+    if ($remainingAttempts < 0) {
+        $remainingAttempts = 0;
+    }
 }
 
 
@@ -157,17 +154,19 @@ require_once 'theme/header.php';
 
         <?php if (isset($_SESSION[$rateLimitKey]) && $_SESSION[$rateLimitKey]['count'] > 0): ?>
             <div class="attempts-warning">
-                Ostávajúce pokusy: <?= $remainingAttempts ?> z <?= $maxAttempts ?>
+                Ostávajúce pokusy: <?= $remainingAttempts ?> z
+                <?= $maxAttempts ?>
             </div>
         <?php endif; ?>
 
         <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
 
-        <input type="text" name="username" placeholder="Prihlasovacie meno" required
-            autocomplete="off" autocapitalize="none" autocorrect="off">
-        <input type="password" name="password" placeholder="Heslo" required
-            autocomplete="off">
-        <button type="submit" <?= !checkRateLimit() ? 'disabled' : '' ?>>Prihlásiť sa</button>
+        <input type="text" name="username" placeholder="Prihlasovacie meno" required autocomplete="off"
+            autocapitalize="none" autocorrect="off">
+        <input type="password" name="password" placeholder="Heslo" required autocomplete="off">
+        <button type="submit"
+            <?= !checkRateLimit() ? 'disabled' : '' ?>>Prihlásiť
+            sa</button>
 
         <div class="security-notice">
             Z bezpečnostných dôvodov sa prosím odhláste po dokončení.
@@ -198,21 +197,27 @@ require_once 'theme/header.php';
 
             <div class="feature-card">
                 <h4>Systémove Informácie</h4>
-                <p>Server: <?= htmlspecialchars($_SERVER['SERVER_SOFTWARE']) ?></p>
+                <p>Server:
+                    <?= htmlspecialchars($_SERVER['SERVER_SOFTWARE']) ?>
+                </p>
                 <p>PHP Verzia: <?= phpversion() ?></p>
-                <p>Prihlásený z: <?= htmlspecialchars($_SESSION['user_ip']) ?></p>
+                <p>Prihlásený z:
+                    <?= htmlspecialchars($_SESSION['user_ip']) ?>
+                </p>
             </div>
         </div>
 
         <div class="security-notice">
-            Budete odhlásený o: <?= ceil((3600 - (time() - $_SESSION['login_time'])) / 60) ?> minút<br>
-            Posledná aktivita: <?= date('Y-m-d H:i:s', $_SESSION['login_time']) ?>
+            Budete odhlásený o:
+            <?= ceil((3600 - (time() - $_SESSION['login_time'])) / 60) ?>
+            minút<br>
+            Posledná aktivita:
+            <?= date('Y-m-d H:i:s', $_SESSION['login_time']) ?>
         </div>
     </div>
 <?php endif; ?>
 
 <script>
-    // Client-side validation
     document.querySelector('form')?.addEventListener('submit', function(e) {
         const username = this.querySelector('input[name="username"]').value.trim();
         const password = this.querySelector('input[name="password"]').value;
@@ -227,7 +232,8 @@ require_once 'theme/header.php';
         let warningShown = false;
 
         function checkSessionTimeout() {
-            const timeLeft = 3600 - (<?= time() ?> - <?= $_SESSION['login_time'] ?>);
+            const timeLeft = 3600 - (<?= time() ?> -
+                <?= $_SESSION['login_time'] ?>);
             const minutesLeft = Math.ceil(timeLeft / 60);
 
             if (minutesLeft <= 5 && !warningShown) {

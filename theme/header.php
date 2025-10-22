@@ -38,10 +38,18 @@ $pageData = array_merge([
                 <nav>
                     <div class="logo"><a href="index.php">Domov</a></div>
                     <ul class="nav-links">
-                        <li><a href="#"><p>Produkty</p></a></li>
-                        <li><a href="#"><p>Kategórie</p></a></li>
-                        <li><a href="#"><p>O Nás</p></a></li>
-                        <li><a href="#"><p>Kontakt</p></a></li>
+                        <li><a href="#">
+                                <p>Produkty</p>
+                            </a></li>
+                        <li><a href="#">
+                                <p>Kategórie</p>
+                            </a></li>
+                        <li><a href="#">
+                                <p>O Nás</p>
+                            </a></li>
+                        <li><a href="#">
+                                <p>Kontakt</p>
+                            </a></li>
                         <li style="position:relative;">
                             <?php
                             require_once __DIR__ . '/../class/Cart.php';
