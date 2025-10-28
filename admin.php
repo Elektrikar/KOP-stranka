@@ -196,6 +196,11 @@ require_once 'theme/header.php';
             </div>
 
             <div class="feature-card">
+                <h4>Product Management</h4>
+                <p><a href="admin/import.php" class="admin-link">Import Products from JSON</a></p>
+            </div>
+
+            <div class="feature-card">
                 <h4>Systémove Informácie</h4>
                 <p>Server:
                     <?= htmlspecialchars($_SERVER['SERVER_SOFTWARE']) ?>
