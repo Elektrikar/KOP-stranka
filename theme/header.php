@@ -16,6 +16,7 @@ $pageData = array_merge([
 
 <head>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title><?php echo htmlspecialchars($pageData['title']); ?></title>
     <meta name="description" content="<?php echo htmlspecialchars($pageData['metaDataDescription']); ?>" />
     <link rel="stylesheet" href="assets\css\main.css">
