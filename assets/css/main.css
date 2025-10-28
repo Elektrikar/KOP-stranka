@@ -16,23 +16,17 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
+    background-color: #f8f9fa;
+    color: #333;
+    line-height: 1.6;
 }
 
 .container {
     flex: 1 0 auto;
-}
-
-body {
-    background-color: #f8f9fa;
-    color: #333;
-    line-height: 1.6;
-    min-height: 100vh;
-}
-
-.container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 15px;
+    width: 100%;
 }
 
 header {
@@ -73,7 +67,7 @@ nav {
     transition: opacity 0.3s;
 }
 
-.nav-links a p:hover {
+.nav-links a:hover {
     opacity: 0.8;
 }
 
@@ -111,17 +105,23 @@ nav {
 
 .products {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 2rem;
+    grid-template-columns: repeat(auto-fill, 270px);
+    gap: 30px;
     margin-bottom: 3rem;
+    width: 100%;
+    justify-content: center;
+    align-items: start;
 }
 
 .product-card {
     background: white;
+    width: 270px;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s;
+    display: flex;
+    flex-direction: column;
 }
 
 .product-card:hover {
@@ -129,9 +129,12 @@ nav {
 }
 
 .product-image {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
+    width: 240px;
+    height: 240px;
+    margin: 15px;
+    object-fit: contain;
+    display: block;
+    background: #fff;
 }
 
 .product-info {
@@ -334,12 +337,44 @@ footer {
     border-left: 4px solid #4a6bdf;
 }
 
+/* Responsive Design */
+@media (max-width: 1199px) {
+    .products {
+        grid-template-columns: repeat(auto-fit, 270px);
+        justify-content: center;
+    }
+}
+
 @media (max-width: 768px) {
     .products {
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, 270px);
+        gap: 20px;
+        justify-content: center;
     }
 
-    .nav-links {
-        display: none;
+    .hero h1 {
+        font-size: 2rem;
+    }
+
+    .hero p {
+        font-size: 1rem;
+    }
+}
+
+@media (max-width: 560px) {
+    .products {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        gap: 15px;
+    }
+    
+    .product-card {
+        width: 100%;
+        max-width: 270px;
+    }
+    
+    .product-image {
+        width: calc(100% - 30px);
+        margin: 15px;
     }
 }
