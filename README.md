@@ -21,3 +21,4 @@
 - Product/Categories page
      - pagination
 - About us and contact page ???
+- Responsivity for phones
