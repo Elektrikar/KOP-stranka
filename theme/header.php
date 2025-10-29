@@ -38,7 +38,7 @@ if ($cartCount > 0) {
     <?php
     foreach ($pageData['customAssets'] as $asset) {
         if ($asset['type'] === 'js') {
-            echo '<script type="text/javascript" src="' . htmlspecialchars($asset['src']) . '"></script>';
+            echo '<script src="' . htmlspecialchars($asset['src']) . '"></script>';
         } elseif ($asset['type'] === 'css') {
             echo '<link rel="stylesheet" href="' . htmlspecialchars($asset['src']) . '">';
         }
