@@ -74,7 +74,8 @@ $pageData = array(
     'title' => 'Nákupný Košík | E-shop',
     'metaDataDescription' => 'Váš nákupný košík',
     'customAssets' => array(
-        array('type' => 'css', 'src' => 'assets/css/cartQuantityActions.css')
+        array('type' => 'css', 'src' => 'assets/css/cartQuantityActions.css'),
+        array('type' => 'js', 'src' => 'assets/js/cartQuantityActions.js')
     )
 );
 require_once 'theme/header.php';
@@ -117,8 +118,5 @@ require_once 'theme/header.php';
         </a>
     </p>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="assets\js\cartQuantityActions.js"></script>
 
 <?php require_once 'theme/footer.php'; ?>

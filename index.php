@@ -8,7 +8,8 @@ $pageData = array(
     'title' => 'Domov | E-shop',
     'metaDataDescription' => 'Domovská stránka e-shopu',
     'customAssets' => array(
-        array('type' => 'css', 'src' => 'assets/css/productQuantityActions.css')
+        array('type' => 'css', 'src' => 'assets/css/productQuantityActions.css'),
+        array('type' => 'js', 'src' => 'assets/js/productQuantityActions.js')
     )
 );
 require_once 'theme/header.php';
@@ -73,8 +74,5 @@ $products = Product::fetchAll($pdo);
         ?>
     </div>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script src="assets\js\productQuantityActions.js"></script>
 
 <?php require_once 'theme/footer.php'; ?>
