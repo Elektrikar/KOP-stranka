@@ -23,7 +23,7 @@ body {
 
 .container {
     flex: 1 0 auto;
-    max-width: 1200px;
+    max-width: 1280px;
     margin: 0 auto;
     padding: 0 15px;
     width: 100%;
@@ -105,7 +105,7 @@ nav {
 
 .products {
     display: grid;
-    grid-template-columns: repeat(auto-fill, 270px);
+    grid-template-columns: repeat(auto-fill, 290px);
     gap: 30px;
     margin-bottom: 3rem;
     width: 100%;
@@ -115,12 +115,13 @@ nav {
 
 .product-card {
     background: white;
-    width: 270px;
+    width: 290px;
     border-radius: 8px;
     box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
     transition: box-shadow 0.3s;
     display: flex;
     flex-direction: column;
+    justify-content: space-between;
     height: 100%;
 }
 
@@ -139,8 +140,30 @@ nav {
 
 .product-info {
     padding: 0 1.5rem;
-    padding-bottom: 1.5rem;
     flex: 1 1 auto;
+}
+
+.product-card > .top {
+    display: flex;
+    flex-direction: column;
+    flex: 1 1 auto;
+}
+
+.product-card > .bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 1.5rem 1.5rem;
+    gap: 12px;
+    height: 85px;
+}
+
+.product-card .product-price {
+    margin: 0;
+}
+
+.product-card .btn.btn-cart {
+    white-space: nowrap;
 }
 
 .product-title {
@@ -340,7 +363,7 @@ footer {
 }
 
 /* Responsive Design */
-@media (max-width: 1199px) {
+@media (max-width: 1279px) {
     .products {
         grid-template-columns: repeat(auto-fit, 270px);
         justify-content: center;
