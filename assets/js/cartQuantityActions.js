@@ -27,6 +27,9 @@ $(function () {
             }
             if (res.success) {
                 updateRow(btn, res);
+                if (window.notifyCartUpdated) {
+                    window.notifyCartUpdated();
+                }
             }
         }).fail(function (xhr, status, error) {
             console.error('AJAX request failed:', status, error);
@@ -51,6 +54,9 @@ $(function () {
                 updateRow(btn, res);
                 if (res.quantity <= 0) {
                     location.reload();
+                }
+                if (window.notifyCartUpdated) {
+                    window.notifyCartUpdated();
                 }
             }
         }).fail(function (xhr, status, error) {
@@ -83,6 +89,9 @@ $(function () {
                 row.find('td').eq(4).text(res.subtotal + ' €');
                 var totalCell = $('.cart-table tr:last-child td:last-child strong');
                 totalCell.text(res.total + ' €');
+                if (window.notifyCartUpdated) {
+                    window.notifyCartUpdated();
+                }
             }
         }).fail(function (xhr, status, error) {
             console.error('AJAX request failed:', status, error);

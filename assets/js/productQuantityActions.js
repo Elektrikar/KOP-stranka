@@ -37,6 +37,9 @@ $(function () {
                 var card = btn.closest('.product-card');
                 btn.remove();
                 card.find('.bottom').append(cartSummaryHtmlJs(res.quantity));
+                if (window.notifyCartUpdated) {
+                    window.notifyCartUpdated();
+                }
             }
         }).fail(function (xhr, status, error) {
             console.error('AJAX request failed:', status, error);
@@ -59,6 +62,9 @@ $(function () {
             }
             if (res.success) {
                 updateCartSummary(card, res.quantity);
+                if (window.notifyCartUpdated) {
+                    window.notifyCartUpdated();
+                }
             }
         }).fail(function (xhr, status, error) {
             console.error('AJAX request failed:', status, error);
@@ -81,6 +87,9 @@ $(function () {
             }
             if (res.success) {
                 updateCartSummary(card, res.quantity);
+                if (window.notifyCartUpdated) {
+                    window.notifyCartUpdated();
+                }
             }
         }).fail(function (xhr, status, error) {
             console.error('AJAX request failed:', status, error);
