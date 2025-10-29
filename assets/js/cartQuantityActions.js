@@ -93,7 +93,7 @@ $(function () {
             evt.preventDefault();
         }
     });
-    $(document).on('keypress', '.cart-qty-input', function(e) {
+    $(document).on('keypress', '.cart-qty-input', function (e) {
         if (e.which === 13) { // Enter key
             $(this).trigger('change');
         }
