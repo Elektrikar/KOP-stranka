@@ -50,14 +50,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['import'])) {
             }
 
             $stmt = $pdo->prepare("
-                INSERT INTO products (category_id, name, price, description, image_path)
-                VALUES (:category_id, :name, :price, :description, :image_path)
+                INSERT INTO products (category_id, name, price, description, image)
+                VALUES (:category_id, :name, :price, :description, :image)
                 ON DUPLICATE KEY UPDATE
                 category_id = VALUES(category_id),
                 name = VALUES(name),
                 price = VALUES(price),
                 description = VALUES(description),
-                image_path = VALUES(image_path)
+                image = VALUES(image)
             ");
 
             foreach ($data['product'] as $product) {
@@ -67,7 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['import'])) {
                     'category_id' => $categoryId,
                     'name' => $product['name'],
                     'price' => $price,
-                    'image_path' => $product['img'],
+                    'image' => $product['img'],
                     'description' => $product['description']
                 ]);
                 $importCount++;

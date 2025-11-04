@@ -6,7 +6,7 @@ class Product {
     public $name;
     public $price;
     public $description;
-    public $image_path;
+    public $image;
 
     public function __construct($data) {
         $this->id = $data['id'];
@@ -14,7 +14,7 @@ class Product {
         $this->name = $data['name'];
         $this->price = $data['price'];
         $this->description = $data['description'];
-        $this->image_path = $data['image_path'];
+        $this->image = $data['image'];
     }
 
     public static function fetchAll($pdo) {

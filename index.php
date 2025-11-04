@@ -44,7 +44,7 @@ $products = Product::fetchAll($pdo);
             $cartQty = $cart->getQuantity($product->id);
             echo '<div class="product-card" data-product-id="' . htmlspecialchars($product->id) . '">';
                 echo '<div class="top">';
-                    echo '<img src="' . htmlspecialchars($product->image_path) . '" alt="' . htmlspecialchars($product->name) . '" class="product-image">';
+                    echo '<img src="' . htmlspecialchars($product->image) . '" alt="' . htmlspecialchars($product->name) . '" class="product-image">';
                     echo '<div class="product-info">';
                         echo '<h3 class="product-title">' . htmlspecialchars($product->name) . '</h3>';
                         echo '<p>' . htmlspecialchars($product->description) . '</p>';
