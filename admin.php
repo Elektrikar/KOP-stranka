@@ -137,9 +137,8 @@ if (isset($_SESSION[$rateLimitKey])) {
     }
 }
 
-
 $pageData = array(
-    'title' => 'Admin | E-shop',
+    'title' => 'Domov | Admin',
     'metaDataDescription' => 'Administračný panel'
 );
 require_once 'theme/header.php';
@@ -175,8 +174,10 @@ require_once 'theme/header.php';
 
 <?php else: ?>
     <div class="admin-panel">
-        <a href="?logout=1" class="logout-link" onclick="return confirm('Naozaj sa chcete odhlásiť?')">Odhlásiť sa</a>
-        <h2>Vitajte, Admin!</h2>
+        <div class="admin-header">
+            <h2>Vitajte, Admin!</h2>
+            <a href="?logout=1" class="logout-link" onclick="return confirm('Naozaj sa chcete odhlásiť?')">Odhlásiť sa</a>
+        </div>
 
         <div class="success-message">
             Úspešne ste sa prihlásili ako administrátor
@@ -196,8 +197,8 @@ require_once 'theme/header.php';
             </div>
 
             <div class="feature-card">
-                <h4>Product Management</h4>
-                <p><a href="admin/import.php" class="admin-link">Import Products from JSON</a></p>
+                <h4>Importovať Produkty</h4>
+                <p><a href="adminImport.php" class="admin-link">Importovať Produkty z JSON súborov</a></p>
             </div>
 
             <div class="feature-card">
