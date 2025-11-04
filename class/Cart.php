@@ -15,7 +15,6 @@ class Cart {
                 'name' => $productData['name'],
                 'price' => $productData['price'],
                 'quantity' => 1,
-                'image' => $productData['image']
             ];
         }
     }
