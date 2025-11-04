@@ -12,6 +12,7 @@
 
 ### Small Features
 
+- "empty cart" button in the cart
 - make header stick to top of screen always
 
 ### Large Features
