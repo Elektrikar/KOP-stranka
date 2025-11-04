@@ -4,11 +4,6 @@
 
 ### Fixes
 
-- fix price formatting, remove decimals when there aren't any
-    - on product cards(1,339,00 € -> 1 339 €)
-    - in the cart php (1,339,00 € -> 1 339 €)
-    - in the cart js (2,126.10 € -> 2 126,10 €)
-
 ### Small Features
 
 - "empty cart" button in the cart

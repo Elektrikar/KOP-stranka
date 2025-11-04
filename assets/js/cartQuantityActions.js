@@ -1,14 +1,20 @@
 $(function () {
+    function formatPrice(number) {
+        return number
+        .replace(/,/g, ' ')
+        .replace('.', ',');
+    }
+
     function updateRow(btnOrInput, res) {
         // Update quantity input
         var summary = btnOrInput.closest('.cart-summary');
         summary.find('.cart-qty-input').val(res.quantity);
         // Update subtotal
         var row = btnOrInput.closest('tr');
-        row.find('td').eq(4).text(res.subtotal + ' €');
+        row.find('td').eq(4).text(formatPrice(res.subtotal) + ' €');
         // Update total
         var totalCell = $('.cart-table tr:last-child td:last-child strong');
-        totalCell.text(res.total + ' €');
+        totalCell.text(formatPrice(res.total) + ' €');
     }
 
     $(document).on('click', '.cart-plus', function (e) {
@@ -86,9 +92,9 @@ $(function () {
             if (res.success) {
                 input.val(res.quantity);
                 var row = input.closest('tr');
-                row.find('td').eq(4).text(res.subtotal + ' €');
+                row.find('td').eq(4).text(formatPrice(res.subtotal) + ' €');
                 var totalCell = $('.cart-table tr:last-child td:last-child strong');
-                totalCell.text(res.total + ' €');
+                totalCell.text(formatPrice(res.total) + ' €');
                 if (window.notifyCartUpdated) {
                     window.notifyCartUpdated();
                 }
@@ -97,11 +103,13 @@ $(function () {
             console.error('AJAX request failed:', status, error);
         });
     });
+    
     document.querySelector("input").addEventListener("keypress", function (evt) {
         if (evt.which < 48 || evt.which > 57) { // Not a digit
             evt.preventDefault();
         }
     });
+    
     $(document).on('keypress', '.cart-qty-input', function (e) {
         if (e.which === 13) { // Enter key
             $(this).trigger('change');

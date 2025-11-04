@@ -102,13 +102,13 @@ require_once 'theme/header.php';
                             <button class="cart-plus" data-id="<?php echo $id; ?>">+</button>
                         </div>
                     </td>
-                    <td><?php echo number_format($item['price'], 2, ','); ?> € / ks</td>
-                    <td><?php echo number_format($subtotal, 2, ','); ?> €</td>
+                    <td><?php echo number_format($item['price'], 2, ',', ' '); ?> € / ks</td>
+                    <td><?php echo number_format($subtotal, 2, ',', ' '); ?> €</td>
                 </tr>
             <?php endforeach; ?>
             <tr style="border-top:1px solid black;">
                 <td colspan="4" style="text-align:right;padding-right:10rem;"><strong>Celkovo:&nbsp;</strong></td>
-                <td><strong style="color:green;font-size:large;"><?php echo number_format($total, 2, ','); ?> €</strong></td>
+                <td><strong style="color:green;font-size:large;"><?php echo number_format($total, 2, ',', ' '); ?> €</strong></td>
             </tr>
         </table>
     <?php endif; ?>

@@ -51,7 +51,7 @@ $products = Product::fetchAll($pdo);
                     echo '</div>';
                 echo '</div>';
                 echo '<div class="bottom">';
-                    echo '<div class="product-price">' . number_format($product->price, 2, ',') . ' €</div>';
+                    echo '<div class="product-price">' . number_format($product->price, 2, ',', ' ') . ' €</div>';
                     if ($cartQty > 0) {
                         echo cartSummaryHtml($cartQty);
                     } else {
