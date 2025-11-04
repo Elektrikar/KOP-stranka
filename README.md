@@ -2,6 +2,7 @@
 
 ## To Do
 
+
 ### Fixes
 
 - fix price formatting, remove decimals when there aren't any
@@ -11,6 +12,8 @@
 - fix cart image displaying
 
 ### Small Features
+
+- make header stick to top of screen always
 
 - make header stick to top of screen always
 
