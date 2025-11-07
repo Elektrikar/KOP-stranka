@@ -6,7 +6,6 @@
 
 ### Small Features
 
-- "empty cart" button in the cart
 - make header stick to top of screen always
 - do something with import.php
 - quantity to items in database
