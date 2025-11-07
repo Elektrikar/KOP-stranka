@@ -117,3 +117,37 @@
     font-size: 1.2rem;
     font-weight: bold;
 }
+
+/* Responsive Design */
+@media (max-width: 1279px) {
+    .products {
+        grid-template-columns: repeat(auto-fit, 270px);
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .products {
+        grid-template-columns: repeat(auto-fit, 270px);
+        justify-content: center;
+    }
+}
+
+@media (max-width: 560px) {
+    .products {
+        grid-template-columns: 1fr;
+        justify-items: center;
+        gap: 15px;
+    }
+    
+    .product-card {
+        width: 100%;
+        max-width: 300px;
+        height: auto;
+    }
+    
+    .product-image {
+        width: calc(100% - 30px);
+        margin: 15px;
+    }
+}

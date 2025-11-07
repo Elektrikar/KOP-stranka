@@ -12,6 +12,10 @@ body {
     padding: 0;
 }
 
+html {
+    overflow-y: scroll;
+}
+
 body {
     display: flex;
     flex-direction: column;
@@ -34,6 +38,8 @@ header {
     color: white;
     padding: 1rem 0;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    position: sticky;
+    top: 0;
 }
 
 nav {
@@ -313,44 +319,12 @@ footer {
 }
 
 /* Responsive Design */
-@media (max-width: 1279px) {
-    .products {
-        grid-template-columns: repeat(auto-fit, 270px);
-        justify-content: center;
-    }
-}
-
 @media (max-width: 768px) {
-    .products {
-        grid-template-columns: repeat(auto-fit, 270px);
-        gap: 20px;
-        justify-content: center;
-    }
-
     .hero h1 {
         font-size: 2rem;
     }
 
     .hero p {
         font-size: 1rem;
-    }
-}
-
-@media (max-width: 560px) {
-    .products {
-        grid-template-columns: 1fr;
-        justify-items: center;
-        gap: 15px;
-    }
-    
-    .product-card {
-        width: 100%;
-        max-width: 270px;
-        height: auto;
-    }
-    
-    .product-image {
-        width: calc(100% - 30px);
-        margin: 15px;
     }
 }

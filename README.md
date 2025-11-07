@@ -6,7 +6,6 @@
 
 ### Small Features
 
-- make header stick to top of screen always
 - do something with import.php
 - quantity to items in database
 - add favicon
