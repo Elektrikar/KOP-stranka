@@ -8,8 +8,8 @@ $pageData = array(
     'title' => 'Domov | E-shop',
     'metaDataDescription' => 'Domovská stránka e-shopu',
     'customAssets' => array(
-        array('type' => 'css', 'src' => 'assets/css/productQuantityActions.css'),
-        array('type' => 'js', 'src' => 'assets/js/productQuantityActions.js')
+        array('type' => 'css', 'src' => 'assets/css/product.css'),
+        array('type' => 'js', 'src' => 'assets/js/product.js')
     )
 );
 require_once 'theme/header.php';

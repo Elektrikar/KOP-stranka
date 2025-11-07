@@ -103,81 +103,6 @@ nav {
     margin: 0 auto;
 }
 
-.products {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, 290px);
-    gap: 30px;
-    margin-bottom: 3rem;
-    width: 100%;
-    justify-content: center;
-    align-items: start;
-}
-
-.product-card {
-    background: white;
-    width: 290px;
-    border-radius: 8px;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.1);
-    transition: box-shadow 0.3s;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-}
-
-.product-card:hover {
-    box-shadow: 0 0 12px rgba(0, 0, 0, 0.15);
-}
-
-.product-image {
-    width: 260px;
-    height: 260px;
-    margin: 15px;
-    object-fit: contain;
-    display: block;
-    background: #fff;
-}
-
-.product-info {
-    padding: 0 1.5rem;
-    flex: 1 1 auto;
-}
-
-.product-card > .top {
-    display: flex;
-    flex-direction: column;
-    flex: 1 1 auto;
-}
-
-.product-card > .bottom {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 1.5rem 1.5rem;
-    gap: 12px;
-    height: 85px;
-}
-
-.product-card .product-price {
-    margin: 0;
-}
-
-.product-card .btn.btn-cart {
-    white-space: nowrap;
-}
-
-.product-title {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-}
-
-.product-price {
-    font-size: 1.3rem;
-    color: #4a6bdf;
-    font-weight: bold;
-    margin-bottom: 1rem;
-}
-
 .btn {
     display: inline-block;
     background-color: #4a6bdf;
@@ -193,38 +118,6 @@ nav {
 
 .btn:hover {
     background-color: #3a5bc7;
-}
-
-.cart-table {
-    width: 100%;
-    border-collapse: collapse;
-    border-spacing: 0 10px;
-    margin-bottom: 2rem;
-}
-
-.cart-table td {
-    padding-bottom: 10px;
-}
-
-.back-to-shop-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0.7rem 1.5rem;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    background: #fff;
-    font-size: 1.1rem;
-    font-family: inherit;
-    color: #222;
-    text-decoration: none;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-    transition: background 0.2s;
-    margin: 20px 0;
-}
-
-.back-to-shop-btn:hover {
-    background: #f9f9f9;
 }
 
 .cart-badge {

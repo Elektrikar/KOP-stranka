@@ -1,0 +1,85 @@
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    border-spacing: 0 10px;
+    margin-bottom: 2rem;
+}
+
+.cart-table td {
+    padding-bottom: 10px;
+}
+
+.back-to-shop-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.7rem 1.5rem;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    background: #fff;
+    font-size: 1.1rem;
+    font-family: inherit;
+    color: #222;
+    text-decoration: none;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    transition: background 0.2s;
+    margin: 20px 0;
+}
+.back-to-shop-btn:hover {
+    background: #f9f9f9;
+}
+
+.cart-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 20px 0 10px;
+}
+
+.empty-cart-btn {
+    margin: auto 0;
+    border: 0;
+    color:#333;
+    font-size: 110%;
+    cursor: pointer;
+    background: none;
+    margin-right: 10px;
+    transition: all 0.15s ease;
+}
+.empty-cart-btn:hover {
+    color: #e53935;
+}
+
+/* Cart Quantity Buttons */
+.cart-minus,
+.cart-plus {
+    border: none;
+    background: #fff;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding-bottom: 5px;
+    box-shadow: 0 1px 2px 0 rgba(0, 0, 0, .3);
+    transition: box-shadow 0.2s ease;
+}
+.cart-minus:hover,
+.cart-plus:hover {
+    box-shadow: 0 1px 4px 0 rgba(0, 0, 0, .3);
+}
+
+input:focus {
+    outline: none;
+}
+
+.cart-qty-input {
+    width: 40px;
+    height: 40px;
+    text-align: center;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    background: #fff;
+    font-size: 1.2rem;
+    margin: 0 8px;
+}
