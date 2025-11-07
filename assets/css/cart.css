@@ -9,6 +9,25 @@
     padding-bottom: 10px;
 }
 
+.cart-summary {
+    justify-content:center;
+}
+
+.total-row {
+    border-top:1px solid black;
+}
+.total-row td {
+    font-weight: bold;
+}
+.total {
+    text-align:right;
+    padding-right:10rem;
+}
+.total-price {
+    color:green;
+    font-size:large;
+}
+
 .back-to-shop-btn {
     display: inline-flex;
     align-items: center;

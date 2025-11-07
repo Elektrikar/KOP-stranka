@@ -109,7 +109,7 @@ require_once 'theme/header.php';
                     <td style="width:70px"><img src="<?php echo htmlspecialchars($item['image']); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>" style="width:60px;"></td>
                     <td style="width:505px"><?php echo htmlspecialchars($item['name']); ?></td>
                     <td>
-                        <div class="cart-summary" style="justify-content:center;">
+                        <div class="cart-summary">
                             <button class="cart-minus" data-id="<?php echo $id; ?>">-</button>
                             <input type="text" inputmode="numeric" min="1" class="cart-qty-input" data-id="<?php echo $id; ?>" value="<?php echo $item['quantity']; ?>">
                             <button class="cart-plus" data-id="<?php echo $id; ?>">+</button>
@@ -119,9 +119,9 @@ require_once 'theme/header.php';
                     <td><?php echo number_format($subtotal, 2, ',', ' '); ?> €</td>
                 </tr>
             <?php endforeach; ?>
-            <tr style="border-top:1px solid black;">
-                <td colspan="4" style="text-align:right;padding-right:10rem;"><strong>Celkovo:&nbsp;</strong></td>
-                <td><strong style="color:green;font-size:large;"><?php echo number_format($total, 2, ',', ' '); ?> €</strong></td>
+            <tr class="total-row">
+                <td class="total" colspan="4">Celkovo:&nbsp;</td>
+                <td class="total-price"><?php echo number_format($total, 2, ',', ' '); ?> €</td>
             </tr>
         </table>
     <?php endif; ?>
