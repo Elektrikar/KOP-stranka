@@ -13,7 +13,7 @@ $db = new Database('localhost', 'webstore', 'root', '');
 $pdo = $db->getConnection();
 $cart = new Cart();
 
-// AJAX cart item count update
+// Cart item count update
 if ((isset($_GET['action']) && $_GET['action'] === 'count')) {
     $cartCount = 0;
     if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {
@@ -22,6 +22,13 @@ if ((isset($_GET['action']) && $_GET['action'] === 'count')) {
         }
     }
     echo json_encode(['count' => $cartCount]);
+    exit();
+}
+
+// Empty cart action
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['empty_cart']) && $_POST['empty_cart'] === 'true') {
+    $cart->clear();
+    echo json_encode(['success' => true, 'redirect' => true]);
     exit();
 }
 
@@ -81,11 +88,17 @@ $pageData = array(
 require_once 'theme/header.php';
 ?>
 <div class="container">
-    <h1>Váš košík</h1><br>
+    <div class="cart-top">
+        <h1>Váš košík</h1><br>
     <?php $items = $cart->getItems();
     if (empty($items)): ?>
-        <p>Váš košík je prázdny.</p>
+    </div>
+    <p>Váš košík je prázdny.</p>
     <?php else: ?>
+        <button id="empty-cart-btn" class="empty-cart-btn">
+            Vyprázdniť košík
+        </button>
+    </div>
         <table class="cart-table">
             <?php $total = 0;
             foreach ($items as $id => $item):

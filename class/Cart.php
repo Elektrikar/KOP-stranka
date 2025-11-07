@@ -29,6 +29,10 @@ class Cart {
         }
     }
 
+    public function clear() {
+        $_SESSION['cart'] = [];
+    }
+
     public function update($productId, $quantity) {
         if (isset($_SESSION['cart'][$productId])) {
             $_SESSION['cart'][$productId]['quantity'] = $quantity;

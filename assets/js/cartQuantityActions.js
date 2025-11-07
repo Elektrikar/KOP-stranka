@@ -103,14 +103,34 @@ $(function () {
             console.error('AJAX request failed:', status, error);
         });
     });
-    
-    document.querySelector("input").addEventListener("keypress", function (evt) {
-        if (evt.which < 48 || evt.which > 57) { // Not a digit
-            evt.preventDefault();
+
+    $(document).on('click', '#empty-cart-btn', function (e) {
+        e.preventDefault();
+        if (confirm('Naozaj chcete vyprázdniť celý košík?')) {
+            $.post('cart.php', {
+                empty_cart: 'true'
+            }, function (res) {
+                try {
+                    res = JSON.parse(res);
+                } catch (e) {
+                    console.error('Error parsing response:', e);
+                    return;
+                }
+                if (res.success && res.redirect) {
+                    location.reload();
+                }
+            }).fail(function (xhr, status, error) {
+                console.error('AJAX request failed:', status, error);
+                location.reload();
+            });
         }
     });
     
     $(document).on('keypress', '.cart-qty-input', function (e) {
+        if (e.which < 48 || e.which > 57) { // Not a digit
+            e.preventDefault();
+        }
+
         if (e.which === 13) { // Enter key
             $(this).trigger('change');
         }
