@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['import'])) {
         $importCount = 0;
         
         foreach ($selectedFiles as $file) {
-            $jsonFile = __DIR__ . '/webscraping_results/' . basename($file);
+            $jsonFile = __DIR__ . '/productdata/' . basename($file);
             if (!file_exists($jsonFile)) {
                 throw new Exception("File not found: " . htmlspecialchars($file));
             }
@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['import'])) {
 
             $pdo->beginTransaction();
 
-            preg_match('/(\d+)_backup\.json$/', $file, $matches);
+            preg_match('/(\d+)\.json$/', $file, $matches);
             $categoryId = isset($matches[1]) ? (int)$matches[1] : 0;
             
             if ($categoryId === 0) {
@@ -86,7 +86,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['import'])) {
     }
 }
 
-$jsonFiles = glob(__DIR__ . '/webscraping_results/*_backup.json');
+$jsonFiles = glob(__DIR__ . '/productdata/*.json');
 $jsonFiles = array_map('basename', $jsonFiles);
 
 $pageData = array(
