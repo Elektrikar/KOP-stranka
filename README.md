@@ -8,7 +8,7 @@
 
 - Change date format in admin (Posledná aktivita: 2025-11-09 18:15:58)
 - do something with import.php
-- quantity to items in database
+- stock of items is in database, but not used anywhere
 - add favicon
 
 ### Large Features
