@@ -70,7 +70,7 @@ nav {
 .nav-links a {
     color: white;
     text-decoration: none;
-    transition: opacity 0.3s;
+    transition: opacity 0.2s;
 }
 
 .nav-links a:hover {
@@ -85,9 +85,19 @@ nav {
     justify-content: center;
     fill: currentColor;
 }
-
 .cart-icon:hover {
     color: rgb(175, 175, 175);
+}
+
+.login {
+    display: flex;
+    align-items: center;
+}
+
+.profile-icon {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
 }
 
 .hero {

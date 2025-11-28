@@ -59,12 +59,14 @@ if ($cartCount > 0) {
                         <li><a href="#">
                                 <p>Kategórie</p>
                             </a></li>
-                        <li><a href="#">
-                                <p>O Nás</p>
-                            </a></li>
-                        <li><a href="#">
-                                <p>Kontakt</p>
-                            </a></li>
+                        <li>
+                            <a class="login" href="admin.php">
+                                <svg class ="profile-icon" viewBox="0 0 16 16">
+                                    <path d="M8 8.667a3 3 0 0 0 0-6 3 3 0 0 0 0 6ZM8 8a2.334 2.334 0 0 1-2.334-2.333 2.334 2.334 0 0 1 4.667 0A2.335 2.335 0 0 1 8 8Zm4.666 5.334a.666.666 0 0 0 .667-.668V12a2.667 2.667 0 0 0-2.667-2.666c-1.924 0-1.479.333-2.666.333-1.184 0-.744-.333-2.666-.333A2.667 2.667 0 0 0 2.667 12v.666c0 .37.298.668.667.668h9.332Zm0-.668H3.334V12c0-1.102.897-2 2-2 1.77 0 1.401.334 2.666.334 1.269 0 .894-.334 2.666-.334 1.103 0 2 .898 2 2v.666Z"></path>
+                                </svg>
+                                <p>Prihlásenie</p>
+                            </a>
+                        </li>
                         <li style="position:relative;">
                             <a href="cart.php" style="position:relative;display:inline-block;">
                                 <svg class="cart-icon" focusable="false" aria-hidden="true" viewBox="0 0 21 20">
