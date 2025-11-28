@@ -218,7 +218,7 @@ require_once 'theme/header.php';
             <?= ceil((3600 - (time() - $_SESSION['login_time'])) / 60) ?>
             minút<br>
             Posledná aktivita:
-            <?= date('Y-m-d H:i:s', $_SESSION['login_time']) ?>
+            <?= date('d-m-Y H:i:s', $_SESSION['login_time']) ?>
         </div>
     </div>
 <?php endif; ?>
