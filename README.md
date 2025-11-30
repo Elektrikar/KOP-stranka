@@ -26,11 +26,17 @@
 - About us and contact page ???
 - Responsivity for phones
 
-## Img
+## Images
 
-<img width="456" height="223" alt="image" src="https://github.com/user-attachments/assets/9546de49-3772-45f8-95fb-6d91d974bb4f" />
-<img width="1419" height="743" alt="image" src="https://github.com/user-attachments/assets/491898e7-88d3-4c9f-aca7-aeb16569ac3b" />
-<img width="2560" height="1314" alt="image" src="https://github.com/user-attachments/assets/2677cabe-5831-4ae9-b448-93bbe87e203b" />
-<img width="2560" height="1313" alt="image" src="https://github.com/user-attachments/assets/245eb661-96fa-4a57-8ad5-3f72dc31e1bb" />
-<img width="2560" height="1313" alt="image" src="https://github.com/user-attachments/assets/a6798770-978d-4abc-94aa-c72a15f47760" />
-<img width="2560" height="1312" alt="image" src="https://github.com/user-attachments/assets/96df4d0b-b4ed-4983-9462-828999244bb6" />
+### Website
+
+Index<br><img width="2560" height="1301" alt="image" src="https://github.com/user-attachments/assets/c5c38183-6647-446a-bc43-755c3f5f537c" /><br>
+Login<br><img width="2560" height="1310" alt="image" src="https://github.com/user-attachments/assets/94ef98b9-31a8-4f68-9b1d-7898310785b0" /><br>
+Create account<br><img width="2560" height="1311" alt="image" src="https://github.com/user-attachments/assets/ef64afe9-94ea-4724-851c-4b76d855b53b" /><br>
+Admin dashboard<br><img width="2560" height="1313" alt="image" src="https://github.com/user-attachments/assets/a6798770-978d-4abc-94aa-c72a15f47760" /><br>
+
+### Database
+
+Categories <br><img width="456" height="223" alt="image" src="https://github.com/user-attachments/assets/9546de49-3772-45f8-95fb-6d91d974bb4f" /><br>
+Users <br><img width="1252" height="56" alt="Screenshot 2025-11-30 213945" src="https://github.com/user-attachments/assets/733d8f4a-1051-4ed1-90ef-f746e667714f" /><br>
+Products <br><img width="1459" height="737" alt="image" src="https://github.com/user-attachments/assets/5b4d9bb9-10aa-4954-aaa1-86b0370ff375" /><br>
