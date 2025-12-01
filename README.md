@@ -6,6 +6,7 @@
 
 ### Small Features
 
+- hide sensitive data
 - do something with import.php
 - stock of items is in database, but not used anywhere
 - smaller images for cart to save data
