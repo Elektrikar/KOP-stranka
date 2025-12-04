@@ -1,89 +1,12 @@
 <?php
 session_start();
+require_once __DIR__ . '/class/Database.php';
+require_once __DIR__ . '/class/User.php';
 
-// create users db table
-// NON PRODUCTION: For demo only
-$adminUser = 'admin';
-$adminPass = 'admin'; // Change this to a strong password in the database later
+$db = new Database('localhost', 'webstore', 'root', '');
+$pdo = $db->getConnection();
 
-$rateLimitKey = 'login_attempts_' . hash('sha256', $_SERVER['REMOTE_ADDR']);
-$maxAttempts = 5;
-$lockoutTime = 900;
-
-function checkRateLimit() {
-    global $rateLimitKey, $maxAttempts, $lockoutTime;
-
-    if (!isset($_SESSION[$rateLimitKey])) {
-        $_SESSION[$rateLimitKey] = ['count' => 0, 'time' => time()];
-    }
-
-    $attempts = $_SESSION[$rateLimitKey];
-
-    if (time() - $attempts['time'] > $lockoutTime) {
-        $_SESSION[$rateLimitKey] = ['count' => 0, 'time' => time()];
-        return true;
-    }
-
-    return $attempts['count'] < $maxAttempts;
-}
-
-function incrementRateLimit() {
-    global $rateLimitKey;
-
-    if (!isset($_SESSION[$rateLimitKey])) {
-        $_SESSION[$rateLimitKey] = ['count' => 1, 'time' => time()];
-    } else {
-        $_SESSION[$rateLimitKey]['count']++;
-    }
-}
-
-function generateCSRFToken() {
-    if (empty($_SESSION['csrf_token'])) {
-        $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
-    }
-    return $_SESSION['csrf_token'];
-}
-
-function validateCSRFToken($token) {
-    return isset($_SESSION['csrf_token']) &&
-        hash_equals($_SESSION['csrf_token'], $token);
-}
-
-function sanitizeInput($input) {
-    return htmlspecialchars(trim($input), ENT_QUOTES, 'UTF-8');
-}
-
-
-if (isset($_POST['username']) && isset($_POST['password']) && isset($_POST['csrf_token'])) {
-
-    if (!validateCSRFToken($_POST['csrf_token'])) {
-        $error = 'Overenie bezpečnostného tokenu zlyhalo.';
-    } elseif (!checkRateLimit()) {
-        $error = 'Príliš veľa pokusov o prihlásenie. Skúste to znova o 15 minút.';
-    } else {
-        $username = sanitizeInput($_POST['username']);
-        $password = $_POST['password'];
-
-        // Add db credential check here
-        if ($username === $adminUser && $password === $adminPass) {
-            session_regenerate_id(true);
-
-            $_SESSION['admin_logged_in'] = true;
-            $_SESSION['user_ip'] = $_SERVER['REMOTE_ADDR'];
-            $_SESSION['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
-            $_SESSION['login_time'] = time();
-
-            unset($_SESSION[$rateLimitKey]);
-
-            header('Location: admin.php');
-            exit();
-        } else {
-            incrementRateLimit();
-            $error = 'Neplatné prihlasovacie údaje.';
-        }
-    }
-}
-
+// Logout functionality
 if (isset($_GET['logout'])) {
     $_SESSION = [];
 
@@ -101,40 +24,49 @@ if (isset($_GET['logout'])) {
     }
 
     session_destroy();
-    header('Location: admin.php');
+    header('Location: login.php');
     exit();
 }
 
+// Check if user is logged in and has admin role
 $loggedIn = false;
+$currentUser = null;
+
 if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
     if (
         $_SESSION['user_ip'] === $_SERVER['REMOTE_ADDR'] &&
-        $_SESSION['user_agent'] === $_SERVER['HTTP_USER_AGENT']
+        $_SESSION['user_agent'] === $_SERVER['HTTP_USER_AGENT'] &&
+        isset($_SESSION['user_id'])
     ) {
-
         if (time() - $_SESSION['login_time'] < 3600) {
-            $loggedIn = true;
-            $_SESSION['login_time'] = time();
+            // Verify user still exists and has admin role
+            $user = new User($db);
+            $currentUser = $user->getById($_SESSION['user_id']);
+            
+            if ($currentUser && $currentUser->role === 'admin') {
+                $loggedIn = true;
+                $_SESSION['login_time'] = time();
+            } else {
+                session_destroy();
+                header('Location: login.php');
+                exit();
+            }
         } else {
             session_destroy();
-            header('Location: admin.php');
+            header('Location: login.php');
             exit();
         }
     } else {
         session_destroy();
-        header('Location: admin.php');
+        header('Location: login.php');
         exit();
     }
 }
 
-$csrfToken = generateCSRFToken();
-
-$remainingAttempts = $maxAttempts;
-if (isset($_SESSION[$rateLimitKey])) {
-    $remainingAttempts = $maxAttempts - $_SESSION[$rateLimitKey]['count'];
-    if ($remainingAttempts < 0) {
-        $remainingAttempts = 0;
-    }
+// If not logged in, redirect to login
+if (!$loggedIn) {
+    header('Location: login.php');
+    exit();
 }
 
 $pageData = array(
@@ -144,114 +76,78 @@ $pageData = array(
 require_once 'theme/header.php';
 ?>
 
-<?php if (!$loggedIn): ?>
-    <form class="admin-login" method="post" autocomplete="off">
-        <h2>Admin Prihlásenie</h2>
-        <?php if (!empty($error)): ?>
-            <div class="error-message"><?= $error ?></div>
-        <?php endif; ?>
+<div class="admin-panel">
+    <div class="admin-header">
+        <h2>Vitajte, <?= htmlspecialchars($currentUser->first_name . ' ' . $currentUser->last_name) ?>!</h2>
+        <a href="?logout=1" class="logout-link" onclick="return confirm('Naozaj sa chcete odhlásiť?')">Odhlásiť sa</a>
+    </div>
 
-        <?php if (isset($_SESSION[$rateLimitKey]) && $_SESSION[$rateLimitKey]['count'] > 0): ?>
-            <div class="attempts-warning">
-                Ostávajúce pokusy: <?= $remainingAttempts ?> z
-                <?= $maxAttempts ?>
-            </div>
-        <?php endif; ?>
+    <div class="success-message">
+        Úspešne ste sa prihlásili ako administrátor
+    </div>
 
-        <input type="hidden" name="csrf_token" value="<?= $csrfToken ?>">
+    <div class="admin-features">
+        <h3>Admin Dashboard</h3>
 
-        <input type="text" name="username" placeholder="Prihlasovacie meno" required autocomplete="off"
-            autocapitalize="none" autocorrect="off">
-        <input type="password" name="password" placeholder="Heslo" required autocomplete="off">
-        <button type="submit"
-            <?= !checkRateLimit() ? 'disabled' : '' ?>>Prihlásiť
-            sa</button>
-
-        <div class="security-notice">
-            Z bezpečnostných dôvodov sa prosím odhláste po dokončení.
-        </div>
-    </form>
-
-<?php else: ?>
-    <div class="admin-panel">
-        <div class="admin-header">
-            <h2>Vitajte, Admin!</h2>
-            <a href="?logout=1" class="logout-link" onclick="return confirm('Naozaj sa chcete odhlásiť?')">Odhlásiť sa</a>
+        <div class="feature-card">
+            <h4>User Management</h4>
+            <p>Manage users, roles, and permissions</p>
+            <?php
+            $user = new User($db);
+            $allUsers = $user->getAll();
+            ?>
+            <p>Total Users: <?= count($allUsers) ?></p>
         </div>
 
-        <div class="success-message">
-            Úspešne ste sa prihlásili ako administrátor
+        <div class="feature-card">
+            <h4>Content Management</h4>
+            <p>Edit website content and pages (Database integration needed)</p>
         </div>
 
-        <div class="admin-features">
-            <h3>Admin Dashboard</h3>
-
-            <div class="feature-card">
-                <h4>User Management</h4>
-                <p>Manage users, roles, and permissions (Database integration needed)</p>
-            </div>
-
-            <div class="feature-card">
-                <h4>Content Management</h4>
-                <p>Edit website content and pages (Database integration needed)</p>
-            </div>
-
-            <div class="feature-card">
-                <h4>Importovať Produkty</h4>
-                <p><a href="adminImport.php" class="admin-link">Importovať Produkty z JSON súborov</a></p>
-            </div>
-
-            <div class="feature-card">
-                <h4>Systémove Informácie</h4>
-                <p>Server:
-                    <?= htmlspecialchars($_SERVER['SERVER_SOFTWARE']) ?>
-                </p>
-                <p>PHP Verzia: <?= phpversion() ?></p>
-                <p>Prihlásený z:
-                    <?= htmlspecialchars($_SESSION['user_ip']) ?>
-                </p>
-            </div>
+        <div class="feature-card">
+            <h4>Importovať Produkty</h4>
+            <p><a href="adminImport.php" class="admin-link">Importovať Produkty z JSON súborov</a></p>
         </div>
 
-        <div class="security-notice">
-            Budete odhlásený o:
-            <?= ceil((3600 - (time() - $_SESSION['login_time'])) / 60) ?>
-            minút<br>
-            Posledná aktivita:
-            <?= date('d-m-Y H:i:s', $_SESSION['login_time']) ?>
+        <div class="feature-card">
+            <h4>Systémove Informácie</h4>
+            <p>Server:
+                <?= htmlspecialchars($_SERVER['SERVER_SOFTWARE']) ?>
+            </p>
+            <p>PHP Verzia: <?= phpversion() ?></p>
+            <p>Prihlásený z:
+                <?= htmlspecialchars($_SESSION['user_ip']) ?>
+            </p>
+            <p>Užívateľ: <?= htmlspecialchars($currentUser->email) ?></p>
         </div>
     </div>
-<?php endif; ?>
+
+    <div class="security-notice">
+        Budete odhlásený o:
+        <?= ceil((3600 - (time() - $_SESSION['login_time'])) / 60) ?>
+        minút<br>
+        Posledná aktivita:
+        <?= date('d-m-Y H:i:s', $_SESSION['login_time']) ?>
+    </div>
+</div>
 
 <script>
-    document.querySelector('form')?.addEventListener('submit', function(e) {
-        const username = this.querySelector('input[name="username"]').value.trim();
-        const password = this.querySelector('input[name="password"]').value;
+    let warningShown = false;
 
-        if (!username || !password) {
-            e.preventDefault();
-            alert('Prosím vyplňte všetky polia.');
-        }
-    });
+    function checkSessionTimeout() {
+        const timeLeft = 3600 - (<?= time() ?> -
+            <?= $_SESSION['login_time'] ?>);
+        const minutesLeft = Math.ceil(timeLeft / 60);
 
-    <?php if ($loggedIn): ?>
-        let warningShown = false;
-
-        function checkSessionTimeout() {
-            const timeLeft = 3600 - (<?= time() ?> -
-                <?= $_SESSION['login_time'] ?>);
-            const minutesLeft = Math.ceil(timeLeft / 60);
-
-            if (minutesLeft <= 5 && !warningShown) {
-                warningShown = true;
-                if (confirm('Vaša relácia vyprší o ' + minutesLeft + ' minút. Chcete ju predĺžiť?')) {
-                    location.reload();
-                }
+        if (minutesLeft <= 5 && !warningShown) {
+            warningShown = true;
+            if (confirm('Vaša relácia vyprší o ' + minutesLeft + ' minút. Chcete ju predĺžiť?')) {
+                location.reload();
             }
         }
+    }
 
-        setInterval(checkSessionTimeout, 60000);
-    <?php endif; ?>
+    setInterval(checkSessionTimeout, 60000);
 </script>
 
 <?php require_once 'theme/footer.php'; ?>

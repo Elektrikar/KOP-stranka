@@ -6,7 +6,8 @@
 
 ### Small Features
 
-- hide sensitive data
+- admin add singular products
+- show role under name in header
 - do something with import.php
 - stock of items is in database, but not used anywhere
 - smaller images for cart to save data
@@ -16,16 +17,17 @@
 
 - find hosting site
 - Add the ability to buy stuff (create paywall)
-- Create a register, login page
-     - separate login and admin page
-     - admin add singular products
-     - register -> email verification
 - Account for order management
      - orders database
 - Product/Categories page
      - pagination
 - About us and contact page ???
 - Responsivity for phones
+
+### After finding hosting
+
+ - register -> email verification
+ - hide sensitive data + change passwords
 
 ## Images
 

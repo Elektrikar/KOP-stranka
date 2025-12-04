@@ -15,4 +15,12 @@ class Database {
     public function getConnection() {
         return $this->pdo;
     }
+
+    public function prepare($statement, $options = []) {
+        return $this->pdo->prepare($statement, $options);
+    }
+
+    public function query($statement) {
+        return $this->pdo->query($statement);
+    }
 }

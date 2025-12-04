@@ -89,7 +89,7 @@ nav {
     color: rgb(175, 175, 175);
 }
 
-.login {
+.login-link {
     display: flex;
     align-items: center;
 }
@@ -154,7 +154,7 @@ nav {
 }
 
 /* Login Styles */
-.admin-login {
+.login {
     max-width: 350px;
     margin: 60px auto;
     padding: 2rem;
@@ -163,7 +163,7 @@ nav {
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
 }
 
-.admin-login input {
+.login input {
     width: 100%;
     padding: 0.7rem;
     margin-bottom: 1rem;
@@ -172,7 +172,7 @@ nav {
     box-sizing: border-box;
 }
 
-.admin-login button {
+.login button {
     width: 100%;
     padding: 0.7rem;
     background: #4a6bdf;
@@ -183,11 +183,11 @@ nav {
     cursor: pointer;
 }
 
-.admin-login button:hover {
+.login button:hover {
     background: #3a5bc7;
 }
 
-.admin-login button:disabled {
+.login button:disabled {
     background: #cccccc;
     cursor: not-allowed;
 }
@@ -287,12 +287,6 @@ nav {
     border-radius: 4px;
     color: #721c24;
     margin-bottom: 20px;
-}
-
-.attempts-warning {
-    color: #ff9800;
-    font-size: 0.8rem;
-    margin-bottom: 1rem;
 }
 
 /* Feature Cards */
