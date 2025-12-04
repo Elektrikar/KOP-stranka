@@ -2,6 +2,28 @@
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
+
+if (isset($_GET['logout'])) {
+    $_SESSION = [];
+
+    if (ini_get("session.use_cookies")) {
+        $params = session_get_cookie_params();
+        setcookie(
+            session_name(),
+            '',
+            time() - 42000,
+            $params["path"],
+            $params["domain"],
+            $params["secure"],
+            $params["httponly"]
+        );
+    }
+
+    session_destroy();
+    header('Location: login.php');
+    exit();
+}
+
 // Fill $pageData with defaults if not set
 if (!isset($pageData) || !is_array($pageData)) {
     $pageData = array();
@@ -38,11 +60,13 @@ if (!empty($_SESSION['user_first_name']) && !empty($_SESSION['user_last_name']))
     <title><?php echo htmlspecialchars($pageData['title']); ?></title>
     <meta name="description" content="<?php echo htmlspecialchars($pageData['metaDataDescription']); ?>" />
     <link rel="stylesheet" href="assets/css/main.css">
+    <link rel="stylesheet" href="assets/css/dropdown.css">
     <!-- Add favicon here -->
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="assets/js/cartBadge.js"></script>
-    
+    <script src="assets/js/dropdown.js"></script>
+
     <?php
     foreach ($pageData['customAssets'] as $asset) {
         if ($asset['type'] === 'js') {
@@ -62,30 +86,44 @@ if (!empty($_SESSION['user_first_name']) && !empty($_SESSION['user_last_name']))
                     <div class="logo"><a href="index.php">Domov</a></div>
                     <ul class="nav-links">
                         <li><a href="#">
-                                <p>Produkty</p>
+                                Produkty
                             </a></li>
                         <li><a href="#">
-                                <p>Kategórie</p>
+                                Kategórie
                             </a></li>
                         <?php if (!empty($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
-                            <li>
-                                <a href="admin.php"><p>Admin</p></a>
-                            </li>
+                            <li><a href="admin.php">
+                                    Admin panel
+                                </a></li>
                         <?php endif; ?>
                         <li>
                             <?php if (!empty($_SESSION['user_logged_in'])): ?>
-                                <a class="login-link" href="#">
-                                    <svg class ="profile-icon" viewBox="0 0 16 16">
-                                        <path d="M8 8.667a3 3 0 0 0 0-6 3 3 0 0 0 0 6ZM8 8a2.334 2.334 0 0 1-2.334-2.333 2.334 2.334 0 0 1 4.667 0A2.335 2.335 0 0 1 8 8Zm4.666 5.334a.666.666 0 0 0 .667-.668V12a2.667 2.667 0 0 0-2.667-2.666c-1.924 0-1.479.333-2.666.333-1.184 0-.744-.333-2.666-.333A2.667 2.667 0 0 0 2.667 12v.666c0 .37.298.668.667.668h9.332Zm0-.668H3.334V12c0-1.102.897-2 2-2 1.77 0 1.401.334 2.666.334 1.269 0 .894-.334 2.666-.334 1.103 0 2 .898 2 2v.666Z"></path>
-                                    </svg>
-                                    <p><?php echo $userDisplayName; ?></p>
-                                </a>
+                                <div class="user-dropdown" id="userDropdown">
+                                    <div class="login-link" id="userDropdownToggle">
+                                        <svg class="profile-icon" viewBox="0 0 16 16">
+                                            <path d="M8 8.667a3 3 0 0 0 0-6 3 3 0 0 0 0 6ZM8 8a2.334 2.334 0 0 1-2.334-2.333 2.334 2.334 0 0 1 4.667 0A2.335 2.335 0 0 1 8 8Zm4.666 5.334a.666.666 0 0 0 .667-.668V12a2.667 2.667 0 0 0-2.667-2.666c-1.924 0-1.479.333-2.666.333-1.184 0-.744-.333-2.666-.333A2.667 2.667 0 0 0 2.667 12v.666c0 .37.298.668.667.668h9.332Zm0-.668H3.334V12c0-1.102.897-2 2-2 1.77 0 1.401.334 2.666.334 1.269 0 .894-.334 2.666-.334 1.103 0 2 .898 2 2v.666Z"></path>
+                                        </svg>
+                                        <p class="user-name"><?php echo $userDisplayName; ?></p>
+                                        <svg class="dropdown-icon" viewBox="0 0 16 16" style="margin-left: 4px;">
+                                            <path d="M8 11.333l-4-4h8l-4 4z" />
+                                        </svg>
+                                    </div>
+                                    <div class="user-dropdown-content" id="userDropdownContent">
+                                        <a href="orders.php">
+                                            Objednávky
+                                        </a>
+                                        <a href="?logout=1" class="logout-btn" onclick="return confirm('Naozaj sa chcete odhlásiť?');">
+                                            Odhlásiť sa
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="dropdown-overlay" id="dropdownOverlay"></div>
                             <?php else: ?>
                                 <a class="login-link" href="login.php">
-                                    <svg class ="profile-icon" viewBox="0 0 16 16">
+                                    <svg class="profile-icon" viewBox="0 0 16 16">
                                         <path d="M8 8.667a3 3 0 0 0 0-6 3 3 0 0 0 0 6ZM8 8a2.334 2.334 0 0 1-2.334-2.333 2.334 2.334 0 0 1 4.667 0A2.335 2.335 0 0 1 8 8Zm4.666 5.334a.666.666 0 0 0 .667-.668V12a2.667 2.667 0 0 0-2.667-2.666c-1.924 0-1.479.333-2.666.333-1.184 0-.744-.333-2.666-.333A2.667 2.667 0 0 0 2.667 12v.666c0 .37.298.668.667.668h9.332Zm0-.668H3.334V12c0-1.102.897-2 2-2 1.77 0 1.401.334 2.666.334 1.269 0 .894-.334 2.666-.334 1.103 0 2 .898 2 2v.666Z"></path>
                                     </svg>
-                                    <p>Prihlásenie</p>
+                                    <p class="user-name">Prihlásenie</p>
                                 </a>
                             <?php endif; ?>
                         </li>

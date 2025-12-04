@@ -61,16 +61,20 @@ nav {
 .nav-links {
     display: flex;
     list-style: none;
+    height: 46px;
 }
 
 .nav-links li {
     margin-left: 1.5rem;
+    display: flex;
+    align-items: center;
 }
 
 .nav-links a {
     color: white;
     text-decoration: none;
     transition: opacity 0.2s;
+    user-select: none;
 }
 
 .nav-links a:hover {
@@ -92,6 +96,18 @@ nav {
 .login-link {
     display: flex;
     align-items: center;
+    cursor: pointer;
+    color: white;
+    text-decoration: none;
+    transition: opacity 0.2s;
+    user-select: none;
+}
+.login-link:hover {
+    opacity: 0.8;
+}
+
+.user-name {
+    margin-left: 5px;
 }
 
 .profile-icon {
@@ -200,7 +216,6 @@ nav {
     background: #fff;
     border-radius: 8px;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
-    position: relative;
 }
 
 .admin-header {

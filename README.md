@@ -7,22 +7,23 @@
 ### Small Features
 
 - admin add singular products
-- show role under name in header
 - do something with import.php
 - stock of items is in database, but not used anywhere
 - smaller images for cart to save data
 - add favicon
+- show role under name in header ???
 
 ### Large Features
 
 - find hosting site
 - Add the ability to buy stuff (create paywall)
+     - create orders.php
 - Account for order management
      - orders database
 - Product/Categories page
      - pagination
-- About us and contact page ???
 - Responsivity for phones
+- About us and contact page ???
 
 ### After finding hosting
 
