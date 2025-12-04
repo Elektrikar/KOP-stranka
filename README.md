@@ -4,10 +4,11 @@
 
 ### Fixes
 
+- import.php doesn't work
+
 ### Small Features
 
 - admin add singular products
-- do something with import.php
 - stock of items is in database, but not used anywhere
 - smaller images for cart to save data
 - add favicon
@@ -27,8 +28,8 @@
 
 ### After finding hosting
 
- - register -> email verification
- - hide sensitive data + change passwords
+- register -> email verification
+- hide sensitive data + change passwords
 
 ## Images
 
