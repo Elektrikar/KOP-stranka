@@ -4,11 +4,11 @@
 
 ### Fixes
 
-- import.php doesn't work
+- adminImport.php doesn't work
 
 ### Small Features
 
-- admin add singular products
+- improve adminAdd.php front-end
 - stock of items is in database, but not used anywhere
 - smaller images for cart to save data
 - add favicon
@@ -16,6 +16,7 @@
 
 ### Large Features
 
+- create admin page for editing / deleting products
 - find hosting site
 - Add the ability to buy stuff (create paywall)
      - create orders.php

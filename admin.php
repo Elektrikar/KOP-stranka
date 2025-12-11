@@ -105,8 +105,9 @@ require_once 'theme/header.php';
         </div>
 
         <div class="feature-card">
-            <h4>Importovať Produkty</h4>
-            <p><a href="adminImport.php" class="admin-link">Importovať Produkty z JSON súborov</a></p>
+            <h4>Správa produktov</h4>
+            <p><a href="adminAdd.php" class="admin-link">Pridať produkt</a></p>
+            <p><a href="adminImport.php" class="admin-link">Importovať hromadne produkty</a></p>
         </div>
 
         <div class="feature-card">

@@ -325,6 +325,22 @@ nav {
     text-align: center;
 }
 
+/* Admin Add Product*/
+.admin-panel .product-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.admin-panel .form-group-full {
+    grid-column: 1 / -1;
+}
+
+.admin-panel .form-actions {
+    grid-column: 1 / -1;
+    text-align: right;
+}
+
 /* Footer */
 footer {
     background-color: #343a40;
