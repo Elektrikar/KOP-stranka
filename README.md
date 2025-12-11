@@ -39,7 +39,8 @@
 Index<br><img width="2560" height="1440" alt="image" src="https://github.com/user-attachments/assets/2917c595-0c72-4a93-83f9-217bed22e4d5" /><br>
 Login<br><img width="2560" height="1310" alt="image" src="https://github.com/user-attachments/assets/94ef98b9-31a8-4f68-9b1d-7898310785b0" /><br>
 Create account<br><img width="2560" height="1311" alt="image" src="https://github.com/user-attachments/assets/ef64afe9-94ea-4724-851c-4b76d855b53b" /><br>
-Admin dashboard<br><img width="2560" height="1309" alt="image" src="https://github.com/user-attachments/assets/4355e018-15b5-48c8-9ca2-137d6f99fdee" /><br>
+Admin dashboard<br><img width="2560" height="1316" alt="image" src="https://github.com/user-attachments/assets/b91510d6-d4ea-4f4a-b43f-ee1fd262b08f" /><br>
+Add product<br><img width="2560" height="1316" alt="image" src="https://github.com/user-attachments/assets/c2eadf5d-0044-4949-b872-5b2af8711f5e" /><br>
 
 ### Database
 
