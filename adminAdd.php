@@ -17,13 +17,12 @@ $success = '';
 
 $categories = $pdo->query("SELECT id, name FROM categories ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
 
-function resizeImage($srcPath, $destPath, $mime) {
+function resizeImage($srcPath, $destPath, $mime, $maxSize) {
     list($width, $height) = getimagesize($srcPath);
 
-    $maxSize = 500;
     $scale = min($maxSize / $width, $maxSize / $height, 1);
 
-    $newWidth = (int)($width * $scale);
+    $newWidth  = (int)($width * $scale);
     $newHeight = (int)($height * $scale);
 
     switch ($mime) {
@@ -44,7 +43,9 @@ function resizeImage($srcPath, $destPath, $mime) {
         imagesavealpha($dst, true);
     }
 
-    imagecopyresampled($dst, $src, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+    imagecopyresampled($dst, $src, 0, 0, 0, 0,
+        $newWidth, $newHeight, $width, $height
+    );
 
     if ($mime === 'image/jpeg') {
         imagejpeg($dst, $destPath, 90);
@@ -54,8 +55,10 @@ function resizeImage($srcPath, $destPath, $mime) {
 
     unset($src);
     unset($dst);
+
     return true;
 }
+
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
@@ -96,15 +99,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $safeName = preg_replace('/[^A-Za-z0-9_.-]/', '_', pathinfo($img['name'], PATHINFO_FILENAME));
                 $filename = time() . '_' . bin2hex(random_bytes(6)) . '_' . $safeName . '.' . $ext;
 
-                $destDir = __DIR__ . '/img/product';
-                if (!is_dir($destDir)) mkdir($destDir, 0755, true);
+                $bigDir   = __DIR__ . '/img/product';
+                $smallDir = __DIR__ . '/img/productsmall';
 
-                $dest = $destDir . '/' . $filename;
+                if (!is_dir($bigDir))   mkdir($bigDir, 0755, true);
+                if (!is_dir($smallDir)) mkdir($smallDir, 0755, true);
 
-                if (!resizeImage($tmp, $dest, $mime)) {
-                    $error = 'Chyba pri spracovaní obrázka.';
-                } else {
-                    $imagePath = 'img/product/' . $filename;
+                $bigPath   = $bigDir . '/' . $filename;
+                $smallPath = $smallDir . '/' . $filename;
+
+                if (!resizeImage($tmp, $bigPath, $mime, 500)) {
+                    $error = 'Chyba pri spracovaní veľkého obrázka.';
+                }
+                elseif (!resizeImage($tmp, $smallPath, $mime, 60)) {
+                    $error = 'Chyba pri spracovaní malého obrázka.';
+                }
+                else {
+                    $imagePath = $filename;
                 }
             }
         } else {
@@ -168,10 +179,10 @@ require_once 'theme/header.php';
             <label>Kategória</label>
             <select name="category_id" required>
                 <option value="">-- Vyberte kategóriu --</option>
-                <?php foreach ($categories as $cat): ?>
-                    <option value="<?= $cat['id'] ?>"
-                        <?= (($_POST['category_id'] ?? '') == $cat['id']) ? 'selected' : '' ?>>
-                        <?= htmlspecialchars($cat['name']) ?>
+                <?php foreach ($categories as $c): ?>
+                    <option value="<?= $c['id'] ?>"
+                        <?= (($_POST['category_id'] ?? '') == $c['id']) ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($c['name']) ?>
                     </option>
                 <?php endforeach; ?>
             </select>

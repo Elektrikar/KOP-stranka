@@ -107,7 +107,7 @@ require_once 'theme/header.php';
         <div class="feature-card">
             <h4>Správa produktov</h4>
             <p><a href="adminAdd.php" class="admin-link">Pridať produkt</a></p>
-            <p><a href="adminImport.php" class="admin-link">Importovať hromadne produkty</a></p>
+            <p><a href="adminProducts.php" class="admin-link">Zobraziť produkty</a></p>
         </div>
 
         <div class="feature-card">

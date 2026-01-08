@@ -8,16 +8,15 @@
 
 ### Small Features
 
-- improve adminAdd.php front-end
+- improve front-end
+     - adminAdd.php, adminEdit.php
+     - adminProducts.php
 - stock of items is in database, but not used anywhere
-- smaller images for cart to save data
 - add favicon
 - show role under name in header ???
 
 ### Large Features
 
-- create admin page for editing / deleting products
-- find hosting site
 - Add the ability to buy stuff (create paywall)
      - create orders.php
 - Account for order management
@@ -29,6 +28,7 @@
 
 ### After finding hosting
 
+- websupport.sk
 - register -> email verification
 - hide sensitive data + change passwords
 

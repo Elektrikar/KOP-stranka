@@ -106,7 +106,7 @@ require_once 'theme/header.php';
                 $total += $subtotal;
             ?>
                 <tr>
-                    <td style="width:70px"><img src="<?php echo htmlspecialchars($item['image']); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>" style="width:60px;"></td>
+                    <td style="width:70px"><img src="img/productsmall/<?php echo htmlspecialchars($item['image']); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>"></td>
                     <td style="width:505px"><?php echo htmlspecialchars($item['name']); ?></td>
                     <td>
                         <div class="cart-summary">
