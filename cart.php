@@ -90,46 +90,51 @@ require_once 'theme/header.php';
 <div class="container">
     <div class="cart-top">
         <h1>Váš košík</h1><br>
-    <?php $items = $cart->getItems();
-    if (empty($items)): ?>
+        <?php $items = $cart->getItems();
+        if (empty($items)): ?>
     </div>
     <p>Váš košík je prázdny.</p>
-    <?php else: ?>
-        <button id="empty-cart-btn" class="empty-cart-btn">
-            Vyprázdniť košík
-        </button>
-    </div>
-        <table class="cart-table">
-            <?php $total = 0;
+<?php else: ?>
+    <button id="empty-cart-btn" class="empty-cart-btn">
+        Vyprázdniť košík
+    </button>
+</div>
+<table class="cart-table">
+    <?php $total = 0;
             foreach ($items as $id => $item):
                 $subtotal = $item['price'] * $item['quantity'];
                 $total += $subtotal;
-            ?>
-                <tr>
-                    <td style="width:70px"><img src="img/productsmall/<?php echo htmlspecialchars($item['image']); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>"></td>
-                    <td style="width:505px"><?php echo htmlspecialchars($item['name']); ?></td>
-                    <td>
-                        <div class="cart-summary">
-                            <button class="cart-minus" data-id="<?php echo $id; ?>">-</button>
-                            <input type="text" inputmode="numeric" min="1" class="cart-qty-input" data-id="<?php echo $id; ?>" value="<?php echo $item['quantity']; ?>">
-                            <button class="cart-plus" data-id="<?php echo $id; ?>">+</button>
-                        </div>
-                    </td>
-                    <td><?php echo number_format($item['price'], 2, ',', ' '); ?> € / ks</td>
-                    <td><?php echo number_format($subtotal, 2, ',', ' '); ?> €</td>
-                </tr>
-            <?php endforeach; ?>
-            <tr class="total-row">
-                <td class="total" colspan="4">Celkovo:&nbsp;</td>
-                <td class="total-price"><?php echo number_format($total, 2, ',', ' '); ?> €</td>
-            </tr>
-        </table>
-    <?php endif; ?>
-    <p>
-        <a href="index.php" class="back-to-shop-btn">
-            <span style="font-size:0.65rem;margin-right:9px;">&#9664;</span> Späť k nákupu
-        </a>
-    </p>
+    ?>
+        <tr>
+            <td style="width:70px"><img src="img/productsmall/<?php echo htmlspecialchars($item['image']); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>"></td>
+            <td style="width:505px"><?php echo htmlspecialchars($item['name']); ?></td>
+            <td>
+                <div class="cart-summary">
+                    <button class="cart-minus" data-id="<?php echo $id; ?>">-</button>
+                    <input type="text" inputmode="numeric" min="1" class="cart-qty-input" data-id="<?php echo $id; ?>" value="<?php echo $item['quantity']; ?>">
+                    <button class="cart-plus" data-id="<?php echo $id; ?>">+</button>
+                </div>
+            </td>
+            <td><?php echo number_format($item['price'], 2, ',', ' '); ?> € / ks</td>
+            <td><?php echo number_format($subtotal, 2, ',', ' '); ?> €</td>
+        </tr>
+    <?php endforeach; ?>
+    <tr class="total-row">
+        <td class="total" colspan="4">Celkovo:&nbsp;</td>
+        <td class="total-price"><?php echo number_format($total, 2, ',', ' '); ?> €</td>
+    </tr>
+</table>
+<?php endif; ?>
+<?php if (!empty($items)): ?>
+    <div class="checkout-section">
+        <a href="checkout.php" class="btn-checkout">Pokračovať k pokladni</a>
+    </div>
+<?php endif; ?>
+<p>
+    <a href="index.php" class="back-to-shop-btn">
+        <span style="font-size:0.65rem;margin-right:9px;">&#9664;</span> Späť k nákupu
+    </a>
+</p>
 </div>
 
 <?php require_once 'theme/footer.php'; ?>

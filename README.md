@@ -5,7 +5,6 @@
 ### Fixes
 
 - cant edit image when editing product
-- add "updated_at" column to products db
 
 ### Small Features
 
@@ -18,10 +17,8 @@
 
 ### Large Features
 
-- Add the ability to buy stuff (create paywall)
-     - create orders.php
+- Add working paywall
 - Account for order management
-     - orders database
 - Product/Categories page
      - pagination
 - Responsivity for phones
@@ -31,6 +28,7 @@
 
 - websupport.sk
 - register -> email verification
+- send order status emails
 - hide sensitive data + change passwords
 
 ## Images

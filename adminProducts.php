@@ -20,6 +20,14 @@ $sql = "
 
 $products = $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
 
+$pageData = [
+    'title' => 'Správa produktov | Admin',
+    'metaDataDescription' => 'Administrácia produktov',
+    'customAssets' => [
+        ['type' => 'css', 'src' => 'assets/css/adminOrders.css']
+    ]
+];
+
 require_once 'theme/header.php';
 ?>
 
@@ -27,17 +35,19 @@ require_once 'theme/header.php';
     <div class="admin-header">
         <h1>Produkty</h1>
         <a href="adminAdd.php" class="import-button">Pridať produkt</a>
+        <a href="admin.php" class="back-link">Späť na Administračný Panel</a>
     </div>
 
-    <table class="admin-table">
+    <table class="admin-orders-table">
         <thead>
             <tr>
                 <th>ID</th>
-                <th>Obrázok</th>
+                <th style="width: 60px;">Obrázok</th>
                 <th>Názov</th>
                 <th>Kategória</th>
                 <th>Cena (€)</th>
                 <th>Sklad</th>
+                <th>Akcie</th>
             </tr>
         </thead>
         <tbody>
@@ -46,10 +56,10 @@ require_once 'theme/header.php';
                 <td><?= $p['id'] ?></td>
                 <td>
                     <?php if ($p['image']): ?>
-                        <img src="img/productsmall/<?= htmlspecialchars($p['image']) ?>" class="table-image">
+                        <img style="max-height: 60px;" src="img/productsmall/<?= htmlspecialchars($p['image']) ?>" class="table-image">
                     <?php endif; ?>
                 </td>
-                <td><?= htmlspecialchars($p['name']) ?></td>
+                <td style="max-width: 200px;"><?= htmlspecialchars($p['name']) ?></td>
                 <td><?= htmlspecialchars($p['category']) ?></td>
                 <td><?= number_format($p['price'], 2, ',', ' ') ?></td>
                 <td><?= (int)$p['stock'] ?></td>

@@ -274,6 +274,7 @@ nav {
 
 .import-button {
     padding: 10px 20px;
+    text-decoration: none;
     background: #007bff;
     color: white;
     border: none;

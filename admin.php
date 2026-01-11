@@ -31,6 +31,7 @@ if (isset($_GET['logout'])) {
 // Check if user is logged in and has admin role
 $loggedIn = false;
 $currentUser = null;
+$showLoginSuccess = false;
 
 if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
     if (
@@ -42,9 +43,16 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
             // Verify user still exists and has admin role
             $user = new User($db);
             $currentUser = $user->getById($_SESSION['user_id']);
-            
+
             if ($currentUser && $currentUser->role === 'admin') {
                 $loggedIn = true;
+                
+                // Check if this is the first page load after login
+                if (!isset($_SESSION['already_shown_welcome'])) {
+                    $showLoginSuccess = true;
+                    $_SESSION['already_shown_welcome'] = true;
+                }
+                
                 $_SESSION['login_time'] = time();
             } else {
                 session_destroy();
@@ -82,9 +90,11 @@ require_once 'theme/header.php';
         <a href="?logout=1" class="logout-link" onclick="return confirm('Naozaj sa chcete odhlásiť?')">Odhlásiť sa</a>
     </div>
 
-    <div class="success-message">
-        Úspešne ste sa prihlásili ako administrátor
-    </div>
+    <?php if ($showLoginSuccess): ?>
+        <div class="success-message">
+            Úspešne ste sa prihlásili ako administrátor
+        </div>
+    <?php endif; ?>
 
     <div class="admin-features">
         <h3>Admin Dashboard</h3>
@@ -100,8 +110,8 @@ require_once 'theme/header.php';
         </div>
 
         <div class="feature-card">
-            <h4>Content Management</h4>
-            <p>Edit website content and pages (Database integration needed)</p>
+            <h4>Správa objednávok</h4>
+            <p><a href="adminOrders.php" class="admin-link">Zobraziť objednávky</a></p>
         </div>
 
         <div class="feature-card">
