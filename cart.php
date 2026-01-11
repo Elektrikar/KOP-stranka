@@ -126,14 +126,15 @@ require_once 'theme/header.php';
 </table>
 <?php endif; ?>
 <?php if (!empty($items)): ?>
-    <div class="checkout-section">
+    <div class="admin-header" style="border: none;">
+        <a href="index.php" class="back-to-shop-btn">
+        <span style="font-size:0.65rem;margin-right:9px;">&#9664;</span> Späť k nákupu
+    </a>
         <a href="checkout.php" class="btn-checkout">Pokračovať k pokladni</a>
     </div>
 <?php endif; ?>
 <p>
-    <a href="index.php" class="back-to-shop-btn">
-        <span style="font-size:0.65rem;margin-right:9px;">&#9664;</span> Späť k nákupu
-    </a>
+    
 </p>
 </div>
 
