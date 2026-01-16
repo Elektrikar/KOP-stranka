@@ -17,6 +17,17 @@ $(function () {
         totalCell.text(formatPrice(res.total) + ' €');
     }
 
+    function showCartError(message) {
+        const errorDiv = $('<div class="stock-error" style="position: fixed; top: 20px; right: 20px; background: #f44336; color: white; padding: 10px 20px; border-radius: 4px; z-index: 9999; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">' + message + '</div>');
+        $('body').append(errorDiv);
+
+        setTimeout(function() {
+            errorDiv.fadeOut(300, function() {
+                $(this).remove();
+            });
+        }, 3000);
+    }
+
     $(document).on('click', '.cart-plus', function (e) {
         e.preventDefault();
         var btn = $(this);
@@ -35,6 +46,10 @@ $(function () {
                 updateRow(btn, res);
                 if (window.notifyCartUpdated) {
                     window.notifyCartUpdated();
+                }
+            } else {
+                if (res.message) {
+                    showCartError(res.message);
                 }
             }
         }).fail(function (xhr, status, error) {
@@ -97,6 +112,14 @@ $(function () {
                 totalCell.text(formatPrice(res.total) + ' €');
                 if (window.notifyCartUpdated) {
                     window.notifyCartUpdated();
+                }
+            } else {
+                // Reset input to current quantity
+                if (res.message) {
+                    showCartError(res.message);
+                    var currentRow = input.closest('tr');
+                    var currentQty = currentRow.find('.cart-qty-input').val();
+                    input.val(currentQty);
                 }
             }
         }).fail(function (xhr, status, error) {

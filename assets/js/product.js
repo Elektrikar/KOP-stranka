@@ -19,6 +19,17 @@ $(function () {
         }
     }
 
+    function showStockError(message) {
+        const errorDiv = $('<div class="stock-error" style="position: fixed; top: 20px; right: 20px; background: #f44336; color: white; padding: 10px 20px; border-radius: 4px; z-index: 9999; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">' + message + '</div>');
+        $('body').append(errorDiv);
+
+        setTimeout(function() {
+            errorDiv.fadeOut(300, function() {
+                $(this).remove();
+            });
+        }, 3000);
+    }
+
     $(document).on('click', '.add-to-cart', function (e) {
         e.preventDefault();
         var btn = $(this);
@@ -39,6 +50,10 @@ $(function () {
                 card.find('.bottom').append(cartSummaryHtmlJs(res.quantity));
                 if (window.notifyCartUpdated) {
                     window.notifyCartUpdated();
+                }
+            } else {
+                if (res.message) {
+                    showStockError(res.message);
                 }
             }
         }).fail(function (xhr, status, error) {
@@ -64,6 +79,10 @@ $(function () {
                 updateCartSummary(card, res.quantity);
                 if (window.notifyCartUpdated) {
                     window.notifyCartUpdated();
+                }
+            } else {
+                if (res.message) {
+                    showStockError(res.message);
                 }
             }
         }).fail(function (xhr, status, error) {

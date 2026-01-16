@@ -5,6 +5,7 @@ class Product {
     public $category_id;
     public $name;
     public $price;
+    public $stock;
     public $description;
     public $image;
 
@@ -13,6 +14,7 @@ class Product {
         $this->category_id = $data['category_id'];
         $this->name = $data['name'];
         $this->price = $data['price'];
+        $this->stock = $data['stock'];
         $this->description = $data['description'];
         $this->image = $data['image'];
     }

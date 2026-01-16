@@ -11,7 +11,6 @@
 - improve front-end
      - adminAdd.php, adminEdit.php
      - adminProducts.php
-- stock of items is in database, but not used anywhere
 - add favicon
 - show role under name in header ???
 
@@ -23,7 +22,11 @@
 - Product/Categories page
      - pagination
 - Responsivity for phones
-- About us and contact page ???
+
+- Maybe:
+     - About us and contact page
+     - Product ratings
+     - Better footer
 
 ### After finding hosting
 

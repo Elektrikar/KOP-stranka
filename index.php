@@ -23,7 +23,7 @@ $products = Product::fetchAll($pdo);
 
 <section class="hero">
     <div class="container">
-        <h1>Vitajte  na našom e-shope</h1>
+        <h1>Vitajte na našom e-shope</h1>
         <p>Všetky vaše elektronické potreby na jednom mieste.</p>
     </div>
 </section>
@@ -39,37 +39,53 @@ $products = Product::fetchAll($pdo);
         $cart = new Cart();
         $products = Product::fetchAll($pdo);
 
-        // Display products
         foreach ($products as $product) {
             $cartQty = $cart->getQuantity($product->id);
+            $stockClass = '';
+            if ($product->stock <= 0) {
+                $stockClass = 'out-of-stock';
+                $stockText = 'Vypredané';
+            } elseif ($product->stock <= 5) {
+                $stockClass = 'low-stock';
+                $stockText = 'Posledných ' . $product->stock . ' ks';
+            } else {
+                $stockClass = 'in-stock';
+                $stockText = 'Skladom ' . $product->stock . ' ks';
+            }
+
             echo '<div class="product-card" data-product-id="' . htmlspecialchars($product->id) . '">';
-                echo '<div class="top">';
-                    echo '<img src="img/product/' . htmlspecialchars($product->image) . '" alt="' . htmlspecialchars($product->name) . '" class="product-image">';
-                    echo '<div class="product-info">';
-                        echo '<h3 class="product-title">' . htmlspecialchars($product->name) . '</h3>';
-                        echo '<p>' . htmlspecialchars($product->description) . '</p>';
-                    echo '</div>';
-                echo '</div>';
-                echo '<div class="bottom">';
-                    echo '<div class="product-price">' . number_format($product->price, 2, ',', ' ') . ' €</div>';
-                    if ($cartQty > 0) {
-                        echo cartSummaryHtml($cartQty);
-                    } else {
-                        echo '<button class="btn btn-cart add-to-cart" data-product-id="' . htmlspecialchars($product->id) . '">Do košíka</button>';
-                    }
-                echo '</div>';
+            echo '<div class="top">';
+            echo '<img src="img/product/' . htmlspecialchars($product->image) . '" alt="' . htmlspecialchars($product->name) . '" class="product-image">';
+            echo '<div class="product-info">';
+            echo '<h3 class="product-title">' . htmlspecialchars($product->name) . '</h3>';
+            echo '<p class="product-description product-description-ellipsis">' . htmlspecialchars($product->description) . '</p>';
+            echo '<div class="product-stock-container">';
+            echo '<div class="product-stock ' . $stockClass . '">' . $stockText . '</div>';
+            echo '</div>';
+            echo '</div>';
+            echo '</div>';
+            echo '<div class="bottom">';
+            echo '<div class="product-price">' . number_format($product->price, 2, ',', ' ') . ' €</div>';
+            if ($product->stock <= 0) {
+            } else if ($cartQty > 0) {
+                echo cartSummaryHtml($cartQty);
+            } else {
+                echo '<button class="btn btn-cart add-to-cart" data-product-id="' . htmlspecialchars($product->id) . '">Do košíka</button>';
+            }
+            echo '</div>';
             echo '</div>';
         }
+
         function cartSummaryHtml($qty)
         {
             return '<div class="cart-summary">
-                        <div class="cart-label">V košíku</div>
-                        <div class="cart-container">
-                            <button class="cart-minus">-</button>
-                            <div class="cart-qty">' . $qty . '</div>
-                            <button class="cart-plus">+</button>
-                        </div>
-                    </div>';
+                <div class="cart-label">V košíku</div>
+                <div class="cart-container">
+                    <button class="cart-minus">-</button>
+                    <div class="cart-qty">' . $qty . '</div>
+                    <button class="cart-plus">+</button>
+                </div>
+            </div>';
         }
         ?>
     </div>

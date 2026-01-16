@@ -25,19 +25,34 @@ if ((isset($_GET['action']) && $_GET['action'] === 'count')) {
     exit();
 }
 
-// Empty cart action
+// Empty cart
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['empty_cart']) && $_POST['empty_cart'] === 'true') {
     $cart->clear();
     echo json_encode(['success' => true, 'redirect' => true]);
     exit();
 }
 
+// Add, remove, update cart
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
     $productId = $_POST['id'];
     $action = isset($_POST['action']) ? $_POST['action'] : 'add';
+    
     if ($action === 'add') {
-        // Fetch product details if not in cart
-        if ($cart->getQuantity($productId) > 0) {
+        $stmt = $pdo->prepare("SELECT stock FROM products WHERE id = ?");
+        $stmt->execute([$productId]);
+        $productStock = $stmt->fetchColumn();
+
+        $currentQty = $cart->getQuantity($productId);
+
+        if ($currentQty >= $productStock) {
+            echo json_encode([
+                'success' => false,
+                'message' => 'Nie je dostatok tovaru na sklade.'
+            ]);
+            exit();
+        }
+
+        if ($currentQty > 0) {
             $cart->add($productId);
         } else {
             $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
@@ -51,12 +66,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
         $cart->remove($productId);
     } elseif ($action === 'set' && isset($_POST['quantity'])) {
         $quantity = (int)$_POST['quantity'];
+
         if ($quantity > 0) {
+            $stmt = $pdo->prepare("SELECT stock FROM products WHERE id = ?");
+            $stmt->execute([$productId]);
+            $productStock = $stmt->fetchColumn();
+            
+            if ($quantity > $productStock) {
+                echo json_encode([
+                    'success' => false,
+                    'message' => 'Nie je dostatok tovaru na sklade.'
+                ]);
+                exit();
+            }
+            
             $cart->update($productId, $quantity);
         } else {
             $cart->remove($productId);
         }
     }
+    
     $qty = $cart->getQuantity($productId);
     // Get item price and subtotal
     $item = $cart->getItems()[$productId] ?? null;
