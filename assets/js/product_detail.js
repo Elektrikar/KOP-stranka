@@ -1,5 +1,4 @@
 $(function() {
-    // Helper function to show error messages
     function showCartError(message) {
         const errorDiv = $('<div class="stock-error" style="position: fixed; top: 20px; right: 20px; background: #f44336; color: white; padding: 10px 20px; border-radius: 4px; z-index: 9999; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">' + message + '</div>');
         $('body').append(errorDiv);
@@ -11,19 +10,6 @@ $(function() {
         }, 3000);
     }
 
-    // Helper function to show success message
-    function showCartSuccess(message) {
-        const successDiv = $('<div class="cart-success" style="position: fixed; top: 20px; right: 20px; background: #4CAF50; color: white; padding: 10px 20px; border-radius: 4px; z-index: 9999; box-shadow: 0 2px 5px rgba(0,0,0,0.2);">' + message + '</div>');
-        $('body').append(successDiv);
-
-        setTimeout(function() {
-            successDiv.fadeOut(300, function() {
-                $(this).remove();
-            });
-        }, 3000);
-    }
-
-    // Handle add to cart button click
     $(document).on('click', '.add-to-cart-detail', function (e) {
         e.preventDefault();
         const btn = $(this);
@@ -45,8 +31,6 @@ $(function() {
             }
             
             if (res.success) {
-                showCartSuccess('Produkt bol pridaný do košíka');
-
                 const cartActions = btn.closest('.cart-actions');
                 if (cartActions.length) {
                     cartActions.find('.add-to-cart-form').replaceWith(

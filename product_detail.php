@@ -33,11 +33,10 @@ if (!$product) {
     exit();
 }
 
-// Increment view count
 $updateStmt = $pdo->prepare("UPDATE products SET views = views + 1 WHERE id = ?");
 $updateStmt->execute([$productId]);
 
-// Get related products (same category)
+// Get related products of same category
 $relatedStmt = $pdo->prepare("
     SELECT * FROM products 
     WHERE category_id = ? AND id != ? 
@@ -48,7 +47,7 @@ $relatedStmt = $pdo->prepare("
 $relatedStmt->execute([$product['category_id'], $productId]);
 $relatedProducts = $relatedStmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Check if product is in wishlist (if user is logged in)
+// Check if product is in wishlist
 $inWishlist = false;
 if (isset($_SESSION['user_id'])) {
     $wishlistStmt = $pdo->prepare("SELECT 1 FROM wishlist WHERE user_id = ? AND product_id = ?");
@@ -56,15 +55,12 @@ if (isset($_SESSION['user_id'])) {
     $inWishlist = $wishlistStmt->fetchColumn() !== false;
 }
 
-// Check if product is in cart
 $cartQuantity = $cart->getQuantity($productId);
 $inCart = $cartQuantity > 0;
 
-// Handle cart actions via AJAX (will be handled by existing cart.js)
 $error = '';
 $success = '';
 
-// Handle wishlist toggle
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['toggle_wishlist'])) {
     if (!isset($_SESSION['user_id'])) {
         header('Location: login.php?redirect=' . urlencode($_SERVER['REQUEST_URI']));
