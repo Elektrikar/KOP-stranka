@@ -17,6 +17,7 @@
 
 - Add working paywall
 - user management in admin
+- add new database columns to admin
 - Account for order management
 - Product/Categories page
      - pagination
