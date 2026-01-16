@@ -13,7 +13,7 @@ $(function () {
         var row = btnOrInput.closest('tr');
         row.find('td').eq(4).text(formatPrice(res.subtotal) + ' €');
         // Update total
-        var totalCell = $('.cart-table tr:last-child td:last-child strong');
+        var totalCell = $('.cart-table tr:last-child td:last-child');
         totalCell.text(formatPrice(res.total) + ' €');
     }
 
