@@ -10,8 +10,7 @@
 
 - improve front-end
      - adminAdd.php, adminEdit.php
-     - adminProducts.php
-- related products in product_detail.php (create common function for loading product cards)
+     - adminProducts.php - use svg icons for actions
 - NOTIFY FEATURE - currently disabled
 
 ### Large Features

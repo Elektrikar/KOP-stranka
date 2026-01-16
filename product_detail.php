@@ -4,6 +4,7 @@ require_once __DIR__ . '/class/Database.php';
 require_once __DIR__ . '/class/Product.php';
 require_once __DIR__ . '/class/Cart.php';
 require_once __DIR__ . '/class/User.php';
+require_once __DIR__ . '/class/ProductCard.php';
 
 $db = new Database('localhost', 'webstore', 'root', '');
 $pdo = $db->getConnection();
@@ -85,9 +86,10 @@ $pageData = [
     'title' => htmlspecialchars($product['name']) . ' | E-shop',
     'metaDataDescription' => htmlspecialchars(substr($product['description'], 0, 160)),
     'customAssets' => [
-        ['type' => 'css', 'src' => 'assets/css/product_detail.css'],
-        ['type' => 'js', 'src' => 'assets/js/product_detail.js'],
-        ['type' => 'js', 'src' => 'assets/js/cart.js'] // Include cart.js for quantity controls
+        array('type' => 'css', 'src' => 'assets/css/product_detail.css'),
+        array('type' => 'js', 'src' => 'assets/js/product_detail.js'),
+        array('type' => 'css', 'src' => 'assets/css/product.css'),
+        array('type' => 'js', 'src' => 'assets/js/product.js')
     ]
 ];
 
@@ -167,7 +169,7 @@ require_once 'theme/header.php';
                 <?php if ($product['stock'] > 0): ?>
                     <div class="cart-actions" data-product-id="<?= $productId ?>">
                         <?php if ($inCart): ?>
-                            <div class="cart-summary" id="cart-summary-<?= $productId ?>">
+                            <div class="in-cart" id="cart-summary-<?= $productId ?>">
                                 <div class="cart-label">Produkt je v košíku</div>
                                 <a href="cart.php" class="btn-view-cart">
                                     Zobraziť košík
@@ -175,7 +177,7 @@ require_once 'theme/header.php';
                             </div>
                         <?php else: ?>
                             <div class="add-to-cart-form" id="add-to-cart-form-<?= $productId ?>">
-                                <button type="button" class="btn-add-to-cart add-to-cart" data-product-id="<?= $productId ?>">Vložiť do košíka</button>
+                                <button type="button" class="btn-add-to-cart add-to-cart-detail" data-product-id="<?= $productId ?>">Vložiť do košíka</button>
                             </div>
                         <?php endif; ?>
                         
@@ -209,7 +211,14 @@ require_once 'theme/header.php';
         </div>
 
         <!-- Related products -->
-        
+        <div class="product-description-section">
+            <h2 style="text-align: center;">Podobné produkty</h2>
+            <?php
+            if (!empty($relatedProducts)) {
+                echo ProductCard::renderRelatedProducts($relatedProducts, $cart, 3);
+            }
+            ?>
+        </div>
     </div>
 </div>
 

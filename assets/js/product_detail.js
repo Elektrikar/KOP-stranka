@@ -24,7 +24,7 @@ $(function() {
     }
 
     // Handle add to cart button click
-    $(document).on('click', '.add-to-cart', function (e) {
+    $(document).on('click', '.add-to-cart-detail', function (e) {
         e.preventDefault();
         const btn = $(this);
         const productId = btn.data('product-id');
@@ -50,7 +50,7 @@ $(function() {
                 const cartActions = btn.closest('.cart-actions');
                 if (cartActions.length) {
                     cartActions.find('.add-to-cart-form').replaceWith(
-                        '<div class="cart-summary" id="cart-summary-' + productId + '">' +
+                        '<div class="in-cart" id="cart-summary-' + productId + '">' +
                         '<div class="cart-label">Produkt je v košíku</div>' +
                         '<a href="cart.php" class="btn-view-cart">' +
                         'Zobraziť košík' +
