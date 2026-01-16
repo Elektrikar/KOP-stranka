@@ -33,8 +33,17 @@ if (!$product) {
     exit();
 }
 
-$updateStmt = $pdo->prepare("UPDATE products SET views = views + 1 WHERE id = ?");
-$updateStmt->execute([$productId]);
+// View counting
+if (!isset($_SESSION['viewed_products'])) {
+    $_SESSION['viewed_products'] = [];
+}
+
+if (!in_array($productId, $_SESSION['viewed_products'])) {
+    $_SESSION['viewed_products'][] = $productId;
+
+    $updateStmt = $pdo->prepare("UPDATE products SET views = views + 1 WHERE id = ?");
+    $updateStmt->execute([$productId]);
+}
 
 // Get related products of same category
 $relatedStmt = $pdo->prepare("
