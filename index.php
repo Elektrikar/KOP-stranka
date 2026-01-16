@@ -55,9 +55,11 @@ $products = Product::fetchAll($pdo);
 
             echo '<div class="product-card" data-product-id="' . htmlspecialchars($product->id) . '">';
             echo '<div class="top">';
+            echo '<a href="product_detail.php?id=' . $product->id . '" class="product-image-link">';
             echo '<img src="img/product/' . htmlspecialchars($product->image) . '" alt="' . htmlspecialchars($product->name) . '" class="product-image">';
+            echo '</a>';
             echo '<div class="product-info">';
-            echo '<h3 class="product-title">' . htmlspecialchars($product->name) . '</h3>';
+            echo '<h3 class="product-title"><a href="product_detail.php?id=' . $product->id . '">' . htmlspecialchars($product->name) . '</a></h3>';
             echo '<p class="product-description product-description-ellipsis">' . htmlspecialchars($product->description) . '</p>';
             echo '<div class="product-stock-container">';
             echo '<div class="product-stock ' . $stockClass . '">' . $stockText . '</div>';

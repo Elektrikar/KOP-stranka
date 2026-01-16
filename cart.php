@@ -135,8 +135,8 @@ require_once 'theme/header.php';
                 $total += $subtotal;
     ?>
         <tr>
-            <td style="width:70px"><img src="img/productsmall/<?php echo htmlspecialchars($item['image']); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>"></td>
-            <td style="width:505px"><?php echo htmlspecialchars($item['name']); ?></td>
+            <td style="width:70px"><a href="product_detail.php?id=<?php echo $id; ?>"><img src="img/productsmall/<?php echo htmlspecialchars($item['image']); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>"></a></td>
+            <td style="width:505px"><a href="product_detail.php?id=<?php echo $id; ?>" class="product-title"><?php echo htmlspecialchars($item['name']); ?></a></td>
             <td>
                 <div class="cart-summary">
                     <button class="cart-minus" data-id="<?php echo $id; ?>">-</button>

@@ -72,6 +72,15 @@
     margin-bottom: 0.5rem;
 }
 
+.product-card .product-title a {
+    color: #333;
+    text-decoration: none;
+}
+
+.product-card .product-title a:hover {
+    color: #4a6bdf;
+}
+
 .product-price {
     font-size: 1.3rem;
     color: #4a6bdf;

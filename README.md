@@ -11,8 +11,8 @@
 - improve front-end
      - adminAdd.php, adminEdit.php
      - adminProducts.php
-- add favicon
-- show role under name in header ???
+- related products in product_detail.php (create common function for loading product cards)
+- NOTIFY FEATURE - currently disabled
 
 ### Large Features
 
@@ -22,6 +22,7 @@
 - Product/Categories page
      - pagination
 - Responsivity for phones
+- wishlist
 
 - Maybe:
      - About us and contact page
@@ -34,6 +35,7 @@
 - register -> email verification
 - send order status emails
 - hide sensitive data + change passwords
+- add favicon
 
 ## Images
 
