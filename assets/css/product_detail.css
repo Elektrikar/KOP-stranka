@@ -159,18 +159,13 @@
     background: #ffebee;
 }
 
-
-/* Cart summary */
+/* Cart summary*/
 .cart-summary {
     background: #f9f9f9;
     border-radius: 8px;
     padding: 20px;
     margin-bottom: 20px;
     border: 1px solid #eee;
-}
-
-.cart-actions {
-    margin-top: 30px;
 }
 
 .cart-label {
@@ -196,6 +191,8 @@
     justify-content: center;
     gap: 10px;
     transition: background 0.3s;
+    margin-bottom: 10px;
+    max-width: 400px;
 }
 
 .btn-add-to-cart:hover {
@@ -221,6 +218,7 @@
     justify-content: center;
     gap: 8px;
     transition: all 0.3s;
+    max-width: 400px;
 }
 
 .btn-wishlist:hover {
