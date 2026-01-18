@@ -4,6 +4,7 @@
 
 ### Fixes
 
+- Chyba pri vytváraní objednávky: Order creation failed: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens 
 - cant edit image when editing product
 
 ### Small Features
