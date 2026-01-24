@@ -12,7 +12,18 @@ $db = new Database('localhost', 'webstore', 'root', '');
 $pdo = $db->getConnection();
 
 $sql = "
-    SELECT p.id, p.name, p.price, p.stock, p.image, c.name AS category
+    SELECT 
+        p.id, 
+        p.name, 
+        p.price,
+        p.discount_price,
+        p.stock, 
+        p.views,
+        p.sales_count,
+        p.created_at,
+        p.updated_at,
+        p.image, 
+        c.name AS category
     FROM products p
     JOIN categories c ON c.id = p.category_id
     ORDER BY p.id DESC
@@ -31,7 +42,7 @@ $pageData = [
 require_once 'theme/header.php';
 ?>
 
-<div class="admin-panel" style="max-width: 1200px;">
+<div class="admin-panel" style="max-width: 1400px;">
     <div class="admin-header">
         <h1>Produkty</h1>
         <a href="adminAdd.php" class="import-button">Pridať produkt</a>
@@ -46,12 +57,23 @@ require_once 'theme/header.php';
                 <th>Názov</th>
                 <th>Kategória</th>
                 <th>Cena (€)</th>
+                <th>Zľava (€)</th>
                 <th>Sklad</th>
+                <th>Zobrazenia</th>
+                <th>Predaje</th>
+                <th>Pridané</th>
+                <th>Upravené</th>
                 <th>Akcie</th>
             </tr>
         </thead>
         <tbody>
-        <?php foreach ($products as $p): ?>
+        <?php foreach ($products as $p): 
+            $discountClass = '';
+            if ($p['discount_price'] && $p['discount_price'] < $p['price']) {
+                $discountPercent = round((($p['price'] - $p['discount_price']) / $p['price']) * 100);
+                $discountClass = 'discount-active';
+            }
+        ?>
             <tr>
                 <td><?= $p['id'] ?></td>
                 <td>
@@ -61,8 +83,24 @@ require_once 'theme/header.php';
                 </td>
                 <td style="max-width: 200px;"><?= htmlspecialchars($p['name']) ?></td>
                 <td><?= htmlspecialchars($p['category']) ?></td>
-                <td><?= number_format($p['price'], 2, ',', ' ') ?></td>
+                <td>
+                    <?= number_format($p['price'], 2, ',', ' ') ?>
+                </td>
+                <td class="<?= $discountClass ?>">
+                    <?php if ($p['discount_price']): ?>
+                        <?= number_format($p['discount_price'], 2, ',', ' ') ?>
+                        <?php if ($discountPercent): ?>
+                            <span class="discount-badge">-<?= $discountPercent ?>%</span>
+                        <?php endif; ?>
+                    <?php else: ?>
+                        -
+                    <?php endif; ?>
+                </td>
                 <td><?= (int)$p['stock'] ?></td>
+                <td><?= (int)$p['views'] ?></td>
+                <td><?= (int)$p['sales_count'] ?></td>
+                <td><?= date('d.m.Y H:i', strtotime($p['created_at'])) ?></td>
+                <td><?= date('d.m.Y H:i', strtotime($p['updated_at'])) ?></td>
                 <td class="actions">
                     <a href="adminEdit.php?id=<?= $p['id'] ?>" class="btn-edit">Zmeniť</a>
 
@@ -77,5 +115,31 @@ require_once 'theme/header.php';
         </tbody>
     </table>
 </div>
+
+<style>
+.discount-active {
+    color: #f44336;
+    font-weight: bold;
+}
+
+.discount-badge {
+    display: inline-block;
+    background: #f44336;
+    color: white;
+    font-size: 0.8em;
+    padding: 2px 6px;
+    border-radius: 3px;
+    margin-left: 5px;
+    vertical-align: middle;
+}
+
+.admin-orders-table th {
+    white-space: nowrap;
+}
+
+.admin-orders-table td {
+    font-size: 0.9em;
+}
+</style>
 
 <?php require 'theme/footer.php'; ?>

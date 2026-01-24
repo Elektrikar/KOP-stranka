@@ -50,14 +50,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $price = (float)$priceRaw;
     }
 
+    // DISCOUNT PRICE VALIDATION
+    $discountPrice = null;
+    $discountPriceRaw = str_replace(',', '.', trim($_POST['discount_price'] ?? ''));
+
+    if ($discountPriceRaw !== '') {
+        if (!preg_match('/^\d+(\.\d{1,2})?$/', $discountPriceRaw)) {
+            $error = 'Zľavnená cena musí byť číslo (napr. 12.99).';
+        } else {
+            $discountPrice = (float)$discountPriceRaw;
+            if ($discountPrice >= $price) {
+                $error = 'Zľavnená cena musí byť nižšia ako bežná cena.';
+            }
+        }
+    }
+
     if ($error === '') {
         $sql = "
             UPDATE products
             SET category_id = :category_id,
                 name = :name,
                 price = :price,
+                discount_price = :discount_price,
                 stock = :stock,
-                description = :description
+                description = :description,
+                updated_at = NOW()
             WHERE id = :id
         ";
 
@@ -66,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':category_id' => $category_id,
             ':name'        => $name,
             ':price'       => $price,
+            ':discount_price' => $discountPrice,
             ':stock'       => $stock,
             ':description' => $description,
             ':id'          => $id
@@ -122,6 +140,12 @@ require_once 'theme/header.php';
             <label>Cena (€)</label>
             <input type="text" name="price" required
                    value="<?= htmlspecialchars($_POST['price'] ?? $product['price']) ?>">
+        </div>
+
+        <div class="form-group">
+            <label>Zľavnená cena (€) <small>(voliteľné)</small></label>
+            <input type="text" name="discount_price"
+                   value="<?= htmlspecialchars($_POST['discount_price'] ?? $product['discount_price']) ?>">
         </div>
 
         <div class="form-group">

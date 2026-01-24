@@ -78,6 +78,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $price = (float)$priceRaw;
     }
 
+    $discountPrice = null;
+    $discountPriceRaw = str_replace(',', '.', trim($_POST['discount_price'] ?? ''));
+
+    if ($discountPriceRaw !== '') {
+        if (!preg_match('/^\d+(\.\d{1,2})?$/', $discountPriceRaw)) {
+            $error = 'Zľavnená cena musí byť číslo (napr. 12.99).';
+        } else {
+            $discountPrice = (float)$discountPriceRaw;
+            if ($discountPrice >= $price) {
+                $error = 'Zľavnená cena musí byť nižšia ako bežná cena.';
+            }
+        }
+    }
+
     if ($name === '' || $category_id === 0  || $stock === 0) {
         $error = 'Názov, kategória a množstvo sú povinné.';
     }
@@ -124,8 +138,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 
     if ($error === '') {
-        $sql = "INSERT INTO products (category_id, name, price, stock, description, image)
-                VALUES (:category_id, :name, :price, :stock, :description, :image)";
+        $sql = "INSERT INTO products (category_id, name, price, discount_price, stock, description, image)
+                VALUES (:category_id, :name, :price, :discount_price, :stock, :description, :image)";
 
         $stmt = $pdo->prepare($sql);
 
@@ -134,6 +148,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 ':category_id' => $category_id,
                 ':name'        => $name,
                 ':price'       => $price,
+                ':discount_price' => $discountPrice,
                 ':stock'       => $stock,
                 ':description' => $description,
                 ':image'       => $imagePath
@@ -191,6 +206,11 @@ require_once 'theme/header.php';
         <div class="form-group">
             <label>Cena (€)</label>
             <input type="text" name="price" required value="<?= htmlspecialchars($_POST['price'] ?? '') ?>">
+        </div>
+
+        <div class="form-group">
+            <label>Zľavnená cena (€) <small>(voliteľné)</small></label>
+            <input type="text" name="discount_price" value="<?= htmlspecialchars($_POST['discount_price'] ?? '') ?>">
         </div>
 
         <div class="form-group">

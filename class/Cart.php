@@ -20,6 +20,17 @@ class Cart {
         }
     }
 
+    public function update($productId, $quantity)
+    {
+        if (isset($_SESSION['cart'][$productId])) {
+            if ($quantity > 0) {
+                $_SESSION['cart'][$productId]['quantity'] = $quantity;
+            } else {
+                unset($_SESSION['cart'][$productId]);
+            }
+        }
+    }
+
     public function remove($productId) {
         if (isset($_SESSION['cart'][$productId])) {
             $_SESSION['cart'][$productId]['quantity']--;
@@ -33,9 +44,9 @@ class Cart {
         $_SESSION['cart'] = [];
     }
 
-    public function update($productId, $quantity) {
+    public function updatePrice($productId, $newPrice) {
         if (isset($_SESSION['cart'][$productId])) {
-            $_SESSION['cart'][$productId]['quantity'] = $quantity;
+            $_SESSION['cart'][$productId]['price'] = $newPrice;
         }
     }
 

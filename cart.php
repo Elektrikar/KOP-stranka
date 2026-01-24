@@ -38,9 +38,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
     $action = isset($_POST['action']) ? $_POST['action'] : 'add';
     
     if ($action === 'add') {
-        $stmt = $pdo->prepare("SELECT stock FROM products WHERE id = ?");
+        $stmt = $pdo->prepare("SELECT stock, price, discount_price, name, image FROM products WHERE id = ?");
         $stmt->execute([$productId]);
-        $productStock = $stmt->fetchColumn();
+        $productData = $stmt->fetch(PDO::FETCH_ASSOC);
+        $productStock = $productData['stock'];
+
+        $currentPrice = $productData['discount_price'] && $productData['discount_price'] < $productData['price'] 
+            ? $productData['discount_price'] 
+            : $productData['price'];
 
         $currentQty = $cart->getQuantity($productId);
 
@@ -55,12 +60,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
         if ($currentQty > 0) {
             $cart->add($productId);
         } else {
-            $stmt = $pdo->prepare("SELECT * FROM products WHERE id = ?");
-            $stmt->execute([$productId]);
-            $product = $stmt->fetch(PDO::FETCH_ASSOC);
-            if ($product) {
-                $cart->add($productId, $product);
-            }
+            $product = [
+                'name' => $productData['name'],
+                'price' => $currentPrice,
+                'image' => $productData['image']
+            ];
+            $cart->add($productId, $product);
         }
     } elseif ($action === 'remove') {
         $cart->remove($productId);
@@ -85,18 +90,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id'])) {
             $cart->remove($productId);
         }
     }
+
+    $items = $cart->getItems();
+    if (!empty($items)) {
+        $productIds = array_keys($items);
+        $placeholders = str_repeat('?,', count($productIds) - 1) . '?';
+        $stmt = $pdo->prepare("SELECT id, price, discount_price FROM products WHERE id IN ($placeholders)");
+        $stmt->execute($productIds);
+        
+        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+            $currentPrice = $row['discount_price'] && $row['discount_price'] < $row['price'] 
+                ? $row['discount_price'] 
+                : $row['price'];
+
+            if (isset($_SESSION['cart'][$row['id']])) {
+                $_SESSION['cart'][$row['id']]['price'] = $currentPrice;
+            }
+        }
+
+        $items = $cart->getItems();
+    }
     
     $qty = $cart->getQuantity($productId);
     // Get item price and subtotal
-    $item = $cart->getItems()[$productId] ?? null;
+    $item = $items[$productId] ?? null;
     $price = $item ? $item['price'] : 0;
     $subtotal = $item ? $item['price'] * $qty : 0;
     // Calculate new cart total
-    $items = $cart->getItems();
     $total = 0;
     foreach ($items as $it) {
         $total += $it['price'] * $it['quantity'];
     }
+    
     echo json_encode([
         'success' => true,
         'quantity' => $qty,
@@ -115,12 +140,32 @@ $pageData = array(
     )
 );
 require_once 'theme/header.php';
+
+$items = $cart->getItems();
+
+if (!empty($items)) {
+    $productIds = array_keys($items);
+    $placeholders = str_repeat('?,', count($productIds) - 1) . '?';
+    $stmt = $pdo->prepare("SELECT id, price, discount_price FROM products WHERE id IN ($placeholders)");
+    $stmt->execute($productIds);
+    
+    while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+
+        $currentPrice = $row['discount_price'] && $row['discount_price'] < $row['price'] 
+            ? $row['discount_price'] 
+            : $row['price'];
+
+        if (isset($_SESSION['cart'][$row['id']])) {
+            $_SESSION['cart'][$row['id']]['price'] = $currentPrice;
+            $items[$row['id']]['price'] = $currentPrice;
+        }
+    }
+}
 ?>
 <div class="container">
     <div class="cart-top">
         <h1>Váš košík</h1><br>
-        <?php $items = $cart->getItems();
-        if (empty($items)): ?>
+        <?php if (empty($items)): ?>
     </div>
     <p>Váš košík je prázdny.</p>
 <?php else: ?>
@@ -129,14 +174,30 @@ require_once 'theme/header.php';
     </button>
 </div>
 <table class="cart-table">
-    <?php $total = 0;
-            foreach ($items as $id => $item):
-                $subtotal = $item['price'] * $item['quantity'];
-                $total += $subtotal;
+    <?php 
+    $total = 0;
+    foreach ($items as $id => $item):
+        $stmt = $pdo->prepare("SELECT price, discount_price FROM products WHERE id = ?");
+        $stmt->execute([$id]);
+        $productData = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        $originalPrice = $productData['price'];
+        $hasDiscount = $productData['discount_price'] && $productData['discount_price'] < $originalPrice;
+        $currentPrice = $item['price'];
+        $subtotal = $currentPrice * $item['quantity'];
+        $total += $subtotal;
     ?>
         <tr>
-            <td style="width:70px"><a href="product_detail.php?id=<?php echo $id; ?>"><img src="img/productsmall/<?php echo htmlspecialchars($item['image']); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>"></a></td>
-            <td style="width:505px"><a href="product_detail.php?id=<?php echo $id; ?>" class="product-title"><?php echo htmlspecialchars($item['name']); ?></a></td>
+            <td style="width:70px">
+                <a href="product_detail.php?id=<?php echo $id; ?>">
+                    <img src="img/productsmall/<?php echo htmlspecialchars($item['image']); ?>" alt="<?php echo htmlspecialchars($item['name']); ?>">
+                </a>
+            </td>
+            <td style="width:505px">
+                <a href="product_detail.php?id=<?php echo $id; ?>" class="product-title">
+                    <?php echo htmlspecialchars($item['name']); ?>
+                </a>
+            </td>
             <td>
                 <div class="cart-summary">
                     <button class="cart-minus" data-id="<?php echo $id; ?>">-</button>
@@ -144,8 +205,25 @@ require_once 'theme/header.php';
                     <button class="cart-plus" data-id="<?php echo $id; ?>">+</button>
                 </div>
             </td>
-            <td><?php echo number_format($item['price'], 2, ',', ' '); ?> € / ks</td>
-            <td><?php echo number_format($subtotal, 2, ',', ' '); ?> €</td>
+            <td>
+                <?php if ($hasDiscount): ?>
+                    <div class="price-display">
+                        <span class="original-price" style="text-decoration: line-through; color: #999; font-size: 0.9em; display: block;">
+                            <?php echo number_format($originalPrice, 2, ',', ' '); ?> €
+                        </span>
+                        <span class="discount-price" style="color: #f44336; font-weight: bold;">
+                            <?php echo number_format($currentPrice, 2, ',', ' '); ?> € / ks
+                        </span>
+                    </div>
+                <?php else: ?>
+                    <span class="regular-price">
+                        <?php echo number_format($currentPrice, 2, ',', ' '); ?> € / ks
+                    </span>
+                <?php endif; ?>
+            </td>
+            <td class="item-total">
+                <?php echo number_format($subtotal, 2, ',', ' '); ?> €
+            </td>
         </tr>
     <?php endforeach; ?>
     <tr class="total-row">
@@ -158,7 +236,9 @@ require_once 'theme/header.php';
         <a href="index.php" class="back-to-shop-btn">
         <span style="font-size:0.65rem;margin-right:9px;">&#9664;</span> Späť k nákupu
     </a>
-        <?php if (!empty($items)): ?><a href="checkout.php" class="btn-checkout">Pokračovať k pokladni</a><?php endif; ?>
+        <?php if (!empty($items)): ?>
+            <a href="checkout.php" class="btn-checkout">Pokračovať k pokladni</a>
+        <?php endif; ?>
     </div>
 <p>
     

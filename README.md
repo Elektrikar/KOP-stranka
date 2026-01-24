@@ -4,11 +4,11 @@
 
 ### Fixes
 
-- Chyba pri vytváraní objednávky: Order creation failed: SQLSTATE[HY093]: Invalid parameter number: number of bound variables does not match number of tokens 
 - cant edit image when editing product
 
 ### Small Features
 
+- sorting by order status in orders
 - improve front-end
      - adminAdd.php, adminEdit.php
      - adminProducts.php - use svg icons for actions
@@ -18,7 +18,6 @@
 
 - Add working paywall
 - user management in admin
-- add new database columns to admin
 - Account for order management
 - Product/Categories page
      - pagination

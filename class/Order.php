@@ -31,15 +31,49 @@ class Order
         try {
             $this->db->beginTransaction();
 
-            $stmt = $this->db->prepare("
+            $updatedCartItems = [];
+            $calculatedTotal = 0;
+            
+            foreach ($cartItems as $productId => $item) {
+                if (!isset($item['quantity']) || !isset($item['price'])) {
+                    throw new Exception("Invalid cart item structure for product ID: $productId");
+                }
+
+                $priceStmt = $this->db->prepare("SELECT price, discount_price, stock FROM products WHERE id = ?");
+                $priceStmt->execute([$productId]);
+                $priceData = $priceStmt->fetch(PDO::FETCH_ASSOC);
+
+                if (!$priceData) {
+                    throw new Exception("Product with ID: $productId not found");
+                }
+
+                if ($item['quantity'] > $priceData['stock']) {
+                    throw new Exception("Insufficient stock for product ID: $productId. Available: {$priceData['stock']}, Requested: {$item['quantity']}");
+                }
+
+                $finalPrice = $priceData['discount_price'] && $priceData['discount_price'] < $priceData['price'] 
+                    ? $priceData['discount_price'] 
+                    : $priceData['price'];
+
+                $updatedCartItems[$productId] = [
+                    'quantity' => $item['quantity'],
+                    'price' => $finalPrice,
+                    'name' => $item['name'] ?? '',
+                    'image' => $item['image'] ?? ''
+                ];
+
+                $calculatedTotal += $finalPrice * $item['quantity'];
+            }
+
+            $orderStmt = $this->db->prepare("
                 INSERT INTO orders (user_id, order_email, total, address, status)
                 VALUES (:user_id, :email, :total, :address, 'pending')
             ");
 
-            $stmt->execute([
+            $orderStmt->execute([
                 ':user_id' => $user_id,
                 ':email' => $email,
-                ':total' => $total,
+                ':total' => $calculatedTotal,
                 ':address' => $address
             ]);
 
@@ -49,41 +83,33 @@ class Order
                 throw new Exception("Failed to get order ID");
             }
 
-            foreach ($cartItems as $productId => $item) {
-                $stmt = $this->db->prepare("UPDATE products SET sales_count = sales_count + ? WHERE id = ?");
-                $stmt->execute([$item['quantity'], $productId]);
-            }
+            $detailStmt = $this->db->prepare("
+                INSERT INTO order_details (order_id, product_id, quantity, price)
+                VALUES (:order_id, :product_id, :quantity, :price)
+            ");
 
-            foreach ($cartItems as $productId => $item) {
-                if (!isset($item['quantity']) || !isset($item['price'])) {
-                    throw new Exception("Invalid cart item structure for product ID: $productId");
-                }
+            $updateStockStmt = $this->db->prepare("
+                UPDATE products 
+                SET stock = stock - :quantity,
+                    sales_count = sales_count + :quantity 
+                WHERE id = :product_id
+            ");
 
-                $stmt->execute([
+            foreach ($updatedCartItems as $productId => $item) {
+                $detailStmt->execute([
                     ':order_id' => $orderId,
                     ':product_id' => $productId,
                     ':quantity' => $item['quantity'],
                     ':price' => $item['price']
                 ]);
 
-                $updateStmt = $this->db->prepare("
-                    UPDATE products 
-                    SET stock = stock - :quantity 
-                    WHERE id = :product_id AND stock >= :quantity
-                ");
-
-                $stmt = $this->db->prepare("
-                    INSERT INTO order_details (order_id, product_id, quantity, price)
-                    VALUES (:order_id, :product_id, :quantity, :price)
-                ");
-
-                $updateStmt->execute([
+                $updateStockStmt->execute([
                     ':quantity' => $item['quantity'],
                     ':product_id' => $productId
                 ]);
 
-                if ($updateStmt->rowCount() === 0) {
-                    throw new Exception("Insufficient stock for product ID: $productId");
+                if ($updateStockStmt->rowCount() === 0) {
+                    throw new Exception("Failed to update stock for product ID: $productId");
                 }
             }
 
@@ -166,7 +192,8 @@ class Order
 
         $stmt = $this->db->prepare("
             UPDATE orders 
-            SET status = :status 
+            SET status = :status, 
+                updated_at = NOW()
             WHERE id = :order_id
         ");
 

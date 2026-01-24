@@ -42,8 +42,8 @@ class ProductCard {
         $html .= '</div>';
 
         $html .= '<div class="bottom">';
-        $html .= '<div class="product-price">' . number_format($product->price, 2, ',', ' ') . ' €</div>';
-
+        $html .= $this->renderPriceSection($product);
+        
         if ($product->stock <= 0) {
             // No button if out of stock
         } else if ($inCart) {
@@ -66,6 +66,30 @@ class ProductCard {
         } else {
             return ['in-stock', 'Skladom ' . $stock . ' ks'];
         }
+    }
+
+    private function renderPriceSection($product) {
+        $html = '<div class="product-price-section">';
+        
+        if ($product->discount_price && $product->discount_price < $product->price) {
+            $discountPercent = round((($product->price - $product->discount_price) / $product->price) * 100);
+            
+            $html .= '<div class="original-price">';
+            $html .= '<del>' . number_format($product->price, 2, ',', ' ') . ' €</del>';
+            $html .= '<span class="discount-badge">-' . $discountPercent . '%</span>';
+            $html .= '</div>';
+            
+            $html .= '<div class="discount-price">';
+            $html .= number_format($product->discount_price, 2, ',', ' ') . ' €';
+            $html .= '</div>';
+        } else {
+            $html .= '<div class="regular-price">';
+            $html .= number_format($product->price, 2, ',', ' ') . ' €';
+            $html .= '</div>';
+        }
+        
+        $html .= '</div>';
+        return $html;
     }
 
     private function renderCartSummary($qty) {

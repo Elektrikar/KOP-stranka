@@ -93,14 +93,50 @@ require_once 'theme/header.php';
             <div class="order-summary">
                 <h3>Vaša objednávka</h3>
                 <div class="summary-items">
-                    <?php foreach ($items as $id => $item): ?>
+                    <?php 
+                    $productIds = array_keys($items);
+                    if (!empty($productIds)) {
+                        $placeholders = str_repeat('?,', count($productIds) - 1) . '?';
+                        $stmt = $pdo->prepare("SELECT id, price, discount_price FROM products WHERE id IN ($placeholders)");
+                        $stmt->execute($productIds);
+                        $productPrices = [];
+                        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                            $productPrices[$row['id']] = $row['discount_price'] ?: $row['price'];
+                        }
+                        
+                        foreach ($items as $id => $item) {
+                            if (isset($productPrices[$id])) {
+                                $_SESSION['cart'][$id]['price'] = $productPrices[$id];
+                                $items[$id]['price'] = $productPrices[$id];
+                            }
+                        }
+                    }
+                    
+                    foreach ($items as $id => $item): 
+                        $stmt = $pdo->prepare("SELECT price, discount_price FROM products WHERE id = ?");
+                        $stmt->execute([$id]);
+                        $productData = $stmt->fetch(PDO::FETCH_ASSOC);
+                        $originalPrice = $productData['price'];
+                        $hasDiscount = !empty($productData['discount_price']) && $productData['discount_price'] < $originalPrice;
+                    ?>
                         <div class="summary-item">
                             <div class="item-info">
                                 <span class="item-name"><?= htmlspecialchars($item['name']) ?></span>
                                 <span class="item-quantity">× <?= $item['quantity'] ?></span>
                             </div>
                             <div class="item-price">
-                                <?= number_format($item['price'] * $item['quantity'], 2, ',', ' ') ?> €
+                                <?php if ($hasDiscount): ?>
+                                    <div style="display: flex; flex-direction: column; align-items: flex-end;">
+                                        <span style="text-decoration: line-through; color: #999; font-size: 0.9em;">
+                                            <?= number_format($originalPrice * $item['quantity'], 2, ',', ' ') ?> €
+                                        </span>
+                                        <span style="color: #f44336; font-weight: bold;">
+                                            <?= number_format($item['price'] * $item['quantity'], 2, ',', ' ') ?> €
+                                        </span>
+                                    </div>
+                                <?php else: ?>
+                                    <?= number_format($item['price'] * $item['quantity'], 2, ',', ' ') ?> €
+                                <?php endif; ?>
                             </div>
                         </div>
                     <?php endforeach; ?>
