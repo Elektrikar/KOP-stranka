@@ -4,13 +4,9 @@
 
 ### Fixes
 
-- cant edit image when editing product
-
 ### Small Features
 
 - sorting by order status in orders
-- improve front-end
-     - adminAdd.php, adminEdit.php
 - NOTIFY FEATURE - currently disabled
 
 ### Large Features

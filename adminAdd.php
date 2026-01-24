@@ -164,6 +164,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 $pageData = [
     'title' => 'Pridať Produkt | Admin',
     'metaDataDescription' => 'Pridať nový produkt do e-shopu',
+    'customAssets' => [
+        ['type' => 'css', 'src' => 'assets/css/adminForms.css']
+    ]
 ];
 
 require_once 'theme/header.php';
@@ -223,9 +226,12 @@ require_once 'theme/header.php';
             <textarea name="description" rows="6"><?= htmlspecialchars($_POST['description'] ?? '') ?></textarea>
         </div>
 
-        <div class="form-group">
+        <div class="form-group form-group-full">
             <label>Obrázok</label>
             <input type="file" name="image" accept="image/*">
+            <div style="font-size: 0.85em; color: #666; margin-top: 5px;">
+                Povolené formáty: JPG, PNG. Veľký obrázok sa zmenší na 500px, malý na 60px.
+            </div>
         </div>
 
         <div class="form-actions">

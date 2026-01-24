@@ -27,8 +27,49 @@ if (!$product) {
     exit();
 }
 
-// Load categories
 $categories = $pdo->query("SELECT id, name FROM categories ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
+
+function resizeImage($srcPath, $destPath, $mime, $maxSize) {
+    list($width, $height) = getimagesize($srcPath);
+
+    $scale = min($maxSize / $width, $maxSize / $height, 1);
+
+    $newWidth  = (int)($width * $scale);
+    $newHeight = (int)($height * $scale);
+
+    switch ($mime) {
+        case 'image/jpeg':
+            $src = imagecreatefromjpeg($srcPath);
+            break;
+        case 'image/png':
+            $src = imagecreatefrompng($srcPath);
+            break;
+        default:
+            return false;
+    }
+
+    $dst = imagecreatetruecolor($newWidth, $newHeight);
+
+    if ($mime === 'image/png') {
+        imagealphablending($dst, false);
+        imagesavealpha($dst, true);
+    }
+
+    imagecopyresampled($dst, $src, 0, 0, 0, 0,
+        $newWidth, $newHeight, $width, $height
+    );
+
+    if ($mime === 'image/jpeg') {
+        imagejpeg($dst, $destPath, 90);
+    } else {
+        imagepng($dst, $destPath, 6);
+    }
+
+    unset($src);
+    unset($dst);
+
+    return true;
+}
 
 $error = '';
 $success = '';
@@ -65,6 +106,62 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
 
+    // IMAGE UPLOAD HANDLING
+    $imagePath = $product['image']; // Keep existing image by default
+
+    if ($error === '' && !empty($_FILES['image']['name'])) {
+        $img = $_FILES['image'];
+
+        if ($img['error'] === UPLOAD_ERR_OK) {
+            $tmp = $img['tmp_name'];
+            $mime = mime_content_type($tmp);
+            $allowed = ['image/jpeg', 'image/png'];
+
+            if (!in_array($mime, $allowed, true)) {
+                $error = 'Povolené sú iba JPG a PNG obrázky.';
+            } else {
+                // Delete old images if they exist
+                if (!empty($product['image'])) {
+                    $oldFilename = basename($product['image']);
+                    $oldBigPath = __DIR__ . '/img/product/' . $oldFilename;
+                    $oldSmallPath = __DIR__ . '/img/productsmall/' . $oldFilename;
+                    
+                    if (is_file($oldBigPath)) {
+                        unlink($oldBigPath);
+                    }
+                    if (is_file($oldSmallPath)) {
+                        unlink($oldSmallPath);
+                    }
+                }
+
+                $ext = ($mime === 'image/jpeg') ? 'jpg' : 'png';
+                $safeName = preg_replace('/[^A-Za-z0-9_.-]/', '_', pathinfo($img['name'], PATHINFO_FILENAME));
+                $filename = time() . '_' . bin2hex(random_bytes(6)) . '_' . $safeName . '.' . $ext;
+
+                $bigDir   = __DIR__ . '/img/product';
+                $smallDir = __DIR__ . '/img/productsmall';
+
+                if (!is_dir($bigDir))   mkdir($bigDir, 0755, true);
+                if (!is_dir($smallDir)) mkdir($smallDir, 0755, true);
+
+                $bigPath   = $bigDir . '/' . $filename;
+                $smallPath = $smallDir . '/' . $filename;
+
+                if (!resizeImage($tmp, $bigPath, $mime, 500)) {
+                    $error = 'Chyba pri spracovaní veľkého obrázka.';
+                }
+                elseif (!resizeImage($tmp, $smallPath, $mime, 60)) {
+                    $error = 'Chyba pri spracovaní malého obrázka.';
+                }
+                else {
+                    $imagePath = $filename;
+                }
+            }
+        } elseif ($img['error'] !== UPLOAD_ERR_NO_FILE) {
+            $error = 'Nastala chyba pri nahrávaní obrázku.';
+        }
+    }
+
     if ($error === '') {
         $sql = "
             UPDATE products
@@ -74,6 +171,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 discount_price = :discount_price,
                 stock = :stock,
                 description = :description,
+                image = :image,
                 updated_at = NOW()
             WHERE id = :id
         ";
@@ -86,6 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':discount_price' => $discountPrice,
             ':stock'       => $stock,
             ':description' => $description,
+            ':image'       => $imagePath,
             ':id'          => $id
         ]);
 
@@ -97,6 +196,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $success = 'Produkt bol upravený.';
     }
 }
+
+$pageData = [
+    'title' => 'Upraviť Produkt | Admin',
+    'metaDataDescription' => 'Upraviť existujúci produkt',
+    'customAssets' => [
+        ['type' => 'css', 'src' => 'assets/css/adminForms.css']
+    ]
+];
 
 require_once 'theme/header.php';
 ?>
@@ -157,6 +264,30 @@ require_once 'theme/header.php';
         <div class="form-group form-group-full">
             <label>Popis</label>
             <textarea name="description" rows="6"><?= htmlspecialchars($_POST['description'] ?? $product['description']) ?></textarea>
+        </div>
+
+        <div class="form-group form-group-full">
+            <label>Aktuálny obrázok</label>
+            <?php if ($product['image']): ?>
+                <div style="margin: 10px 0;">
+                    <img src="img/productsmall/<?= htmlspecialchars($product['image']) ?>" 
+                         alt="Aktuálny obrázok" 
+                         style="max-width: 150px; max-height: 150px; border: 1px solid #ddd; padding: 5px; border-radius: 4px;">
+                    <div style="margin-top: 5px; font-size: 0.9em; color: #666;">
+                        Aktuálny obrázok: <?= htmlspecialchars($product['image']) ?>
+                    </div>
+                </div>
+            <?php else: ?>
+                <div style="margin: 10px 0; color: #666; font-style: italic;">
+                    Produkt nemá priradený obrázok.
+                </div>
+            <?php endif; ?>
+            
+            <label style="margin-top: 15px; display: block;">Nový obrázok <small>(voliteľné)</small></label>
+            <input type="file" name="image" accept="image/*">
+            <div style="font-size: 0.85em; color: #666; margin-top: 5px;">
+                Povolené formáty: JPG, PNG. Veľký obrázok sa zmenší na 500px, malý na 60px.
+            </div>
         </div>
 
         <div class="form-actions">
