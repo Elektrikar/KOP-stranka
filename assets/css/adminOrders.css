@@ -18,6 +18,21 @@
     border-collapse: collapse;
 }
 
+.admin-orders-table th {
+    background: #f8f9fa;
+    padding: 15px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: #333;
+    border-bottom: 2px solid #dee2e6;
+}
+
+.admin-orders-table td {
+    padding: 15px 12px;
+    border-bottom: 1px solid #eee;
+    vertical-align: middle;
+}
+
 .admin-orders-table tr:last-child td {
     border-bottom: none;
 }
@@ -38,6 +53,7 @@
     background: white;
     font-size: 0.9em;
     min-width: 120px;
+    cursor: pointer;
 }
 
 .status-form select:focus {
@@ -52,21 +68,102 @@
 .status-delivered { color: #4caf50; }
 .status-cancelled { color: #f44336; }
 
-/* Action buttons */
-.btn-edit {
-    display: inline-block;
-    padding: 6px 12px;
-    background: #4a6bdf;
-    color: white;
+/* Common button styles */
+.btn-edit,
+.btn-delete {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
     text-decoration: none;
-    border-radius: 4px;
-    font-size: 0.9em;
-    transition: background 0.3s;
+    padding: 0;
 }
 
+/* Edit button */
+.btn-edit {
+    background: #4a6bdf;
+    color: white;
+}
 .btn-edit:hover {
     background: #3a5bc7;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(58, 91, 199, 0.2);
+}
+.btn-edit:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+.btn-view {
+    background: #4a6bdf;
     color: white;
+    padding: 6px 12px;
+    font-size: 0.9em;
+    border-radius: 4px;
+    text-decoration: none;
+    transition: all 0.2s ease;
+}
+.btn-view:hover {
+    background: #3a5bc7;
+    box-shadow: 0 2px 4px rgba(58, 91, 199, 0.2);
+}
+.btn-view:active {
+    box-shadow: none;
+}
+
+/* Delete button */
+.btn-delete {
+    background: #f5f5f5;
+    color: #666;
+    border: 1px solid #ddd;
+}
+
+.btn-delete:hover {
+    background: #f44336;
+    color: white;
+    border-color: #f44336;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(244, 67, 54, 0.2);
+}
+
+.btn-delete:active {
+    transform: translateY(0);
+    box-shadow: none;
+}
+
+/* SVG icons */
+.btn-edit svg,
+.btn-delete svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+.btn-delete svg {
+    width: 14px;
+    height: 14px;
+}
+
+.btn-edit svg {
+    width: 14px;
+    height: 14px;
+}
+
+.actions form {
+    margin: 0;
+    padding: 0;
+    display: inline;
+}
+
+.inline-form {
+    display: inline;
+    margin: 0;
+    padding: 0;
 }
 
 /* Empty state */
@@ -135,6 +232,7 @@
     border: 1px solid #f5c6cb;
 }
 
+/* Discount styling */
 .discount-active {
     color: #f44336;
     font-weight: bold;
@@ -151,6 +249,7 @@
     vertical-align: middle;
 }
 
+/* Table width */
 .admin-orders-table {
     min-width: 1100px;
 }
@@ -166,13 +265,7 @@
     font-size: 0.9em;
 }
 
-.actions .btn-edit,
-.actions .btn-delete {
-    padding: 4px 8px;
-    font-size: 0.85em;
-    margin: 2px 0;
-}
-
+/* Responsive */
 @media (max-width: 1400px) {
     .admin-panel {
         margin: 40px 10px;
@@ -196,5 +289,18 @@
     
     .actions {
         white-space: nowrap;
+        gap: 6px;
+    }
+    
+    .btn-edit,
+    .btn-delete {
+        width: 30px;
+        height: 30px;
+    }
+    
+    .btn-edit svg,
+    .btn-delete svg {
+        width: 14px;
+        height: 14px;
     }
 }

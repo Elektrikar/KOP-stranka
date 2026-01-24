@@ -11,7 +11,6 @@
 - sorting by order status in orders
 - improve front-end
      - adminAdd.php, adminEdit.php
-     - adminProducts.php - use svg icons for actions
 - NOTIFY FEATURE - currently disabled
 
 ### Large Features

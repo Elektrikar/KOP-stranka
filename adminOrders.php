@@ -98,7 +98,7 @@ require_once 'theme/header.php';
                             </td>
                             <td class="order-date"><?= date('d.m.Y H:i', strtotime($o['created_at'])) ?></td>
                             <td>
-                                <a href="order_details.php?id=<?= $o['id'] ?>" class="btn-edit">Zobraziť</a>
+                                <a href="order_details.php?id=<?= $o['id'] ?>" class="btn-view">Zobraziť</a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
