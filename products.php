@@ -11,11 +11,27 @@ $pdo = $db->getConnection();
 $categoryId = (int)($_GET['id'] ?? 0);
 $noCategory = ($categoryId === 0);
 
+$productsPerPage = 16;
+$currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+$offset = ($currentPage - 1) * $productsPerPage;
+
 if ($noCategory) {
-    $products = Product::fetchAll($pdo);
+    $sqlCount = "SELECT COUNT(*) as total FROM products";
+    $sql = "SELECT * FROM products ORDER BY id DESC LIMIT :limit OFFSET :offset";
     $pageTitle = "Všetky produkty";
     $category = null;
     $metaDescription = 'Prehľad všetkých produktov v našom e-shope';
+
+    $countStmt = $pdo->prepare($sqlCount);
+    $countStmt->execute();
+    $totalProducts = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':limit', $productsPerPage, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    $stmt->execute();
+    $productsArray = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $products = array_map(function($data) { return new Product($data); }, $productsArray);
 } else {
     $stmt = $pdo->prepare("SELECT c.id, c.name, c.description, c.image FROM categories c WHERE c.id = ?");
     $stmt->execute([$categoryId]);
@@ -26,12 +42,28 @@ if ($noCategory) {
         exit();
     }
     
-    $products = Product::fetchByCategory($pdo, $categoryId);
+    $sqlCount = "SELECT COUNT(*) as total FROM products WHERE category_id = :categoryId";
+    $sql = "SELECT * FROM products WHERE category_id = :categoryId ORDER BY id DESC LIMIT :limit OFFSET :offset";
     $pageTitle = $category['name'];
     $metaDescription = !empty($category['description']) 
         ? htmlspecialchars($category['description']) 
         : 'Produkty v kategórii ' . $category['name'];
+
+    $countStmt = $pdo->prepare($sqlCount);
+    $countStmt->bindValue(':categoryId', $categoryId, PDO::PARAM_INT);
+    $countStmt->execute();
+    $totalProducts = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->bindValue(':categoryId', $categoryId, PDO::PARAM_INT);
+    $stmt->bindValue(':limit', $productsPerPage, PDO::PARAM_INT);
+    $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+    $stmt->execute();
+    $productsArray = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $products = array_map(function($data) { return new Product($data); }, $productsArray);
 }
+
+$totalPages = ceil($totalProducts / $productsPerPage);
 
 $cart = new Cart();
 
@@ -40,7 +72,7 @@ $pageData = array(
     'metaDataDescription' => $metaDescription,
     'customAssets' => array(
         array('type' => 'css', 'src' => 'assets/css/product.css'),
-        array('type' => 'css', 'src' => 'assets/css/category.css'),
+        array('type' => 'css', 'src' => 'assets/css/products.css'),
         array('type' => 'js', 'src' => 'assets/js/product.js')
     )
 );
@@ -100,6 +132,49 @@ $categoryImage = $category ? ('img/category/' . htmlspecialchars($category['imag
         <div class="category-products-section">
             <?= ProductCard::renderGrid($products, $cart, $noCategory ? 'all' : 'category') ?>
         </div>
+
+        <?php if ($totalPages > 1): ?>
+        <div class="pagination">
+            <?php if ($currentPage > 1): ?>
+                <a href="?<?= $noCategory ? '' : 'id=' . $categoryId . '&' ?>page=<?= $currentPage - 1 ?>" class="pagination-link prev">← Predchádzajúca</a>
+            <?php endif; ?>
+            
+            <div class="pagination-numbers">
+                <?php
+                $maxPagesToShow = 5;
+                $startPage = max(1, $currentPage - floor($maxPagesToShow / 2));
+                $endPage = min($totalPages, $startPage + $maxPagesToShow - 1);
+                
+                if ($startPage > 1) {
+                    echo '<a href="?' . ($noCategory ? '' : 'id=' . $categoryId . '&') . 'page=1" class="pagination-number">1</a>';
+                    if ($startPage > 2) echo '<span class="pagination-dots">...</span>';
+                }
+                
+                for ($i = $startPage; $i <= $endPage; $i++):
+                    if ($i == $currentPage): ?>
+                        <span class="pagination-number active"><?= $i ?></span>
+                    <?php else: ?>
+                        <a href="?<?= $noCategory ? '' : 'id=' . $categoryId . '&' ?>page=<?= $i ?>" class="pagination-number"><?= $i ?></a>
+                    <?php endif;
+                endfor;
+                
+                if ($endPage < $totalPages) {
+                    if ($endPage < $totalPages - 1) echo '<span class="pagination-dots">...</span>';
+                    echo '<a href="?' . ($noCategory ? '' : 'id=' . $categoryId . '&') . 'page=' . $totalPages . '" class="pagination-number">' . $totalPages . '</a>';
+                }
+                ?>
+            </div>
+            
+            <?php if ($currentPage < $totalPages): ?>
+                <a href="?<?= $noCategory ? '' : 'id=' . $categoryId . '&' ?>page=<?= $currentPage + 1 ?>" class="pagination-link next">Ďalšia →</a>
+            <?php endif; ?>
+        </div>
+        
+        <div class="pagination-info">
+            Zobrazené <?= min($productsPerPage, count($products)) ?> z <?= $totalProducts ?> produktov
+            (Stránka <?= $currentPage ?> z <?= $totalPages ?>)
+        </div>
+        <?php endif; ?>
     <?php endif; ?>
 </div>
 

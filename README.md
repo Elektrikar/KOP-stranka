@@ -11,10 +11,10 @@
 
 ### Large Features
 
+- sorting products by price
 - Add working paywall
 - user management in admin
 - Account for order management
-- pagination for products page
 - Responsivity for phones
 - wishlist
 
