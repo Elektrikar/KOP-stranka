@@ -11,6 +11,33 @@ if (empty($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
 $db = new Database('localhost', 'webstore', 'root', '');
 $pdo = $db->getConnection();
 
+$productsPerPage = 16;
+$currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
+$offset = ($currentPage - 1) * $productsPerPage;
+
+// Sorting logic
+$sort = $_GET['sort'] ?? 'id';
+$order = $_GET['order'] ?? 'DESC';
+
+// Validate sort and order parameters
+$allowedSortColumns = ['id', 'name', 'price', 'discount_price', 'stock', 'views', 'sales_count', 'created_at', 'updated_at', 'category'];
+if (!in_array($sort, $allowedSortColumns)) {
+    $sort = 'id';
+}
+if (!in_array($order, ['ASC', 'DESC'])) {
+    $order = 'DESC';
+}
+
+// Build sort column name with table prefix
+$sortColumn = ($sort === 'category') ? 'c.name' : "p.$sort";
+$nextOrder = ($order === 'ASC') ? 'DESC' : 'ASC';
+
+$sqlCount = "SELECT COUNT(*) as total FROM products";
+$countStmt = $pdo->prepare($sqlCount);
+$countStmt->execute();
+$totalProducts = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
+$totalPages = ceil($totalProducts / $productsPerPage);
+
 $sql = "
     SELECT 
         p.id, 
@@ -26,10 +53,15 @@ $sql = "
         c.name AS category
     FROM products p
     JOIN categories c ON c.id = p.category_id
-    ORDER BY p.id DESC
+    ORDER BY $sortColumn $order
+    LIMIT :limit OFFSET :offset
 ";
 
-$products = $pdo->query($sql)->fetchAll(PDO::FETCH_ASSOC);
+$stmt = $pdo->prepare($sql);
+$stmt->bindValue(':limit', $productsPerPage, PDO::PARAM_INT);
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+$stmt->execute();
+$products = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $pageData = [
     'title' => 'Správa produktov | Admin',
@@ -52,17 +84,17 @@ require_once 'theme/header.php';
     <table class="admin-orders-table">
         <thead>
             <tr>
-                <th>ID</th>
+                <th><a href="?sort=id&order=<?= $sort === 'id' ? $nextOrder : 'ASC' ?>&page=1" class="sort-header <?= $sort === 'id' ? "sort-$order" : '' ?>">ID <?= $sort === 'id' ? ($order === 'ASC' ? '↑' : '↓') : '' ?></a></th>
                 <th style="width: 60px;">Obrázok</th>
-                <th>Názov</th>
-                <th>Kategória</th>
-                <th>Cena (€)</th>
-                <th>Zľava (€)</th>
-                <th>Sklad</th>
-                <th>Zobrazenia</th>
-                <th>Predaje</th>
-                <th>Pridané</th>
-                <th>Upravené</th>
+                <th><a href="?sort=name&order=<?= $sort === 'name' ? $nextOrder : 'ASC' ?>&page=1" class="sort-header <?= $sort === 'name' ? "sort-$order" : '' ?>">Názov <?= $sort === 'name' ? ($order === 'ASC' ? '↑' : '↓') : '' ?></a></th>
+                <th><a href="?sort=category&order=<?= $sort === 'category' ? $nextOrder : 'ASC' ?>&page=1" class="sort-header <?= $sort === 'category' ? "sort-$order" : '' ?>">Kategória <?= $sort === 'category' ? ($order === 'ASC' ? '↑' : '↓') : '' ?></a></th>
+                <th><a href="?sort=price&order=<?= $sort === 'price' ? $nextOrder : 'ASC' ?>&page=1" class="sort-header <?= $sort === 'price' ? "sort-$order" : '' ?>">Cena (€) <?= $sort === 'price' ? ($order === 'ASC' ? '↑' : '↓') : '' ?></a></th>
+                <th><a href="?sort=discount_price&order=<?= $sort === 'discount_price' ? $nextOrder : 'ASC' ?>&page=1" class="sort-header <?= $sort === 'discount_price' ? "sort-$order" : '' ?>">Zľava (€) <?= $sort === 'discount_price' ? ($order === 'ASC' ? '↑' : '↓') : '' ?></a></th>
+                <th><a href="?sort=stock&order=<?= $sort === 'stock' ? $nextOrder : 'ASC' ?>&page=1" class="sort-header <?= $sort === 'stock' ? "sort-$order" : '' ?>">Sklad <?= $sort === 'stock' ? ($order === 'ASC' ? '↑' : '↓') : '' ?></a></th>
+                <th><a href="?sort=views&order=<?= $sort === 'views' ? $nextOrder : 'ASC' ?>&page=1" class="sort-header <?= $sort === 'views' ? "sort-$order" : '' ?>">Zobrazenia <?= $sort === 'views' ? ($order === 'ASC' ? '↑' : '↓') : '' ?></a></th>
+                <th><a href="?sort=sales_count&order=<?= $sort === 'sales_count' ? $nextOrder : 'ASC' ?>&page=1" class="sort-header <?= $sort === 'sales_count' ? "sort-$order" : '' ?>">Predaje <?= $sort === 'sales_count' ? ($order === 'ASC' ? '↑' : '↓') : '' ?></a></th>
+                <th><a href="?sort=created_at&order=<?= $sort === 'created_at' ? $nextOrder : 'DESC' ?>&page=1" class="sort-header <?= $sort === 'created_at' ? "sort-$order" : '' ?>">Pridané <?= $sort === 'created_at' ? ($order === 'ASC' ? '↑' : '↓') : '' ?></a></th>
+                <th><a href="?sort=updated_at&order=<?= $sort === 'updated_at' ? $nextOrder : 'DESC' ?>&page=1" class="sort-header <?= $sort === 'updated_at' ? "sort-$order" : '' ?>">Upravené <?= $sort === 'updated_at' ? ($order === 'ASC' ? '↑' : '↓') : '' ?></a></th>
                 <th>Akcie</th>
             </tr>
         </thead>
@@ -116,6 +148,49 @@ require_once 'theme/header.php';
         <?php endforeach; ?>
         </tbody>
     </table>
+
+    <?php if ($totalPages > 1): ?>
+    <div class="pagination">
+        <?php if ($currentPage > 1): ?>
+            <a href="?sort=<?= $sort ?>&order=<?= $order ?>&page=<?= $currentPage - 1 ?>" class="pagination-link prev">← Predchádzajúca</a>
+        <?php endif; ?>
+        
+        <div class="pagination-numbers">
+            <?php
+            $maxPagesToShow = 5;
+            $startPage = max(1, $currentPage - floor($maxPagesToShow / 2));
+            $endPage = min($totalPages, $startPage + $maxPagesToShow - 1);
+            
+            if ($startPage > 1) {
+                echo '<a href="?sort=' . $sort . '&order=' . $order . '&page=1" class="pagination-number">1</a>';
+                if ($startPage > 2) echo '<span class="pagination-dots">...</span>';
+            }
+            
+            for ($i = $startPage; $i <= $endPage; $i++):
+                if ($i == $currentPage): ?>
+                    <span class="pagination-number active"><?= $i ?></span>
+                <?php else: ?>
+                    <a href="?sort=<?= $sort ?>&order=<?= $order ?>&page=<?= $i ?>" class="pagination-number"><?= $i ?></a>
+                <?php endif;
+            endfor;
+            
+            if ($endPage < $totalPages) {
+                if ($endPage < $totalPages - 1) echo '<span class="pagination-dots">...</span>';
+                echo '<a href="?sort=' . $sort . '&order=' . $order . '&page=' . $totalPages . '" class="pagination-number">' . $totalPages . '</a>';
+            }
+            ?>
+        </div>
+        
+        <?php if ($currentPage < $totalPages): ?>
+            <a href="?sort=<?= $sort ?>&order=<?= $order ?>&page=<?= $currentPage + 1 ?>" class="pagination-link next">Ďalšia →</a>
+        <?php endif; ?>
+    </div>
+    
+    <div class="pagination-info">
+        Zobrazené <?= count($products) ?> z <?= $totalProducts ?> produktov
+        (Stránka <?= $currentPage ?> z <?= $totalPages ?>)
+    </div>
+    <?php endif; ?>
 </div>
 
 <?php require 'theme/footer.php'; ?>
