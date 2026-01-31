@@ -88,9 +88,7 @@ if (!empty($_SESSION['user_first_name']) && !empty($_SESSION['user_last_name']))
                         <li><a href="#">
                                 Produkty
                             </a></li>
-                        <li><a href="#">
-                                Kategórie
-                            </a></li>
+                        <li><a href="categories.php">Kategórie</a></li>
                         <?php if (!empty($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
                             <li><a href="admin.php">
                                     Admin panel

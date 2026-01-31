@@ -28,11 +28,8 @@ class ProductCard {
         $html .= '<div class="product-info">';
         $html .= '<h3 class="product-title"><a href="product_detail.php?id=' . $product->id . '">' . htmlspecialchars($product->name) . '</a></h3>';
 
-        if ($context === 'index' || $context === 'related') {
-            $html .= '<p class="product-description product-description-ellipsis">' . htmlspecialchars($product->description) . '</p>';
-        } else if ($context === 'detail') {
-            $html .= '<div class="product-description-full">' . nl2br(htmlspecialchars($product->description)) . '</div>';
-        }
+        $html .= '<p class="product-description product-description-ellipsis">' . htmlspecialchars($product->description) . '</p>';
+
 
         $html .= '<div class="product-stock-container">';
         $html .= '<div class="product-stock ' . $stockClass . '">' . $stockText . '</div>';
