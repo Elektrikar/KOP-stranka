@@ -6,8 +6,6 @@
 
 ### Small Features
 
-- sorting by order status in orders
-
 ### Large Features
 
 - user management in admin
@@ -28,6 +26,7 @@
 - send order status emails
 - hide sensitive data + change passwords
 - Add working paywall
+     - 1 more step after entering adress maybe in checkout
 - add favicon
 
 ## Images
