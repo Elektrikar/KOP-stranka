@@ -15,9 +15,26 @@ $productsPerPage = 16;
 $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $offset = ($currentPage - 1) * $productsPerPage;
 
+$sort = $_GET['sort'] ?? 'newest';
+$sortOptions = [
+    'newest' => ['field' => 'created_at', 'order' => 'DESC'],
+    'oldest' => ['field' => 'created_at', 'order' => 'ASC'],
+    'price_low' => ['field' => 'price', 'order' => 'ASC'],
+    'price_high' => ['field' => 'price', 'order' => 'DESC'],
+    'name_asc' => ['field' => 'name', 'order' => 'ASC'],
+    'name_desc' => ['field' => 'name', 'order' => 'DESC'],
+    'popular' => ['field' => 'sales_count', 'order' => 'DESC'],
+    'discount' => ['field' => '(price - COALESCE(discount_price, 0))', 'order' => 'DESC']
+];
+
+$sortConfig = $sortOptions[$sort] ?? $sortOptions['newest'];
+
+$baseUrl = $noCategory ? 'products.php?' : "products.php?id=$categoryId&";
+$sortUrl = $noCategory ? 'products.php?' : "products.php?id=$categoryId&";
+
 if ($noCategory) {
     $sqlCount = "SELECT COUNT(*) as total FROM products";
-    $sql = "SELECT * FROM products ORDER BY id DESC LIMIT :limit OFFSET :offset";
+    $sql = "SELECT * FROM products ORDER BY (stock > 0) DESC, {$sortConfig['field']} {$sortConfig['order']} LIMIT :limit OFFSET :offset";
     $pageTitle = "Všetky produkty";
     $category = null;
     $metaDescription = 'Prehľad všetkých produktov v našom e-shope';
@@ -43,7 +60,7 @@ if ($noCategory) {
     }
     
     $sqlCount = "SELECT COUNT(*) as total FROM products WHERE category_id = :categoryId";
-    $sql = "SELECT * FROM products WHERE category_id = :categoryId ORDER BY id DESC LIMIT :limit OFFSET :offset";
+    $sql = "SELECT * FROM products WHERE category_id = :categoryId ORDER BY (stock > 0) DESC, {$sortConfig['field']} {$sortConfig['order']} LIMIT :limit OFFSET :offset";
     $pageTitle = $category['name'];
     $metaDescription = !empty($category['description']) 
         ? htmlspecialchars($category['description']) 
@@ -117,7 +134,24 @@ $categoryImage = $category ? ('img/category/' . htmlspecialchars($category['imag
         </div>
     <?php endif; ?>
 
-    <!-- Products section -->
+    <div class="products-toolbar">
+        <div class="sort-options">
+            <span class="sort-label">Zoradiť podľa:</span>
+            <select class="sort-select" onchange="window.location.href = this.value">
+                <option value="<?= $sortUrl ?>sort=price_low" <?= $sort == 'price_low' ? 'selected' : '' ?>>Cena: od najlacnejších</option>
+                <option value="<?= $sortUrl ?>sort=price_high" <?= $sort == 'price_high' ? 'selected' : '' ?>>Cena: od najdrahších</option>
+                <option value="<?= $sortUrl ?>sort=newest" <?= $sort == 'newest' ? 'selected' : '' ?>>Najnovšie</option>
+                <option value="<?= $sortUrl ?>sort=name_asc" <?= $sort == 'name_asc' ? 'selected' : '' ?>>Názov: A-Z</option>
+                <option value="<?= $sortUrl ?>sort=name_desc" <?= $sort == 'name_desc' ? 'selected' : '' ?>>Názov: Z-A</option>
+                <option value="<?= $sortUrl ?>sort=popular" <?= $sort == 'popular' ? 'selected' : '' ?>>Najpredávanejšie</option>
+            </select>
+        </div>
+        
+        <div class="products-count-info">
+            <?= $totalProducts ?> produkt<?= $totalProducts == 1 ? '' : ($totalProducts >= 2 && $totalProducts <= 4 ? 'y' : 'ov') ?>
+        </div>
+    </div>
+
     <?php if (empty($products)): ?>
         <div class="empty-category-message">
             <?php if ($noCategory): ?>
@@ -136,7 +170,7 @@ $categoryImage = $category ? ('img/category/' . htmlspecialchars($category['imag
         <?php if ($totalPages > 1): ?>
         <div class="pagination">
             <?php if ($currentPage > 1): ?>
-                <a href="?<?= $noCategory ? '' : 'id=' . $categoryId . '&' ?>page=<?= $currentPage - 1 ?>" class="pagination-link prev">← Predchádzajúca</a>
+                <a href="?<?= $noCategory ? '' : 'id=' . $categoryId . '&' ?>sort=<?= $sort ?>&page=<?= $currentPage - 1 ?>" class="pagination-link prev">← Predchádzajúca</a>
             <?php endif; ?>
             
             <div class="pagination-numbers">
@@ -146,7 +180,7 @@ $categoryImage = $category ? ('img/category/' . htmlspecialchars($category['imag
                 $endPage = min($totalPages, $startPage + $maxPagesToShow - 1);
                 
                 if ($startPage > 1) {
-                    echo '<a href="?' . ($noCategory ? '' : 'id=' . $categoryId . '&') . 'page=1" class="pagination-number">1</a>';
+                    echo '<a href="?' . ($noCategory ? '' : 'id=' . $categoryId . '&') . 'sort=' . $sort . '&page=1" class="pagination-number">1</a>';
                     if ($startPage > 2) echo '<span class="pagination-dots">...</span>';
                 }
                 
@@ -154,19 +188,19 @@ $categoryImage = $category ? ('img/category/' . htmlspecialchars($category['imag
                     if ($i == $currentPage): ?>
                         <span class="pagination-number active"><?= $i ?></span>
                     <?php else: ?>
-                        <a href="?<?= $noCategory ? '' : 'id=' . $categoryId . '&' ?>page=<?= $i ?>" class="pagination-number"><?= $i ?></a>
+                        <a href="?<?= $noCategory ? '' : 'id=' . $categoryId . '&' ?>sort=<?= $sort ?>&page=<?= $i ?>" class="pagination-number"><?= $i ?></a>
                     <?php endif;
                 endfor;
                 
                 if ($endPage < $totalPages) {
                     if ($endPage < $totalPages - 1) echo '<span class="pagination-dots">...</span>';
-                    echo '<a href="?' . ($noCategory ? '' : 'id=' . $categoryId . '&') . 'page=' . $totalPages . '" class="pagination-number">' . $totalPages . '</a>';
+                    echo '<a href="?' . ($noCategory ? '' : 'id=' . $categoryId . '&') . 'sort=' . $sort . '&page=' . $totalPages . '" class="pagination-number">' . $totalPages . '</a>';
                 }
                 ?>
             </div>
             
             <?php if ($currentPage < $totalPages): ?>
-                <a href="?<?= $noCategory ? '' : 'id=' . $categoryId . '&' ?>page=<?= $currentPage + 1 ?>" class="pagination-link next">Ďalšia →</a>
+                <a href="?<?= $noCategory ? '' : 'id=' . $categoryId . '&' ?>sort=<?= $sort ?>&page=<?= $currentPage + 1 ?>" class="pagination-link next">Ďalšia →</a>
             <?php endif; ?>
         </div>
         
@@ -177,5 +211,153 @@ $categoryImage = $category ? ('img/category/' . htmlspecialchars($category['imag
         <?php endif; ?>
     <?php endif; ?>
 </div>
+
+<style>
+.products-toolbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 20px 0 30px;
+    padding: 15px 20px;
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.sort-options {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.sort-label {
+    font-weight: 500;
+    color: #333;
+}
+
+.sort-select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background: white;
+    font-size: 0.95em;
+    min-width: 200px;
+    cursor: pointer;
+}
+
+.sort-select:focus {
+    outline: none;
+    border-color: #4a6bdf;
+    box-shadow: 0 0 0 3px rgba(74, 107, 223, 0.1);
+}
+
+.products-count-info {
+    font-weight: 500;
+    color: #4a6bdf;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin: 40px 0 20px;
+    padding: 20px 0;
+    border-top: 1px solid #eee;
+}
+
+.pagination-link {
+    padding: 10px 20px;
+    background: #f5f5f5;
+    color: #333;
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    min-width: 140px;
+    text-align: center;
+}
+
+.pagination-link:hover {
+    background: #4a6bdf;
+    color: white;
+    text-decoration: none;
+}
+
+.pagination-numbers {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.pagination-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    background: #f5f5f5;
+    color: #333;
+    text-decoration: none;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+.pagination-number:hover {
+    background: #e0e0e0;
+    text-decoration: none;
+}
+
+.pagination-number.active {
+    background: #4a6bdf;
+    color: white;
+    cursor: default;
+}
+
+.pagination-dots {
+    color: #666;
+    padding: 0 5px;
+}
+
+.pagination-info {
+    text-align: center;
+    color: #666;
+    font-size: 0.9em;
+    margin-bottom: 40px;
+}
+
+@media (max-width: 768px) {
+    .products-toolbar {
+        flex-direction: column;
+        gap: 15px;
+        text-align: center;
+    }
+    
+    .sort-options {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .sort-select {
+        width: 100%;
+    }
+    
+    .pagination {
+        flex-direction: column;
+        gap: 15px;
+    }
+    
+    .pagination-link {
+        width: 100%;
+        max-width: 200px;
+    }
+    
+    .pagination-numbers {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+}
+</style>
 
 <?php require_once 'theme/footer.php'; ?>
