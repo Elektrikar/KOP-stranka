@@ -58,9 +58,13 @@ class ProductCard {
     private function getStockStatus($stock) {
         if ($stock <= 0) {
             return ['out-of-stock', 'Momentálne nedostupné'];
+        } elseif ($stock <= 1) {
+            return ['low-stock', 'Posledný ' . $stock . ' ks'];
+        } elseif ($stock <= 4) {
+            return ['low-stock', 'Posledné ' . $stock . ' ks'];
         } elseif ($stock <= 5) {
             return ['low-stock', 'Posledných ' . $stock . ' ks'];
-        } else {
+        }else {
             return ['in-stock', 'Skladom ' . $stock . ' ks'];
         }
     }
