@@ -5,7 +5,6 @@ require_once __DIR__ . '/class/Database.php';
 $db = new Database('localhost', 'webstore', 'root', '');
 $pdo = $db->getConnection();
 
-// Get all categories
 $categories = $pdo->query("
     SELECT c.id, c.name, c.image
     FROM categories c
@@ -34,7 +33,7 @@ require_once 'theme/header.php';
                         <div class="category-overlay"></div>
                         <div class="category-card-content">
                             <h2 class="category-title"><?= htmlspecialchars($category['name']) ?></h2>
-                            <a href="category.php?id=<?= $category['id'] ?>" class="btn-view-category">Zobraziť produkty</a>
+                            <a href="products.php?id=<?= $category['id'] ?>" class="btn-view-category">Zobraziť produkty</a>
                         </div>
                     </div>
                 <?php endforeach; ?>

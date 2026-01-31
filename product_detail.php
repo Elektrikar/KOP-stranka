@@ -107,7 +107,7 @@ require_once 'theme/header.php';
         <a href="index.php">Domov</a>
         <span class="separator">›</span>
         <?php if ($product['category_name']): ?>
-            <a href="category.php?id=<?= $product['category_id'] ?>"><?= htmlspecialchars($product['category_name']) ?></a>
+            <a href="products.php?id=<?= $product['category_id'] ?>"><?= htmlspecialchars($product['category_name']) ?></a>
             <span class="separator">›</span>
         <?php endif; ?>
         <span><?= htmlspecialchars($product['name']) ?></span>
@@ -133,7 +133,7 @@ require_once 'theme/header.php';
                 <div class="product-meta">
                     <?php if ($product['category_name']): ?>
                         <span class="category">Kategória: 
-                            <a href="category.php?id=<?= $product['category_id'] ?>">
+                            <a href="products.php?id=<?= $product['category_id'] ?>">
                                 <?= htmlspecialchars($product['category_name']) ?>
                             </a>
                         </span>

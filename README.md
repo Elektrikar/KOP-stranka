@@ -14,8 +14,7 @@
 - Add working paywall
 - user management in admin
 - Account for order management
-- Product/Categories page
-     - pagination
+- pagination for products page
 - Responsivity for phones
 - wishlist
 

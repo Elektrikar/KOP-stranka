@@ -85,7 +85,7 @@ if (!empty($_SESSION['user_first_name']) && !empty($_SESSION['user_last_name']))
                 <nav>
                     <div class="logo"><a href="index.php">Domov</a></div>
                     <ul class="nav-links">
-                        <li><a href="#">
+                        <li><a href="products.php">
                                 Produkty
                             </a></li>
                         <li><a href="categories.php">Kategórie</a></li>
