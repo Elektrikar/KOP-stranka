@@ -118,30 +118,4 @@ require_once 'theme/header.php';
     </table>
 </div>
 
-<style>
-.discount-active {
-    color: #f44336;
-    font-weight: bold;
-}
-
-.discount-badge {
-    display: inline-block;
-    background: #f44336;
-    color: white;
-    font-size: 0.8em;
-    padding: 2px 6px;
-    border-radius: 3px;
-    margin-left: 5px;
-    vertical-align: middle;
-}
-
-.admin-orders-table th {
-    white-space: nowrap;
-}
-
-.admin-orders-table td {
-    font-size: 0.9em;
-}
-</style>
-
 <?php require 'theme/footer.php'; ?>
