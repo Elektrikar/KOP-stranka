@@ -67,16 +67,16 @@ $categories = $pdo->query("
     <div class="container">
         <div class="hero-content">
             <div class="hero-text">
-                <h1 class="hero-title">Špičková elektronika za bezkonkurenčné ceny</h1>
+                <h1 class="hero-title">Špičková elektronika za najlepšie ceny</h1>
                 <p class="hero-subtitle">Smartfóny, notebooky, audio a príslušenstvo pre každý deň</p>
                 <div class="hero-cta">
-                    <a href="#featured-products" class="btn btn-primary">
+                    <a href="products.php" class="button button-primary">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M9 18l6-6-6-6" />
                         </svg>
                         Nakupovať teraz
                     </a>
-                    <a href="categories.php" class="btn btn-secondary">Prezrieť kategórie</a>
+                    <a href="categories.php" class="button button-secondary">Prezrieť kategórie</a>
                 </div>
             </div>
 
@@ -139,20 +139,9 @@ $categories = $pdo->query("
         </div>
         <div class="categories-grid">
             <?php foreach ($categories as $category): ?>
-                <a href="products.php?id=<?= $category['id'] ?>" class="category-card-home">
-                    <div class="category-image">
-                            <?php
-                            $webpPath = str_replace(['.jpg', '.jpeg', '.png'], '.webp', $category['image']);
-                            $fullPath = 'img/category/' . htmlspecialchars($category['image']);
-                            $webpFullPath = 'img/category/' . htmlspecialchars($webpPath);
-                            ?>
-                            <picture>
-                                <?php if (file_exists(__DIR__ . '/' . $webpFullPath)): ?>
-                                    <source srcset="<?= $webpFullPath ?>" type="image/webp">
-                                <?php endif; ?>
-                                <img src="<?= $fullPath ?>" alt="<?= htmlspecialchars($category['name']) ?>" loading="lazy">
-                            </picture>
-                    </div>
+                <a href="products.php?id=<?= $category['id'] ?>" class="category-card-home" 
+                   style="background-image: url('img/category/<?= !empty($category['image']) ? htmlspecialchars($category['image']) : 'default-category.jpg' ?>');">
+                    <div class="category-overlay"></div>
                     <div class="category-info">
                         <h3><?= htmlspecialchars($category['name']) ?></h3>
                         <p><?= $category['product_count'] ?> produktov</p>
@@ -192,7 +181,7 @@ $categories = $pdo->query("
                 <span class="banner-tag">LIMITOVANÁ PONUKA</span>
                 <h2>Jarné zľavy až do -30%</h2>
                 <p>Nenechajte si ujsť najlepšie ponuky sezóny</p>
-                <a href="#discounted-products" class="btn btn-white">Preskúmať zľavy</a>
+                <a href="#discounted-products" class="button button-white">Preskúmať zľavy</a>
             </div>
         </div>
     </section>

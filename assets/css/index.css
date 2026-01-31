@@ -72,7 +72,7 @@
     flex-wrap: wrap;
 }
 
-.btn-primary {
+.button-primary {
     display: inline-flex;
     align-items: center;
     gap: 10px;
@@ -87,13 +87,13 @@
     font-size: 1.1rem;
 }
 
-.btn-primary:hover {
+.button-primary:hover {
     transform: translateY(-2px);
     box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
     color: #4a6bdf;
 }
 
-.btn-secondary {
+.button-secondary {
     background: transparent;
     color: white;
     border: 2px solid white;
@@ -105,7 +105,7 @@
     font-size: 1.1rem;
 }
 
-.btn-secondary:hover {
+.button-secondary:hover {
     background: rgba(255, 255, 255, 0.15);
     transform: translateY(-2px);
     color: white;
@@ -226,60 +226,74 @@
 }
 
 .category-card-home {
-    background: white;
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
     border-radius: 12px;
-    padding: 25px 20px;
-    text-decoration: none;
-    color: #333;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    height: 200px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.15);
     transition: all 0.3s ease;
-    text-align: center;
     display: flex;
-    flex-direction: column;
     align-items: center;
+    justify-content: center;
+    z-index: 1;
+    text-decoration: none;
+    color: white;
 }
 
 .category-card-home:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    transform: translateY(-8px);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    z-index: 10;
     text-decoration: none;
-    color: #333;
+}
+
+.category-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7));
+    transition: all 0.3s ease;
+}
+
+.category-card-home:hover .category-overlay {
+    background: linear-gradient(to bottom, rgba(0,0,0,0.33), rgba(0,0,0,0.73));
 }
 
 .category-image {
-    width: 80px;
-    height: 80px;
-    margin: 0 auto 15px;
-    border-radius: 50%;
-    overflow: hidden;
-    background: #f5f5f5;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: none;
 }
 
 .category-image picture {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    display: none;
 }
 
 .category-image img {
+    display: none;
+}
+
+.category-info {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 20px;
     width: 100%;
-    height: 100%;
-    object-fit: cover;
 }
 
 .category-info h3 {
-    font-size: 1.1rem;
+    font-size: 1.2rem;
     margin-bottom: 8px;
-    color: #333;
+    color: white;
+    font-weight: 600;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
 }
 
 .category-info p {
-    color: #666;
+    color: rgba(255, 255, 255, 0.8);
     font-size: 0.9rem;
 }
 
@@ -311,7 +325,7 @@
     opacity: 0.9;
 }
 
-.btn-white {
+.button-white {
     background: white;
     color: #f44336;
     padding: 12px 24px;
@@ -322,7 +336,7 @@
     transition: background 0.3s;
 }
 
-.btn-white:hover {
+.button-white:hover {
     background: #f8f9fa;
     color: #f44336;
     text-decoration: none;
@@ -378,8 +392,8 @@
         align-items: flex-start;
     }
 
-    .btn-primary,
-    .btn-secondary {
+    .button-primary,
+    .button-secondary {
         width: 100%;
         justify-content: center;
     }
