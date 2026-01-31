@@ -11,6 +11,7 @@
 - user management in admin
 - Better footer
 - Responsivity for phones
+- obchodne podmienky
 
 - Maybe:
      - About us and contact page
