@@ -7,20 +7,19 @@
 ### Small Features
 
 - sorting by order status in orders
-- NOTIFY FEATURE - currently disabled
 
 ### Large Features
 
-- Add working paywall
 - user management in admin
-- Account for order management
+- Better footer
 - Responsivity for phones
-- wishlist
 
 - Maybe:
      - About us and contact page
      - Product ratings
-     - Better footer
+     - wishlist
+     - Account for order management
+     - Notify feature
 
 ### After finding hosting
 
@@ -28,6 +27,7 @@
 - register -> email verification
 - send order status emails
 - hide sensitive data + change passwords
+- Add working paywall
 - add favicon
 
 ## Images

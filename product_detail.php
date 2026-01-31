@@ -186,7 +186,7 @@ require_once 'theme/header.php';
                             </div>
                         <?php endif; ?>
                         
-                        <!-- Add to wishlist -->
+                        <!-- Add to wishlist 
                         <form method="post" class="wishlist-form">
                             <button type="submit" name="toggle_wishlist" class="btn-wishlist <?= $inWishlist ? 'active' : '' ?>">
                                 <svg width="20" height="20" viewBox="0 0 24 24" fill="<?= $inWishlist ? 'currentColor' : 'none' ?>" stroke="currentColor">
@@ -194,7 +194,7 @@ require_once 'theme/header.php';
                                 </svg>
                                 <?= $inWishlist ? 'Odstrániť zo zoznamu' : 'Pridať do zoznamu' ?>
                             </button>
-                        </form>
+                        </form>-->
                     </div>
                 <?php else: ?>
                     <div class="out-of-stock-message">
