@@ -60,7 +60,7 @@ $pageData = [
     'title' => 'Správa kategórií | Admin',
     'metaDataDescription' => 'Administrácia kategórií',
     'customAssets' => [
-        ['type' => 'css', 'src' => 'assets/css/adminOrders.css']
+        ['type' => 'css', 'src' => 'assets/css/adminTables.css']
     ]
 ];
 

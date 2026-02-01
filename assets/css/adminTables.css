@@ -70,6 +70,7 @@
 
 /* Common button styles */
 .btn-edit,
+.btn-view,
 .btn-delete {
     display: inline-flex;
     align-items: center;
@@ -82,6 +83,7 @@
     transition: all 0.2s ease;
     text-decoration: none;
     padding: 0;
+    vertical-align: top;
 }
 
 /* Edit button */
@@ -102,17 +104,14 @@
 .btn-view {
     background: #4a6bdf;
     color: white;
-    padding: 6px 12px;
-    font-size: 0.9em;
-    border-radius: 4px;
-    text-decoration: none;
-    transition: all 0.2s ease;
 }
 .btn-view:hover {
     background: #3a5bc7;
+    transform: translateY(-1px);
     box-shadow: 0 2px 4px rgba(58, 91, 199, 0.2);
 }
 .btn-view:active {
+    transform: translateY(0);
     box-shadow: none;
 }
 
@@ -139,20 +138,17 @@
 /* SVG icons */
 .btn-edit svg,
 .btn-delete svg {
-    width: 16px;
-    height: 16px;
+    width: 14px;
+    height: 14px;
     fill: currentColor;
 }
 
-.btn-delete svg {
-    width: 14px;
-    height: 14px;
+.btn-view svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
 }
 
-.btn-edit svg {
-    width: 14px;
-    height: 14px;
-}
 
 .actions form {
     margin: 0;
@@ -407,6 +403,7 @@ table th a.sort-header {
     }
     
     .btn-edit,
+    .btn-view,
     .btn-delete {
         width: 30px;
         height: 30px;
@@ -417,4 +414,9 @@ table th a.sort-header {
         width: 14px;
         height: 14px;
     }
+    .btn-view svg {
+        width: 20px;
+        height: 20x;
+    }
+
 }

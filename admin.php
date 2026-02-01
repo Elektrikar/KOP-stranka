@@ -101,12 +101,7 @@ require_once 'theme/header.php';
 
         <div class="feature-card">
             <h4>Správa používateľov</h4>
-            <p>Manage users, roles, and permissions</p>
-            <?php
-            $user = new User($db);
-            $allUsers = $user->getAll();
-            ?>
-            <p>Total Users: <?= count($allUsers) ?></p>
+            <p><a href="adminUsers.php" class="admin-link">Používatelia</a></p>
         </div>
 
         <div class="feature-card">

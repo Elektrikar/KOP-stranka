@@ -67,7 +67,7 @@ $pageData = [
     'title' => 'Správa produktov | Admin',
     'metaDataDescription' => 'Administrácia produktov',
     'customAssets' => [
-        ['type' => 'css', 'src' => 'assets/css/adminOrders.css']
+        ['type' => 'css', 'src' => 'assets/css/adminTables.css']
     ]
 ];
 

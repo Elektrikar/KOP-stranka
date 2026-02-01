@@ -8,7 +8,6 @@
 
 ### Large Features
 
-- user management in admin
 - Better footer
 - Responsivity for phones
 - obchodne podmienky
@@ -25,7 +24,7 @@
 - websupport.sk
 - register -> email verification
 - send order status emails
-- hide sensitive data + change passwords
+- hide sensitive data + change passwords (.env file ?)
 - Add working paywall
      - 1 more step after entering adress maybe in checkout
 - add favicon
