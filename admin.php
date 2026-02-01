@@ -100,7 +100,7 @@ require_once 'theme/header.php';
         <h3>Admin Dashboard</h3>
 
         <div class="feature-card">
-            <h4>User Management</h4>
+            <h4>Správa používateľov</h4>
             <p>Manage users, roles, and permissions</p>
             <?php
             $user = new User($db);
@@ -111,13 +111,13 @@ require_once 'theme/header.php';
 
         <div class="feature-card">
             <h4>Správa objednávok</h4>
-            <p><a href="adminOrders.php" class="admin-link">Zobraziť objednávky</a></p>
+            <p><a href="adminOrders.php" class="admin-link">Objednávky</a></p>
         </div>
 
         <div class="feature-card">
             <h4>Správa produktov</h4>
-            <p><a href="adminAdd.php" class="admin-link">Pridať produkt</a></p>
-            <p><a href="adminProducts.php" class="admin-link">Zobraziť produkty</a></p>
+            <p><a href="adminProducts.php" class="admin-link">Produkty</a></p>
+            <p><a href="adminCategories.php" class="admin-link">Kategórie</a></p>
         </div>
 
         <div class="feature-card">
