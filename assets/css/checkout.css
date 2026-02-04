@@ -391,3 +391,69 @@
 .btn-shop:hover {
     background: #3a5bc7;
 }
+
+.shipping-methods-section,
+.payment-methods-section {
+    margin-bottom: 30px;
+}
+
+.selection-option {
+    position: relative;
+    border: 2px solid #eee;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 12px;
+    cursor: pointer;
+    /*transition: all 0.2s ease;*/
+    background: white;
+}
+
+.selection-option:hover {
+    border-color: #7189df;
+    border-width: 2px;
+    box-shadow: 0 2px 8px rgba(74, 107, 223, 0.1);
+}
+
+.selection-option.selected {
+    border-color: #4a6bdf;
+    border-width: 2px;
+    background-color: #f8f9ff;
+    box-shadow: 0 2px 12px rgba(74, 107, 223, 0.15);
+}
+
+.selection-option input[type="radio"] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.option-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.option-name {
+    font-weight: 600;
+    color: #333;
+    font-size: 1.05em;
+}
+
+.option-price {
+    font-weight: bold;
+    color: #4a6bdf;
+    font-size: 1.1em;
+}
+
+.option-description {
+    color: #666;
+    font-size: 0.95em;
+    line-height: 1.4;
+    margin: 0;
+}
+
+.option-description small {
+    color: #888;
+    font-size: 0.9em;
+}

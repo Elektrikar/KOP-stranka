@@ -6,11 +6,15 @@
 
 ### Small Features
 
+- add notes to orders
+- add address data for logged in users
+
 ### Large Features
 
 - Better footer
 - Responsivity for phones
 - obchodne podmienky
+- ochrana osobnych udajov
 
 - Maybe:
      - About us and contact page
@@ -25,7 +29,6 @@
 - register -> email verification
 - send order status emails
 - Add working paywall
-     - 1 more step after entering adress maybe in checkout
 - add favicon
 
 ## Images

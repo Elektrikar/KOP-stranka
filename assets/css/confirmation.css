@@ -66,13 +66,6 @@
     font-weight: 500;
 }
 
-/* Status badges */
-.status-pending { color: #ff9800; }
-.status-processing { color: #2196f3; }
-.status-shipped { color: #3f51b5; }
-.status-delivered { color: #4caf50; }
-.status-cancelled { color: #f44336; }
-
 /* Address box */
 .address-box {
     padding: 15px;

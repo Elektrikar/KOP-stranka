@@ -10,15 +10,23 @@ class Order
     public $status;
     public $total;
     public $address;
+    public $shipping_id;
+    public $payment_id;
     public $created_at;
     public $updated_at;
+    public $shipping_name;
+    public $shipping_price;
+    public $shipping_description;
+    public $payment_name;
+    public $payment_price;
+    public $payment_description;
 
     public function __construct($db = null)
     {
         $this->db = $db;
     }
 
-    public function create($user_id, $email, $total, $address, $cartItems)
+    public function create($user_id, $email, $total, $address, $cartItems, $shipping_id = null, $payment_id = null)
     {
         if (!$this->db) {
             throw new Exception("Database connection not available");
@@ -33,6 +41,28 @@ class Order
 
             $updatedCartItems = [];
             $calculatedTotal = 0;
+            
+            // Get shipping cost if shipping_id is provided
+            $shipping_cost = 0;
+            if ($shipping_id) {
+                $shipping_stmt = $this->db->prepare("SELECT price FROM shipping_methods WHERE id = ?");
+                $shipping_stmt->execute([$shipping_id]);
+                $shipping_data = $shipping_stmt->fetch(PDO::FETCH_ASSOC);
+                if ($shipping_data) {
+                    $shipping_cost = $shipping_data['price'];
+                }
+            }
+            
+            // Get payment fee if payment_id is provided
+            $payment_fee = 0;
+            if ($payment_id) {
+                $payment_stmt = $this->db->prepare("SELECT price FROM payment_methods WHERE id = ?");
+                $payment_stmt->execute([$payment_id]);
+                $payment_data = $payment_stmt->fetch(PDO::FETCH_ASSOC);
+                if ($payment_data) {
+                    $payment_fee = $payment_data['price'];
+                }
+            }
             
             foreach ($cartItems as $productId => $item) {
                 if (!isset($item['quantity']) || !isset($item['price'])) {
@@ -64,17 +94,22 @@ class Order
 
                 $calculatedTotal += $finalPrice * $item['quantity'];
             }
+            
+            // Calculate final total with shipping and payment fees
+            $finalTotal = $calculatedTotal + $shipping_cost + $payment_fee;
 
             $orderStmt = $this->db->prepare("
-                INSERT INTO orders (user_id, order_email, total, address, status)
-                VALUES (:user_id, :email, :total, :address, 'pending')
+                INSERT INTO orders (user_id, order_email, total, address, shipping_id, payment_id, status)
+                VALUES (:user_id, :email, :total, :address, :shipping_id, :payment_id, 'pending')
             ");
 
             $orderStmt->execute([
                 ':user_id' => $user_id,
                 ':email' => $email,
-                ':total' => $calculatedTotal,
-                ':address' => $address
+                ':total' => $finalTotal,
+                ':address' => $address,
+                ':shipping_id' => $shipping_id,
+                ':payment_id' => $payment_id
             ]);
 
             $orderId = $this->db->lastInsertId();
@@ -127,7 +162,15 @@ class Order
     {
         if (!$this->db) return null;
 
-        $stmt = $this->db->prepare("SELECT * FROM orders WHERE id = :id");
+        $stmt = $this->db->prepare("
+            SELECT o.*, 
+                   sm.name as shipping_name, sm.price as shipping_price, sm.description as shipping_description,
+                   pm.name as payment_name, pm.price as payment_price, pm.description as payment_description
+            FROM orders o
+            LEFT JOIN shipping_methods sm ON sm.id = o.shipping_id
+            LEFT JOIN payment_methods pm ON pm.id = o.payment_id
+            WHERE o.id = :id
+        ");
         $stmt->execute([':id' => $id]);
         $row = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -143,9 +186,14 @@ class Order
         if (!$this->db) return [];
 
         $stmt = $this->db->prepare("
-            SELECT * FROM orders 
-            WHERE user_id = :user_id 
-            ORDER BY created_at DESC
+            SELECT o.*, 
+                   sm.name as shipping_name, sm.price as shipping_price,
+                   pm.name as payment_name, pm.price as payment_price
+            FROM orders o
+            LEFT JOIN shipping_methods sm ON sm.id = o.shipping_id
+            LEFT JOIN payment_methods pm ON pm.id = o.payment_id
+            WHERE o.user_id = :user_id 
+            ORDER BY o.created_at DESC
         ");
         $stmt->execute([':user_id' => $user_id]);
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -170,9 +218,14 @@ class Order
         if (!$this->db) return [];
 
         $stmt = $this->db->prepare("
-            SELECT o.*, u.first_name, u.last_name 
+            SELECT o.*, 
+                   u.first_name, u.last_name,
+                   sm.name as shipping_name, sm.price as shipping_price,
+                   pm.name as payment_name, pm.price as payment_price
             FROM orders o
             LEFT JOIN users u ON u.id = o.user_id
+            LEFT JOIN shipping_methods sm ON sm.id = o.shipping_id
+            LEFT JOIN payment_methods pm ON pm.id = o.payment_id
             ORDER BY o.created_at DESC 
             LIMIT :limit
         ");
@@ -211,7 +264,31 @@ class Order
         $this->status = $row['status'];
         $this->total = $row['total'];
         $this->address = $row['address'];
+        $this->shipping_id = $row['shipping_id'];
+        $this->payment_id = $row['payment_id'];
         $this->created_at = $row['created_at'];
         $this->updated_at = $row['updated_at'];
+
+        $this->shipping_name = $row['shipping_name'];
+        $this->shipping_price = $row['shipping_price'];
+        $this->shipping_description = $row['shipping_description'];
+        $this->payment_name = $row['payment_name'];
+        $this->payment_price = $row['payment_price'];
+        $this->payment_description = $row['payment_description'];
+    }
+
+    public function getSubtotal($order_id)
+    {
+        if (!$this->db) return 0;
+        
+        $stmt = $this->db->prepare("
+            SELECT SUM(quantity * price) as subtotal 
+            FROM order_details 
+            WHERE order_id = :order_id
+        ");
+        $stmt->execute([':order_id' => $order_id]);
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        return $result['subtotal'] ?? 0;
     }
 }

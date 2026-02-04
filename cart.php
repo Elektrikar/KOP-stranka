@@ -177,8 +177,8 @@ if (!empty($items)) {
 </div>
 <div class="checkout-steps">
     <div class="step active">1. Košík</div>
-    <div class="step"><a href="checkout.php">2. Doprava a platba</a></div>
-    <div class="step">3. Potvrdenie</div>
+    <div class="step"><a href="checkout1.php">2. Kontakné údaje</a></div>
+    <div class="step">3. Doprava a platba</div>
 </div>
 <table class="cart-table">
     <?php 
@@ -244,7 +244,7 @@ if (!empty($items)) {
         <span style="font-size:0.65rem;margin-right:9px;">&#9664;</span> Späť k nákupu
     </a>
         <?php if (!empty($items)): ?>
-            <a href="checkout.php" class="btn-checkout">Pokračovať k pokladni</a>
+            <a href="checkout1.php" class="btn-checkout">Pokračovať k pokladni</a>
         <?php endif; ?>
     </div>
 <p>

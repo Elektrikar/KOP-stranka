@@ -67,7 +67,7 @@ require_once 'theme/header.php';
                 </div>
                 <div class="info-row">
                     <span class="info-label">Stav:</span>
-                    <span class="info-value status-<?= $orderData->status ?>"><?= $orderData->status ?></span>
+                    <span class="info-value status-badge-small status-<?= $orderData->status ?>"><?= $orderData->status ?></span>
                 </div>
             </div>
 
@@ -83,6 +83,18 @@ require_once 'theme/header.php';
                         <span class="info-value"><?= $orderData->user_id ?></span>
                     </div>
                 <?php endif; ?>
+            </div>
+
+            <div class="info-card">
+                <h3>Spôsob doručenia a platby</h3>
+                <div class="info-row">
+                    <span class="info-label">Spôsob doručenia:</span>
+                    <span class="info-value"><?= htmlspecialchars($orderData->shipping_name ?? 'Neuvedené') ?></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Spôsob platby:</span>
+                    <span class="info-value"><?= htmlspecialchars($orderData->payment_name ?? 'Neuvedené') ?></span>
+                </div>
             </div>
 
             <div class="info-card full-width">
@@ -105,7 +117,12 @@ require_once 'theme/header.php';
                     </tr>
                 </thead>
                 <tbody>
-                    <?php foreach ($orderDetails as $item): ?>
+                    <?php 
+                    $subtotal = 0;
+                    foreach ($orderDetails as $item): 
+                        $itemTotal = $item['price'] * $item['quantity'];
+                        $subtotal += $itemTotal;
+                    ?>
                         <tr>
                             <td>
                                 <div class="product-cell">
@@ -118,14 +135,26 @@ require_once 'theme/header.php';
                             </td>
                             <td><?= number_format($item['price'], 2, ',', ' ') ?> €</td>
                             <td><?= $item['quantity'] ?></td>
-                            <td><?= number_format($item['price'] * $item['quantity'], 2, ',', ' ') ?> €</td>
+                            <td><?= number_format($itemTotal, 2, ',', ' ') ?> €</td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
                 <tfoot>
+                    <?php if ($orderData->shipping_price): ?>
                     <tr>
+                        <td colspan="3" class="text-right">Doprava (<?= htmlspecialchars($orderData->shipping_name ?? 'Neuvedené') ?>):</td>
+                        <td><?= number_format($orderData->shipping_price, 2, ',', ' ') ?> €</td>
+                    </tr>
+                    <?php endif; ?>
+                    <?php if ($orderData->payment_price): ?>
+                    <tr>
+                        <td colspan="3" class="text-right">Poplatok za platbu (<?= htmlspecialchars($orderData->payment_name ?? 'Neuvedené') ?>):</td>
+                        <td><?= number_format($orderData->payment_price, 2, ',', ' ') ?> €</td>
+                    </tr>
+                    <?php endif; ?>
+                    <tr class="total-row">
                         <td colspan="3" class="text-right"><strong>Celková suma:</strong></td>
-                        <td class="total-cell"><?= number_format($orderData->total, 2, ',', ' ') ?> €</td>
+                        <td class="total-cell"><strong><?= number_format($orderData->total, 2, ',', ' ') ?> €</strong></td>
                     </tr>
                 </tfoot>
             </table>
@@ -134,20 +163,28 @@ require_once 'theme/header.php';
         <?php if ($isAdmin): ?>
             <div class="admin-actions">
                 <h3>Administratívne akcie</h3>
-                <form method="post" action="adminOrders.php" class="status-update-form">
-                    <input type="hidden" name="order_id" value="<?= $orderData->id ?>">
-                    <div class="form-group">
-                        <label for="status">Zmeniť stav:</label>
-                        <select name="status" id="status">
-                            <option value="pending" <?= $orderData->status === 'pending' ? 'selected' : '' ?>>Pending</option>
-                            <option value="processing" <?= $orderData->status === 'processing' ? 'selected' : '' ?>>Processing</option>
-                            <option value="shipped" <?= $orderData->status === 'shipped' ? 'selected' : '' ?>>Shipped</option>
-                            <option value="delivered" <?= $orderData->status === 'delivered' ? 'selected' : '' ?>>Delivered</option>
-                            <option value="cancelled" <?= $orderData->status === 'cancelled' ? 'selected' : '' ?>>Cancelled</option>
-                        </select>
-                        <button type="submit" name="update_status" value="1" class="btn-update">Aktualizovať</button>
-                    </div>
-                </form>
+                <div class="action-row">
+                    <form method="post" action="adminOrders.php" class="status-update-form">
+                        <input type="hidden" name="order_id" value="<?= $orderData->id ?>">
+                        <div class="form-group">
+                            <label for="status">Zmeniť stav:</label>
+                            <select name="status" id="status">
+                                <option value="pending" <?= $orderData->status === 'pending' ? 'selected' : '' ?>>Pending</option>
+                                <option value="processing" <?= $orderData->status === 'processing' ? 'selected' : '' ?>>Processing</option>
+                                <option value="shipped" <?= $orderData->status === 'shipped' ? 'selected' : '' ?>>Shipped</option>
+                                <option value="delivered" <?= $orderData->status === 'delivered' ? 'selected' : '' ?>>Delivered</option>
+                                <option value="cancelled" <?= $orderData->status === 'cancelled' ? 'selected' : '' ?>>Cancelled</option>
+                            </select>
+                            <button type="submit" name="update_status" value="1" class="btn-update">Aktualizovať</button>
+                        </div>
+                    </form>
+                    <form method="post" action="adminDelete.php" class="inline-form"
+                            onsubmit="return confirm('Naozaj chcete zmazať túto objednávku?');">
+                        <input type="hidden" name="id" value="<?= $orderData->id ?>">
+                        <input type="hidden" name="type" value="order">
+                        <button type="submit" class="btn-delete">Zmazať</button>
+                    </form>
+                </div>
             </div>
         <?php endif; ?>
     </div>

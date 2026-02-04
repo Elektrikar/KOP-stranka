@@ -59,11 +59,31 @@ require_once 'theme/header.php';
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Stav:</span>
-                    <span class="detail-value status-<?= $orderData->status ?>"><?= $orderData->status ?></span>
+                    <span class="detail-value status-badge-small status-<?= $orderData->status ?>"><?= $orderData->status ?></span>
                 </div>
                 <div class="detail-row">
-                    <span class="detail-label">Celková suma:</span>
-                    <span class="detail-value"><?= number_format($orderData->total, 2, ',', ' ') ?> €</span>
+                    <span class="detail-label">Spôsob doručenia:</span>
+                    <span class="detail-value"><?= htmlspecialchars($orderData->shipping_name ?? 'Neuvedené') ?></span>
+                </div>
+                <div class="detail-row">
+                    <span class="detail-label">Spôsob platby:</span>
+                    <span class="detail-value"><?= htmlspecialchars($orderData->payment_name ?? 'Neuvedené') ?></span>
+                </div>
+                <?php if ($orderData->shipping_price): ?>
+                    <div class="detail-row">
+                        <span class="detail-label">Doprava:</span>
+                        <span class="detail-value"><?= number_format($orderData->shipping_price, 2, ',', ' ') ?> €</span>
+                    </div>
+                <?php endif; ?>
+                <?php if ($orderData->payment_price): ?>
+                    <div class="detail-row">
+                        <span class="detail-label">Poplatok za platbu:</span>
+                        <span class="detail-value"><?= number_format($orderData->payment_price, 2, ',', ' ') ?> €</span>
+                    </div>
+                <?php endif; ?>
+                <div class="detail-row" style="border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px;">
+                    <span class="detail-label"><strong>Celková suma:</strong></span>
+                    <span class="detail-value"><strong><?= number_format($orderData->total, 2, ',', ' ') ?> €</strong></span>
                 </div>
             </div>
 

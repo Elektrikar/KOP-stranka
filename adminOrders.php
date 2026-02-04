@@ -131,17 +131,18 @@ require_once 'theme/header.php';
                         <td class="customer-email"><?= htmlspecialchars($o['order_email']) ?></td>
                         <td class="order-total"><?= number_format($o['total'], 2, ',', ' ') ?> €</td>
                         <td>
-                            <form method="post" class="status-form">
-                                <input type="hidden" name="order_id" value="<?= $o['id'] ?>">
-                                <select name="status" onchange="this.form.submit()">
-                                    <option value="pending" <?= $o['status'] === 'pending' ? 'selected' : '' ?>>Pending</option>
-                                    <option value="processing" <?= $o['status'] === 'processing' ? 'selected' : '' ?>>Processing</option>
-                                    <option value="shipped" <?= $o['status'] === 'shipped' ? 'selected' : '' ?>>Shipped</option>
-                                    <option value="delivered" <?= $o['status'] === 'delivered' ? 'selected' : '' ?>>Delivered</option>
-                                    <option value="cancelled" <?= $o['status'] === 'cancelled' ? 'selected' : '' ?>>Cancelled</option>
-                                </select>
-                                <input type="hidden" name="update_status" value="1">
-                            </form>
+                            <div class="status-badge-small status-<?= $o['status'] ?>">
+                                <?php 
+                                $statusLabels = [
+                                    'pending' => 'Pending',
+                                    'processing' => 'Processing',
+                                    'shipped' => 'Shipped',
+                                    'delivered' => 'Delivered',
+                                    'cancelled' => 'Cancelled'
+                                ];
+                                echo htmlspecialchars($statusLabels[$o['status']] ?? $o['status']);
+                                ?>
+                            </div>
                         </td>
                         <td class="order-date"><?= date('d.m.Y H:i', strtotime($o['created_at'])) ?></td>
                         <td class="actions">
