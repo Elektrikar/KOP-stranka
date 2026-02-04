@@ -10,6 +10,6 @@
     Header always unset X-Powered-By
     Header always unset Server
     
-    # Prevent FLoC tracking (Google's Federated Learning of Cohorts)
+    # Prevent FLoC tracking
     Header always set Permissions-Policy "interest-cohort=()"
 </IfModule>
