@@ -1,12 +1,13 @@
 <?php
 session_start();
+require_once __DIR__ . '/config/config.php';
 require_once __DIR__ . '/class/Database.php';
 require_once __DIR__ . '/class/Product.php';
 require_once __DIR__ . '/class/Cart.php';
 require_once __DIR__ . '/class/User.php';
 require_once __DIR__ . '/class/ProductCard.php';
 
-$db = new Database('localhost', 'webstore', 'root', '');
+$db = new Database(env('DB_HOST'), env('DB_NAME'), env('DB_USER'), env('DB_PASS'));
 $pdo = $db->getConnection();
 
 $cart = new Cart();
