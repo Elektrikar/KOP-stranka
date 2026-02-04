@@ -11,16 +11,16 @@
 
 ### Large Features
 
-- Better footer
-- Responsivity for phones
+- footer
 - obchodne podmienky
 - ochrana osobnych udajov
+- Account for order management
 
 - Maybe:
+     - Responsivity for phones
      - About us and contact page
      - Product ratings
      - wishlist
-     - Account for order management
      - Notify feature
 
 ### After finding hosting
