@@ -24,7 +24,6 @@
 - websupport.sk
 - register -> email verification
 - send order status emails
-- hide sensitive data + change passwords (.env file ?)
 - Add working paywall
      - 1 more step after entering adress maybe in checkout
 - add favicon
