@@ -169,6 +169,48 @@ nav {
     font-weight: bold;
     box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
 }
+/* Cart, checkout styles */
+.checkout-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0px 20px 20px;
+}
+
+.checkout-steps {
+    display: flex;
+    justify-content: center;
+    margin-bottom: 40px;
+    gap: 20px;
+}
+
+.step {
+    padding: 10px 20px;
+    background: #f0f0f0;
+    border-radius: 20px;
+    color: #666;
+    font-weight: 500;
+    cursor: default;
+}
+
+.step a {
+    color: inherit;
+    text-decoration: none;
+}
+.step a:hover{
+    text-decoration: underline;
+}
+
+.step.active {
+    background: #4a6bdf;
+    color: white;
+}
+
+.checkout-top {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 20px 0 10px;
+}
 
 /* Login Styles */
 .login {

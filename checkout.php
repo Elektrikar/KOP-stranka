@@ -75,11 +75,13 @@ require_once 'theme/header.php';
 ?>
 
 <div class="container">
-    <h1>Pokladňa</h1>
+    <div class="checkout-top">
+        <h1>Pokladňa</h1>
+    </div>
 
     <div class="checkout-container">
         <div class="checkout-steps">
-            <div class="step active">1. Košík</div>
+            <div class="step"><a href="cart.php">1. Košík</a></div>
             <div class="step active">2. Doprava a platba</div>
             <div class="step">3. Potvrdenie</div>
         </div>

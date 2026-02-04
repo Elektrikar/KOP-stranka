@@ -164,8 +164,9 @@ if (!empty($items)) {
 }
 ?>
 <div class="container">
-    <div class="cart-top">
+    <div class="checkout-top">
         <h1>Váš košík</h1><br>
+
         <?php if (empty($items)): ?>
     </div>
     <p>Váš košík je prázdny.</p>
@@ -173,6 +174,11 @@ if (!empty($items)) {
     <button id="empty-cart-btn" class="empty-cart-btn">
         Vyprázdniť košík
     </button>
+</div>
+<div class="checkout-steps">
+    <div class="step active">1. Košík</div>
+    <div class="step"><a href="checkout.php">2. Doprava a platba</a></div>
+    <div class="step">3. Potvrdenie</div>
 </div>
 <table class="cart-table">
     <?php 
