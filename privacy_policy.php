@@ -56,7 +56,7 @@ require_once 'theme/header.php';
 
         <div class="legal-section">
             <h2>3. Ako používame vaše údaje</h2>
-            <p>3.1 <strong>Všetky údaje sú používané výlučne na beh tejto aplikácie</strong> a nie sú predávané, prenajímané ani zdieľané s tretími stranami.</p>
+            <p>3.1 <strong>Všetky údaje sú používané výlučne na prevádzku tejto aplikácie</strong> a nie sú predávané, prenajímané ani zdieľané s tretími stranami.</p>
             <p>3.2 Údaje z objednávok slúžia na demonštráciu funkčnosti nákupného procesu.</p>
             <p>3.3 E-mailové adresy sa <strong>nepoužívajú na marketingové účely</strong>.</p>
         </div>
@@ -64,7 +64,7 @@ require_once 'theme/header.php';
         <div class="legal-section">
             <h2>4. Zabezpečenie údajov</h2>
             <p>4.1 Heslá sú ukladané v zašifrovanej podobe.</p>
-            <p>4.2 Komunikácia medzi vášm prehliadačom a serverom je chránená.</p>
+            <p>4.2 Komunikácia medzi váším prehliadačom a serverom je chránená.</p>
             <p>4.3 Pravidelne aktualizujeme bezpečnostné opatrenia.</p>
         </div>
 

@@ -49,7 +49,7 @@ require_once 'theme/header.php';
         <div class="legal-section">
             <h2>4. Ochrana osobných údajov</h2>
             <p>4.1 Všetky osobné údaje zadané počas objednávkového procesu sú <strong>šifrované a anonymizované</strong>.</p>
-            <p>4.2 Údaje sa používajú výlučne na beh tejto demonštračnej aplikácie a <strong>neshromažďujú sa pre komerčné účely</strong>.</p>
+            <p>4.2 Údaje sa používajú výlučne na prevádzku tejto aplikácie a <strong>nezhromažďujú sa pre komerčné účely</strong>.</p>
             <p>4.3 Odporúčame nepoužívať skutočné citlivé údaje (ako napríklad skutočné heslá z iných služieb).</p>
         </div>
 
