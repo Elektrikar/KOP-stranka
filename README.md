@@ -26,7 +26,6 @@
      - wishlist
      - Notify feature
      - 2FA login
-     - hide index.php in url
 
 ## Images
 
