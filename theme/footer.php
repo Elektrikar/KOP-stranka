@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="footer-copyright">
-                    © 2026 mojadomena.sk
+                    © 2026 elektroobchod.online
                 </div>
             </div>
         </div>

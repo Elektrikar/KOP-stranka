@@ -25,7 +25,7 @@ require_once 'theme/header.php';
 
         <div class="legal-section">
             <h2>1. Základné informácie</h2>
-            <p><strong>Správca osobných údajov:</strong> mojadomena.sk<br>
+            <p><strong>Správca osobných údajov:</strong> elektroobchod.online<br>
             <strong>Účel spracovania:</strong> Funkčnosť e-shop aplikácie<br>
             <strong>Právny základ:</strong> Váš súhlas a oprávnený záujem</p>
         </div>

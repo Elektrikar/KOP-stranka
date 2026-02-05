@@ -5,7 +5,8 @@ class Database {
 
     public function __construct($host, $dbname, $username, $password) {
         try {
-            $this->pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+            $dsn = "mysql:host=$host;port=3306;dbname=$dbname";
+            $this->pdo = new PDO($dsn, $username, $password);
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
             die("Could not connect to the database: " . $e->getMessage());

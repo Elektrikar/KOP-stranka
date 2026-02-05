@@ -61,7 +61,10 @@ if (!empty($_SESSION['user_first_name']) && !empty($_SESSION['user_last_name']))
     <meta name="description" content="<?php echo htmlspecialchars($pageData['metaDataDescription']); ?>" />
     <link rel="stylesheet" href="assets/css/main.css">
     <link rel="stylesheet" href="assets/css/dropdown.css">
-    <!-- Add favicon here -->
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
 
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="assets/js/cartBadge.js"></script>

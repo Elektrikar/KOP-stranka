@@ -12,6 +12,10 @@
 
 ### Large Features
 
+- register -> email verification
+- send order status emails
+- Add working paywall (also change terms after)
+
 - Account for order management
 
 - Maybe:
@@ -20,14 +24,8 @@
      - Product ratings
      - wishlist
      - Notify feature
-
-### After finding hosting
-
-- websupport.sk
-- register -> email verification
-- send order status emails
-- Add working paywall (also change terms after)
-- add favicon
+     - 2FA login
+     - hide index.php in url
 
 ## Images
 

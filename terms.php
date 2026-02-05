@@ -14,7 +14,7 @@ require_once 'theme/header.php';
         <h1>Obchodné podmienky</h1>
         
         <div class="last-updated">
-            Tieto Podmienky ochrany osobných údajov sú platné a účinné od 5. 2. 2026, pričom sú k dispozícii elektronicky na www.mojadomena.sk.
+            Tieto Podmienky ochrany osobných údajov sú platné a účinné od 5. 2. 2026, pričom sú k dispozícii elektronicky na www.elektroobchod.online.
         </div>
 
         <div class="important-notice">
@@ -26,7 +26,7 @@ require_once 'theme/header.php';
             <h2>1. Všeobecné ustanovenia</h2>
             <p>1.1 Tieto obchodné podmienky (ďalej len "Podmienky") upravujú práva a povinnosti medzi:</p>
             <ul>
-                <li><strong>Predávajúcim:</strong> mojadomena.sk</li>
+                <li><strong>Predávajúcim:</strong> elektroobchod.online</li>
                 <li><strong>Kupujúcim:</strong> Každá fyzická alebo právnická osoba, ktorá uskutoční nákup v e-shope</li>
             </ul>
             <p>1.2 Všetky produkty zobrazené v e-shope sú <strong>fiktívne a neexistujúce</strong>. Nákupom žiadneho produktu nezískate reálnu tovarovú hodnotu.</p>
