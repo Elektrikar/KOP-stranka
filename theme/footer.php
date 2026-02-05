@@ -25,7 +25,7 @@
                     </div>
                 </div>
                 <div class="footer-copyright">
-                    © 2026 stranka.sk
+                    © 2026 mojadomena.sk
                 </div>
             </div>
         </div>

@@ -11,9 +11,6 @@
 
 ### Large Features
 
-- footer
-- obchodne podmienky
-- ochrana osobnych udajov
 - Account for order management
 
 - Maybe:
@@ -28,7 +25,7 @@
 - websupport.sk
 - register -> email verification
 - send order status emails
-- Add working paywall
+- Add working paywall (also change terms after)
 - add favicon
 
 ## Images
