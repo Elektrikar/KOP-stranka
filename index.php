@@ -157,7 +157,7 @@ $categories = $pdo->query("
     <section class="section-products" id="featured-products">
         <div class="section-header">
             <h2>Odporúčané produkty</h2>
-            <a href="products.php" class="view-all">Zobraziť všetky</a>
+            <a href="products.php?sort=popular" class="view-all">Zobraziť všetky</a>
         </div>
         <?php if (!empty($featuredProducts)): ?>
             <div class="products">
@@ -193,7 +193,7 @@ $categories = $pdo->query("
     <section class="section-products">
         <div class="section-header">
             <h2>Novinky</h2>
-            <a href="prodducts.php" class="view-all">Zobraziť všetky</a>
+            <a href="products.php?sort=newest" class="view-all">Zobraziť všetky</a>
         </div>
         <?php if (!empty($newProducts)): ?>
             <div class="products">
@@ -216,7 +216,7 @@ $categories = $pdo->query("
     <section class="section-products" id="discounted-products">
         <div class="section-header">
             <h2>Zľavnené ponuky</h2>
-            <a href="#discounted" class="view-all">Zobraziť všetky</a>
+            <a href="products.php?sort=discount" class="view-all">Zobraziť všetky</a>
         </div>
         <div class="products">
             <?php 

@@ -26,7 +26,7 @@ $sortOptions = [
     'name_asc' => ['field' => 'name', 'order' => 'ASC'],
     'name_desc' => ['field' => 'name', 'order' => 'DESC'],
     'popular' => ['field' => 'sales_count', 'order' => 'DESC'],
-    'discount' => ['field' => '(price - COALESCE(discount_price, 0))', 'order' => 'DESC']
+    'discount' => ['field' => 'price-discount_price', 'order' => 'DESC']
 ];
 
 $sortConfig = $sortOptions[$sort] ?? $sortOptions['newest'];
@@ -140,12 +140,13 @@ $categoryImage = $category ? ('img/category/' . htmlspecialchars($category['imag
         <div class="sort-options">
             <span class="sort-label">Zoradiť podľa:</span>
             <select class="sort-select" onchange="window.location.href = this.value">
+                <option value="<?= $sortUrl ?>sort=popular" <?= $sort == 'popular' ? 'selected' : '' ?>>Najpredávanejšie</option>
+                <option value="<?= $sortUrl ?>sort=newest" <?= $sort == 'newest' ? 'selected' : '' ?>>Najnovšie</option>
+                <option value="<?= $sortUrl ?>sort=discount" <?= $sort == 'discount' ? 'selected' : '' ?>>Zľavy</option>
                 <option value="<?= $sortUrl ?>sort=price_low" <?= $sort == 'price_low' ? 'selected' : '' ?>>Cena: od najlacnejších</option>
                 <option value="<?= $sortUrl ?>sort=price_high" <?= $sort == 'price_high' ? 'selected' : '' ?>>Cena: od najdrahších</option>
-                <option value="<?= $sortUrl ?>sort=newest" <?= $sort == 'newest' ? 'selected' : '' ?>>Najnovšie</option>
                 <option value="<?= $sortUrl ?>sort=name_asc" <?= $sort == 'name_asc' ? 'selected' : '' ?>>Názov: A-Z</option>
                 <option value="<?= $sortUrl ?>sort=name_desc" <?= $sort == 'name_desc' ? 'selected' : '' ?>>Názov: Z-A</option>
-                <option value="<?= $sortUrl ?>sort=popular" <?= $sort == 'popular' ? 'selected' : '' ?>>Najpredávanejšie</option>
             </select>
         </div>
         

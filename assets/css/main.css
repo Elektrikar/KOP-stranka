@@ -409,13 +409,83 @@ nav {
 footer {
     background-color: #343a40;
     color: white;
-    text-align: center;
     padding: 2rem 0;
     margin: 0;
     flex-shrink: 0;
     width: 100%;
     margin-top: auto;
 }
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1rem;
+}
+
+.footer-links {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    gap: 2rem;
+    margin-bottom: 2rem;
+}
+
+.footer-section {
+    min-width: 200px;
+}
+
+.footer-section h4 {
+    font-size: 1.1rem;
+    margin-bottom: 1rem;
+    color: #f8f9fa;
+    font-weight: 600;
+}
+
+.footer-section ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-section ul li {
+    margin-bottom: 0.5rem;
+    color: #adb5bd;
+    font-size: 0.95rem;
+    transition: color 0.2s;
+}
+
+.footer-section ul li a {
+    text-decoration: none;
+    margin-bottom: 0.5rem;
+    color: #adb5bd;
+    font-size: 0.95rem;
+    cursor: pointer;
+    transition: color 0.2s;
+}
+
+.footer-section ul li a:hover {
+    color: #ffffff;
+}
+
+.footer-copyright {
+    text-align: center;
+    padding-top: 2rem;
+    border-top: 1px solid #495057;
+    color: #adb5bd;
+    font-size: 0.9rem;
+}
+/*
+@media (max-width: 768px) {
+    .footer-links {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+    
+    .footer-section {
+        width: 100%;
+    }
+}*/
 
 /* Responsive Design */
 @media (max-width: 768px) {
