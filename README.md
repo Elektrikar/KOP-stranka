@@ -8,6 +8,7 @@
 
 - add notes to orders
 - add address data for logged in users
+- free shipping above 100€
 
 ### Large Features
 
