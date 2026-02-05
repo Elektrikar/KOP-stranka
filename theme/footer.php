@@ -20,7 +20,7 @@
                     <div class="footer-section">
                         <h4>KONTAKT</h4>
                         <ul>
-                            <li><p><a href="mailto:someone@example.com">someone@example.com</a></p></li>
+                            <li><p><a href="mailto:info@elektroobchod.online">info@elektroobchod.online</a></p></li>
                         </ul>
                     </div>
                 </div>

@@ -96,7 +96,7 @@ require_once 'theme/header.php';
         <div class="legal-section">
             <h2>7. Kontakt</h2>
             <p><strong>Kontakt na správcu:</strong><br>
-            E-mail: <a href="mailto:someone@example.com">someone@example.com</a></p>
+            E-mail: <a href="mailto:info@elektroobchod.online">info@elektroobchod.online</a></p>
         </div>
 
         <div class="project-info">

@@ -75,7 +75,7 @@ require_once 'theme/header.php';
 
         <div class="contact-info">
             <h3>Kontaktné údaje:</h3>
-            <p>E-mail: <a href="mailto:someone@example.com">someone@example.com</a></p>
+            <p>E-mail: <a href="mailto:info@elektroobchod.online">info@elektroobchod.online</a></p>
             <p>Táto stránka je súčasťou školského projektu.</p>
         </div>
     </div>
