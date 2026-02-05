@@ -12,6 +12,7 @@
 
 ### Large Features
 
+- CREATE EMAIL
 - register -> email verification
 - send order status emails
 - Add working paywall (also change terms after)
@@ -25,7 +26,6 @@
      - wishlist
      - Notify feature
      - 2FA login
-     - hide index.php in url
 
 ## Images
 
