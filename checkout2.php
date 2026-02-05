@@ -268,8 +268,8 @@ require_once 'theme/header.php';
                     <div class="terms-agreement">
                         <input type="checkbox" id="terms" name="terms" required>
                         <label for="terms">
-                            Súhlasím s <a href="#" target="_blank">obchodnými podmienkami</a> a
-                            <a href="#" target="_blank">ochranou osobných údajov</a> *
+                            Súhlasím s <a href="terms.php" target="_blank">obchodnými podmienkami</a> a
+                            <a href="privacy_policy.php" target="_blank">ochranou osobných údajov</a> *
                         </label>
                     </div>
 

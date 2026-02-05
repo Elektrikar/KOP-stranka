@@ -26,7 +26,7 @@ require_once 'theme/header.php';
             <h2>1. Všeobecné ustanovenia</h2>
             <p>1.1 Tieto obchodné podmienky (ďalej len "Podmienky") upravujú práva a povinnosti medzi:</p>
             <ul>
-                <li><strong>Predávajúcim:</strong> Fiktívny E-shop s.r.o., IČO: 12345678, so sídlom: Fiktívna ulica 123, 12345 Fiktívne Mesto</li>
+                <li><strong>Predávajúcim:</strong> mojadomena.sk</li>
                 <li><strong>Kupujúcim:</strong> Každá fyzická alebo právnická osoba, ktorá uskutoční nákup v e-shope</li>
             </ul>
             <p>1.2 Všetky produkty zobrazené v e-shope sú <strong>fiktívne a neexistujúce</strong>. Nákupom žiadneho produktu nezískate reálnu tovarovú hodnotu.</p>

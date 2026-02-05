@@ -25,8 +25,8 @@ require_once 'theme/header.php';
 
         <div class="legal-section">
             <h2>1. Základné informácie</h2>
-            <p><strong>Správca osobných údajov:</strong> Fiktívny E-shop s.r.o.<br>
-            <strong>Účel spracovania:</strong> Beh demonštračnej e-shop aplikácie<br>
+            <p><strong>Správca osobných údajov:</strong> mojadomena.sk<br>
+            <strong>Účel spracovania:</strong> Funkčnosť e-shop aplikácie<br>
             <strong>Právny základ:</strong> Váš súhlas a oprávnený záujem</p>
         </div>
 
@@ -39,7 +39,7 @@ require_once 'theme/header.php';
                 <li>Heslo (šifrované, neviditeľné ani pre správcov)</li>
             </ul>
 
-            <h3>2.2 Údaje z objednávok (fiktívne):</h3>
+            <h3>2.2 Údaje z objednávok:</h3>
             <ul>
                 <li>Dodacie údaje (pre simuláciu dopravy)</li>
                 <li>Kontaktné informácie</li>
@@ -48,7 +48,7 @@ require_once 'theme/header.php';
 
             <h3>2.3 Technické údaje:</h3>
             <ul>
-                <li>IP adresa (anonymizovaná)</li>
+                <li>IP adresa</li>
                 <li>Typ prehliadača a zariadenia</li>
                 <li>Čas návštevy a stránky, ktoré ste navštívili</li>
             </ul>
