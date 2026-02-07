@@ -133,7 +133,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
                 if ($userData->role === 'admin') {
                     header('Location: admin.php');
                 } else {
-                    header('Location: index.php');
+                    header('Location: user.php');
                 }
                 exit();
             }
@@ -181,6 +181,12 @@ require_once 'theme/header.php';
 
     <?php if (!empty($success)): ?>
         <div class="success-message"><?= $success ?></div>
+    <?php endif; ?>
+
+    <?php if (isset($_GET['account_deleted'])): ?>
+        <div class="success-message">
+            Váš účet bol úspešne odstránený.
+        </div>
     <?php endif; ?>
 
     <form method="post" autocomplete="off">

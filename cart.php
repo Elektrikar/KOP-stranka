@@ -241,7 +241,7 @@ if (!empty($items)) {
 <?php endif; ?>
     <div class="admin-header" style="border: none;">
         <a href="index.php" class="back-to-shop-btn">
-        <span style="font-size:0.65rem;margin-right:9px;">&#9664;</span> Späť k nákupu
+        <span style="font-size:0.65rem;margin-right:9px;">&#9664;</span> Späť do obchodu
     </a>
         <?php if (!empty($items)): ?>
             <a href="checkout1.php" class="btn-checkout">Pokračovať k pokladni</a>

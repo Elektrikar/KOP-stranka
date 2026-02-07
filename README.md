@@ -6,19 +6,17 @@
 
 ### Small Features
 
-- add notes to orders
-- add address data for logged in users
-- free shipping above 100€
+- translate roles and order status to slovak
 
 ### Large Features
 
-- add address for users, user menu with information about user, address, and delete account
 - send order status emails
-- Add working paywall (also change terms after)
+- Add working paywall (also check terms after)
 
 - Account for order+product management
 
 - Maybe:
+     - add notes to orders
      - Responsivity for phones
      - About us and contact page
      - Product ratings

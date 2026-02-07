@@ -113,6 +113,9 @@ if (!empty($_SESSION['user_first_name']) && !empty($_SESSION['user_last_name']))
                                         <a href="orders.php">
                                             Objednávky
                                         </a>
+                                        <a href="user.php">
+                                            Môj účet
+                                        </a>
                                         <a href="?logout=1" class="logout-btn" onclick="return confirm('Naozaj sa chcete odhlásiť?');">
                                             Odhlásiť sa
                                         </a>

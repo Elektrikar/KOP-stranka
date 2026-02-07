@@ -20,6 +20,14 @@ $total = $cart->getTotal();
 
 $error = '';
 
+if (isset($_SESSION['user_id'])) {
+    require_once __DIR__ . '/class/User.php';
+    $user = new User($pdo);
+    $userData = $user->getById($_SESSION['user_id']);
+} else {
+    $userData = null;
+}
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $_SESSION['checkout_temp'] = [
         'email' => trim($_POST['email'] ?? ''),
@@ -189,7 +197,7 @@ require_once 'theme/header.php';
                     <div class="form-group">
                         <label for="address">Adresa *</label>
                         <input type="text" id="address" name="address" required
-                            value="<?= htmlspecialchars($_SESSION['checkout_temp']['address'] ?? ($_SESSION['checkout']['address'] ?? ($_POST['address'] ?? ''))) ?>"
+                            value="<?= htmlspecialchars($_SESSION['checkout_temp']['address'] ?? ($_SESSION['checkout']['address'] ?? ($_POST['address'] ?? ($userData->address ?? '')))) ?>"
                             placeholder="Ulica a číslo domu">
                     </div>
 
@@ -197,12 +205,12 @@ require_once 'theme/header.php';
                         <div class="form-group">
                             <label for="city">Mesto *</label>
                             <input type="text" id="city" name="city" required
-                                value="<?= htmlspecialchars($_SESSION['checkout_temp']['city'] ?? ($_SESSION['checkout']['city'] ?? ($_POST['city'] ?? ''))) ?>">
+                                value="<?= htmlspecialchars($_SESSION['checkout_temp']['city'] ?? ($_SESSION['checkout']['city'] ?? ($_POST['city'] ?? ($userData->city ?? '')))) ?>">
                         </div>
                         <div class="form-group">
                             <label for="zip_code">PSČ *</label>
                             <input type="text" id="zip_code" name="zip_code" required
-                                value="<?= htmlspecialchars($_SESSION['checkout_temp']['zip_code'] ?? ($_SESSION['checkout']['zip_code'] ?? ($_POST['zip_code'] ?? ''))) ?>">
+                                value="<?= htmlspecialchars($_SESSION['checkout_temp']['zip_code'] ?? ($_SESSION['checkout']['zip_code'] ?? ($_POST['zip_code'] ?? ($userData->zip_code ?? '')))) ?>">
                         </div>
                     </div>
 
@@ -210,11 +218,11 @@ require_once 'theme/header.php';
                         <label for="country">Krajina *</label>
                         <select id="country" name="country" required>
                             <option value="">Vyberte krajinu</option>
-                            <option value="Slovensko" <?= ($_SESSION['checkout_temp']['country'] ?? ($_SESSION['checkout']['country'] ?? ($_POST['country'] ?? ''))) === 'Slovensko' ? 'selected' : '' ?>>Slovensko</option>
-                            <option value="Česko" <?= ($_SESSION['checkout_temp']['country'] ?? ($_SESSION['checkout']['country'] ?? ($_POST['country'] ?? ''))) === 'Česko' ? 'selected' : '' ?>>Česko</option>
-                            <option value="Maďarsko" <?= ($_SESSION['checkout_temp']['country'] ?? ($_SESSION['checkout']['country'] ?? ($_POST['country'] ?? ''))) === 'Maďarsko' ? 'selected' : '' ?>>Maďarsko</option>
-                            <option value="Poľsko" <?= ($_SESSION['checkout_temp']['country'] ?? ($_SESSION['checkout']['country'] ?? ($_POST['country'] ?? ''))) === 'Poľsko' ? 'selected' : '' ?>>Poľsko</option>
-                            <option value="Rakúsko" <?= ($_SESSION['checkout_temp']['country'] ?? ($_SESSION['checkout']['country'] ?? ($_POST['country'] ?? ''))) === 'Rakúsko' ? 'selected' : '' ?>>Rakúsko</option>
+                            <option value="Slovensko" <?= ($_SESSION['checkout_temp']['country'] ?? ($_SESSION['checkout']['country'] ?? ($_POST['country'] ?? ($userData->country ?? '')))) === 'Slovensko' ? 'selected' : '' ?>>Slovensko</option>
+                            <option value="Česko" <?= ($_SESSION['checkout_temp']['country'] ?? ($_SESSION['checkout']['country'] ?? ($_POST['country'] ?? ($userData->country ?? '')))) === 'Česko' ? 'selected' : '' ?>>Česko</option>
+                            <option value="Maďarsko" <?= ($_SESSION['checkout_temp']['country'] ?? ($_SESSION['checkout']['country'] ?? ($_POST['country'] ?? ($userData->country ?? '')))) === 'Maďarsko' ? 'selected' : '' ?>>Maďarsko</option>
+                            <option value="Poľsko" <?= ($_SESSION['checkout_temp']['country'] ?? ($_SESSION['checkout']['country'] ?? ($_POST['country'] ?? ($userData->country ?? '')))) === 'Poľsko' ? 'selected' : '' ?>>Poľsko</option>
+                            <option value="Rakúsko" <?= ($_SESSION['checkout_temp']['country'] ?? ($_SESSION['checkout']['country'] ?? ($_POST['country'] ?? ($userData->country ?? '')))) === 'Rakúsko' ? 'selected' : '' ?>>Rakúsko</option>
                         </select>
                     </div>
 

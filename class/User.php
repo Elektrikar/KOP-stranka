@@ -9,9 +9,14 @@ class User {
     public $first_name;
     public $last_name;
     public $role;
+    public $address;
+    public $city;
+    public $zip_code;
+    public $country;
     public $verification_token;
     public $is_verified;
     public $token_expires_at;
+    public $created_at;
 
     public function __construct($db = null) {
         $this->db = $db;
@@ -173,9 +178,67 @@ class User {
 
     public function delete() {
         if (!$this->db || !$this->id) return false;
+
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM orders WHERE user_id = :user_id");
+        $stmt->execute([':user_id' => $this->id]);
+        $orderCount = $stmt->fetchColumn();
         
-        $stmt = $this->db->prepare("DELETE FROM users WHERE id = :id");
-        return $stmt->execute([':id' => $this->id]);
+        if ($orderCount > 0) {
+            // Set orders to guest orders
+            $updateStmt = $this->db->prepare("UPDATE orders SET user_id = NULL WHERE user_id = :user_id");
+            $updateStmt->execute([':user_id' => $this->id]);
+        }
+        
+        // Delete user from database
+        $deleteStmt = $this->db->prepare("DELETE FROM users WHERE id = :id");
+        return $deleteStmt->execute([':id' => $this->id]);
+    }
+
+    public function updateAddress($address, $city, $zip_code, $country) {
+        if (!$this->db || !$this->id) return false;
+        
+        $stmt = $this->db->prepare("
+            UPDATE users 
+            SET address = :address, 
+                city = :city, 
+                zip_code = :zip_code, 
+                country = :country,
+                updated_at = NOW()
+            WHERE id = :id
+        ");
+        
+        $result = $stmt->execute([
+            ':address' => $address,
+            ':city' => $city,
+            ':zip_code' => $zip_code,
+            ':country' => $country,
+            ':id' => $this->id
+        ]);
+        
+        if ($result) {
+            // Update current object properties
+            $this->address = $address;
+            $this->city = $city;
+            $this->zip_code = $zip_code;
+            $this->country = $country;
+            return true;
+        }
+        
+        return false;
+    }
+
+    public function getFullAddress() {
+        $parts = [];
+        if (!empty($this->address)) $parts[] = $this->address;
+        if (!empty($this->city) || !empty($this->zip_code)) {
+            $cityPart = '';
+            if (!empty($this->zip_code)) $cityPart .= $this->zip_code . ' ';
+            if (!empty($this->city)) $cityPart .= $this->city;
+            $parts[] = trim($cityPart);
+        }
+        if (!empty($this->country)) $parts[] = $this->country;
+        
+        return implode("\n", $parts);
     }
 
     public function getAll() {
@@ -200,8 +263,13 @@ class User {
         $this->first_name = $row['first_name'];
         $this->last_name = $row['last_name'];
         $this->role = $row['role'];
+        $this->address = $row['address'] ?? null;
+        $this->city = $row['city'] ?? null;
+        $this->zip_code = $row['zip_code'] ?? null;
+        $this->country = $row['country'] ?? null;
         $this->verification_token = $row['verification_token'] ?? null;
         $this->is_verified = $row['is_verified'] ?? false;
         $this->token_expires_at = $row['token_expires_at'] ?? null;
+        $this->created_at = $row['created_at'];
     }
 }

@@ -106,8 +106,8 @@ $categories = $pdo->query("
                         <path d="M5 12h14M12 5l7 7-7 7" />
                     </svg>
                 </div>
-                <h3>Doprava zdarma</h3>
-                <p>Pri nákupe nad 100 €</p>
+                <h3>Rýchla doprava</h3>
+                <p>3-5 pracovných dní</p>
             </div>
             <div class="feature-item">
                 <div class="feature-icon">
