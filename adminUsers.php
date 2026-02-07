@@ -148,7 +148,7 @@ require_once 'theme/header.php';
                         <td class="actions">
                             <?php if ($u['id'] !== (int)$_SESSION['user_id']): ?>
                                 <form method="post" action="adminDelete.php" class="inline-form"
-                                      onsubmit="return confirm('Naozaj chcete zmazať tohto používateľa a všetky jeho objednávky?');">
+                                      onsubmit="return confirm('Naozaj chcete zmazať tohto používateľa?');">
                                     <input type="hidden" name="id" value="<?= $u['id'] ?>">
                                     <input type="hidden" name="type" value="user">
                                     <button type="submit" class="btn-delete"><svg width="20px" height="20px" viewBox="0 0 92 92">

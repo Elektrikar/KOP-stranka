@@ -9,6 +9,12 @@ if (file_exists($envFile)) {
     }
 }
 
+// load composer autoload for PHPMailer
+$composerAutoload = __DIR__ . '/../vendor/autoload.php';
+if (file_exists($composerAutoload)) {
+    require_once $composerAutoload;
+}
+
 function env($key, $default = null) {
     return $_ENV[$key] ?? $default;
 }

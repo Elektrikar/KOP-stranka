@@ -12,12 +12,11 @@
 
 ### Large Features
 
-- CREATE EMAIL
-- register -> email verification
+- add address for users, user menu with information about user, address, and delete account
 - send order status emails
 - Add working paywall (also change terms after)
 
-- Account for order management
+- Account for order+product management
 
 - Maybe:
      - Responsivity for phones

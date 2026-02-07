@@ -121,19 +121,8 @@ if ($type === 'category') {
         $stmt = $pdo->prepare("DELETE FROM wishlist WHERE user_id = ?");
         $stmt->execute([$id]);
 
-        // Get all orders for this user to delete order_details
-        $stmt = $pdo->prepare("SELECT id FROM orders WHERE user_id = ?");
-        $stmt->execute([$id]);
-        $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
-
-        // Delete order_details for all orders belonging to this user
-        foreach ($orders as $order) {
-            $stmt = $pdo->prepare("DELETE FROM order_details WHERE order_id = ?");
-            $stmt->execute([$order['id']]);
-        }
-
-        // Delete orders
-        $stmt = $pdo->prepare("DELETE FROM orders WHERE user_id = ?");
+        // Set users orders to guest orders
+        $stmt = $pdo->prepare("UPDATE orders SET user_id = NULL WHERE user_id = ?");
         $stmt->execute([$id]);
 
         // Delete user
@@ -147,4 +136,3 @@ if ($type === 'category') {
         exit();
     }
 }
-
