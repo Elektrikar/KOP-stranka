@@ -30,7 +30,7 @@ if (isset($_GET['logout'])) {
     exit();
 }
 
-// Check if user is logged in and has admin role
+// Check if user is logged in and has admin or manager role
 $loggedIn = false;
 $currentUser = null;
 $showLoginSuccess = false;
@@ -42,11 +42,11 @@ if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true
         isset($_SESSION['user_id'])
     ) {
         if (time() - $_SESSION['login_time'] < 3600) {
-            // Verify user still exists and has admin role
+            // Verify user still exists and has admin or manager role
             $user = new User($db);
             $currentUser = $user->getById($_SESSION['user_id']);
 
-            if ($currentUser && $currentUser->role === 'admin') {
+            if ($currentUser && in_array($currentUser->role, ['admin', 'manager'])) {
                 $loggedIn = true;
                 
                 // Check if this is the first page load after login
@@ -79,8 +79,11 @@ if (!$loggedIn) {
     exit();
 }
 
+$isAdmin = ($currentUser->role === 'admin');
+$isManager = ($currentUser->role === 'manager');
+
 $pageData = array(
-    'title' => 'Domov | Admin',
+    'title' => 'Domov | ' . ($isAdmin ? 'Admin' : 'Manažér'),
     'metaDataDescription' => 'Administračný panel'
 );
 require_once 'theme/header.php';
@@ -94,17 +97,19 @@ require_once 'theme/header.php';
 
     <?php if ($showLoginSuccess): ?>
         <div class="success-message">
-            Úspešne ste sa prihlásili ako administrátor
+            Úspešne ste sa prihlásili ako <?= $isAdmin ? 'administrátor' : 'manažér' ?>
         </div>
     <?php endif; ?>
 
     <div class="admin-features">
-        <h3>Administračný panel</h3>
+        <h3><?= $isAdmin ? 'Administračný panel' : 'Manažérsky panel' ?></h3>
 
-        <div class="feature-card">
-            <h4>Správa používateľov</h4>
-            <p><a href="adminUsers.php" class="admin-link">Používatelia</a></p>
-        </div>
+        <?php if ($isAdmin): ?>
+            <div class="feature-card">
+                <h4>Správa používateľov</h4>
+                <p><a href="adminUsers.php" class="admin-link">Používatelia</a></p>
+            </div>
+        <?php endif; ?>
 
         <div class="feature-card">
             <h4>Správa objednávok</h4>
@@ -127,6 +132,7 @@ require_once 'theme/header.php';
                 <?= htmlspecialchars($_SESSION['user_ip']) ?>
             </p>
             <p>Užívateľ: <?= htmlspecialchars($currentUser->email) ?></p>
+            <p>Rola: <?= $isAdmin ? 'Administrátor' : 'Manažér' ?></p>
         </div>
     </div>
 

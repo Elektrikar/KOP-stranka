@@ -26,9 +26,10 @@ if (!$orderData) {
 
 // Check permission
 $isAdmin = isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
+$isManager = isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'manager';
 $isOwner = isset($_SESSION['user_id']) && $orderData->user_id == $_SESSION['user_id'];
 
-if (!$isAdmin && !$isOwner) {
+if (!$isAdmin && !$isManager && !$isOwner) {
     header('Location: index.php');
     exit();
 }
@@ -171,7 +172,7 @@ require_once 'theme/header.php';
             </table>
         </div>
 
-        <?php if ($isAdmin): ?>
+        <?php if ($isAdmin || $isManager): ?>
             <div class="admin-actions">
                 <h3>Administratívne akcie</h3>
                 <div class="action-row">
@@ -189,12 +190,14 @@ require_once 'theme/header.php';
                             <button type="submit" name="update_status" value="1" class="btn-update">Aktualizovať</button>
                         </div>
                     </form>
-                    <form method="post" action="adminDelete.php" class="inline-form"
-                            onsubmit="return confirm('Naozaj chcete zmazať túto objednávku?');">
-                        <input type="hidden" name="id" value="<?= $orderData->id ?>">
-                        <input type="hidden" name="type" value="order">
-                        <button type="submit" class="btn-delete">Zmazať</button>
-                    </form>
+                    <?php if ($isAdmin): ?>
+                        <form method="post" action="adminDelete.php" class="inline-form"
+                                onsubmit="return confirm('Naozaj chcete zmazať túto objednávku?');">
+                            <input type="hidden" name="id" value="<?= $orderData->id ?>">
+                            <input type="hidden" name="type" value="order">
+                            <button type="submit" class="btn-delete">Zmazať</button>
+                        </form>
+                    <?php endif; ?>
                 </div>
             </div>
         <?php endif; ?>

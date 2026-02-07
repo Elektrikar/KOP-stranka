@@ -5,7 +5,7 @@ require_once __DIR__ . '/config/config.php';
 require_once __DIR__ . '/class/Database.php';
 require_once __DIR__ . '/class/Product.php';
 
-if (empty($_SESSION['user_id']) || empty($_SESSION['user_role']) || $_SESSION['user_role'] !== 'admin') {
+if (empty($_SESSION['user_id']) || empty($_SESSION['user_role']) || !in_array($_SESSION['user_role'], ['admin', 'manager'])) {
     header('Location: login.php');
     exit();
 }

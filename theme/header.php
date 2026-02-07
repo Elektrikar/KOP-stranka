@@ -24,6 +24,11 @@ if (isset($_GET['logout'])) {
     exit();
 }
 
+$showAdminLink = false;
+if (!empty($_SESSION['user_role']) && in_array($_SESSION['user_role'], ['admin', 'manager'])) {
+    $showAdminLink = true;
+}
+
 // Fill $pageData with defaults if not set
 if (!isset($pageData) || !is_array($pageData)) {
     $pageData = array();
@@ -92,10 +97,16 @@ if (!empty($_SESSION['user_first_name']) && !empty($_SESSION['user_last_name']))
                                 Produkty
                             </a></li>
                         <li><a href="categories.php">Kategórie</a></li>
-                        <?php if (!empty($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin'): ?>
+                        <?php if ($showAdminLink): ?>
                             <li><a href="admin.php">
-                                    Admin panel
-                                </a></li>
+                                <?php 
+                                if ($_SESSION['user_role'] === 'manager') {
+                                    echo 'Manažérsky panel';
+                                } else {
+                                    echo 'Admin panel';
+                                }
+                                ?>
+                            </a></li>
                         <?php endif; ?>
                         <li>
                             <?php if (!empty($_SESSION['user_logged_in'])): ?>

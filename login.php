@@ -123,14 +123,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email']) && isset($_P
                 $_SESSION['user_agent'] = $_SERVER['HTTP_USER_AGENT'];
                 $_SESSION['login_time'] = time();
 
-                if ($userData->role === 'admin') {
+                if (in_array($userData->role, ['admin', 'manager'])) {
                     $_SESSION['admin_logged_in'] = true;
                 }
 
                 unset($_SESSION[$rateLimitKey]);
 
                 // Redirect based on user role
-                if ($userData->role === 'admin') {
+                if (in_array($userData->role, ['admin', 'manager'])) {
                     header('Location: admin.php');
                 } else {
                     header('Location: user.php');

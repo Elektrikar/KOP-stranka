@@ -4,16 +4,29 @@ if (session_status() === PHP_SESSION_NONE) session_start();
 require_once __DIR__ . '/config/config.php';
 require_once __DIR__ . '/class/Database.php';
 
-if (empty($_SESSION['user_id']) || $_SESSION['user_role'] !== 'admin') {
+if (empty($_SESSION['user_id']) || empty($_SESSION['user_role']) || !in_array($_SESSION['user_role'], ['admin', 'manager'])) {
     header('Location: login.php');
     exit();
 }
+
+$isAdmin = ($_SESSION['user_role'] === 'admin');
+$isManager = ($_SESSION['user_role'] === 'manager');
 
 $id = (int)($_POST['id'] ?? 0);
 $type = $_POST['type'] ?? 'product';
 
 if (!in_array($type, ['product', 'category', 'order', 'user'])) {
     $type = 'product';
+}
+
+// Prevent managers from deleting orders and users
+if ($type === 'order' && $isManager) {
+    header('Location: adminOrders.php?error=unauthorized');
+    exit();
+}
+if ($type === 'user' && $isManager) {
+    header('Location: adminUsers.php?error=unauthorized');
+    exit();
 }
 
 if ($id === 0) {

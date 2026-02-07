@@ -11,8 +11,6 @@
 - send order status emails
 - Add working paywall (also check terms after)
 
-- Account for order+product management
-
 - Maybe:
      - add notes to orders
      - Responsivity for phones
@@ -22,7 +20,7 @@
      - Notify feature
      - 2FA login
 
-## Images
+## Images (OLD)
 
 ### Main Website
 
