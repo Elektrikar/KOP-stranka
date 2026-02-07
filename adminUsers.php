@@ -137,9 +137,9 @@ require_once 'theme/header.php';
                             <form method="post" class="status-form">
                                 <input type="hidden" name="user_id" value="<?= $u['id'] ?>">
                                 <select name="role" onchange="this.form.submit()">
-                                    <option value="user" <?= $u['role'] === 'user' ? 'selected' : '' ?>>User</option>
-                                    <option value="manager" <?= $u['role'] === 'manager' ? 'selected' : '' ?>>Manager</option>
-                                    <option value="admin" <?= $u['role'] === 'admin' ? 'selected' : '' ?>>Admin</option>
+                                    <option value="user" <?= $u['role'] === 'user' ? 'selected' : '' ?>>Používateľ</option>
+                                    <option value="manager" <?= $u['role'] === 'manager' ? 'selected' : '' ?>>Manažér</option>
+                                    <option value="admin" <?= $u['role'] === 'admin' ? 'selected' : '' ?>>Administrátor</option>
                                 </select>
                                 <input type="hidden" name="update_role" value="1">
                             </form>

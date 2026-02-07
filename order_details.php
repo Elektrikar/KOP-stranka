@@ -67,7 +67,18 @@ require_once 'theme/header.php';
                 </div>
                 <div class="info-row">
                     <span class="info-label">Stav:</span>
-                    <span class="info-value status-badge-small status-<?= $orderData->status ?>"><?= $orderData->status ?></span>
+                    <span class="info-value status-badge-small status-<?= $orderData->status ?>">
+                        <?php 
+                        $statusLabels = [
+                            'pending' => 'Čaká na spracovanie',
+                            'processing' => 'Spracováva sa',
+                            'shipped' => 'Odoslané',
+                            'delivered' => 'Doručené',
+                            'cancelled' => 'Zrušené'
+                        ];
+                        echo htmlspecialchars($statusLabels[$orderData->status] ?? $orderData->status);
+                        ?>
+                    </span>
                 </div>
             </div>
 
@@ -169,11 +180,11 @@ require_once 'theme/header.php';
                         <div class="form-group">
                             <label for="status">Zmeniť stav:</label>
                             <select name="status" id="status">
-                                <option value="pending" <?= $orderData->status === 'pending' ? 'selected' : '' ?>>Pending</option>
-                                <option value="processing" <?= $orderData->status === 'processing' ? 'selected' : '' ?>>Processing</option>
-                                <option value="shipped" <?= $orderData->status === 'shipped' ? 'selected' : '' ?>>Shipped</option>
-                                <option value="delivered" <?= $orderData->status === 'delivered' ? 'selected' : '' ?>>Delivered</option>
-                                <option value="cancelled" <?= $orderData->status === 'cancelled' ? 'selected' : '' ?>>Cancelled</option>
+                                <option value="pending" <?= $orderData->status === 'pending' ? 'selected' : '' ?>>Čaká na spracovanie</option>
+                                <option value="processing" <?= $orderData->status === 'processing' ? 'selected' : '' ?>>Spracováva sa</option>
+                                <option value="shipped" <?= $orderData->status === 'shipped' ? 'selected' : '' ?>>Odoslané</option>
+                                <option value="delivered" <?= $orderData->status === 'delivered' ? 'selected' : '' ?>>Doručené</option>
+                                <option value="cancelled" <?= $orderData->status === 'cancelled' ? 'selected' : '' ?>>Zrušené</option>
                             </select>
                             <button type="submit" name="update_status" value="1" class="btn-update">Aktualizovať</button>
                         </div>

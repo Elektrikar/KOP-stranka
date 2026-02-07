@@ -134,11 +134,11 @@ require_once 'theme/header.php';
                             <div class="status-badge-small status-<?= $o['status'] ?>">
                                 <?php 
                                 $statusLabels = [
-                                    'pending' => 'Pending',
-                                    'processing' => 'Processing',
-                                    'shipped' => 'Shipped',
-                                    'delivered' => 'Delivered',
-                                    'cancelled' => 'Cancelled'
+                                    'pending' => 'Čaká na spracovanie',
+                                    'processing' => 'Spracováva sa',
+                                    'shipped' => 'Odoslané',
+                                    'delivered' => 'Doručené',
+                                    'cancelled' => 'Zrušené'
                                 ];
                                 echo htmlspecialchars($statusLabels[$o['status']] ?? $o['status']);
                                 ?>

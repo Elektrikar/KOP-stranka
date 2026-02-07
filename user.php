@@ -141,7 +141,16 @@ require_once 'theme/header.php';
                 <?php if ($userData->role !== 'user'): ?>
                 <div class="user-info-row">
                     <span class="user-info-label">Typ účtu:</span>
-                    <span class="user-info-value"><?= htmlspecialchars(ucfirst($userData->role)) ?></span>
+                    <span class="user-info-value">
+                        <?php 
+                        $roleLabels = [
+                            'user' => 'Používateľ',
+                            'manager' => 'Manažér', 
+                            'admin' => 'Administrátor'
+                        ];
+                        echo htmlspecialchars($roleLabels[$userData->role] ?? ucfirst($userData->role));
+                        ?>
+                    </span>
                 </div>
                 <?php endif ?>
                 <div class="user-info-row">

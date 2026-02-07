@@ -99,7 +99,7 @@ require_once 'theme/header.php';
     <?php endif; ?>
 
     <div class="admin-features">
-        <h3>Admin Dashboard</h3>
+        <h3>Administračný panel</h3>
 
         <div class="feature-card">
             <h4>Správa používateľov</h4>

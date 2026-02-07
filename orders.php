@@ -45,7 +45,18 @@ require_once 'theme/header.php';
                                 <span class="order-date">Dátum: <?= date('d.m.Y H:i', strtotime($orderItem['created_at'])) ?></span>
                             </div>
                             <div class="order-status">
-                                <span class="status-badge status-<?= $orderItem['status'] ?>"><?= $orderItem['status'] ?></span>
+                                <span class="status-badge status-<?= $orderItem['status'] ?>">
+                                    <?php 
+                                    $statusLabels = [
+                                        'pending' => 'Čaká na spracovanie',
+                                        'processing' => 'Spracováva sa',
+                                        'shipped' => 'Odoslané',
+                                        'delivered' => 'Doručené',
+                                        'cancelled' => 'Zrušené'
+                                    ];
+                                    echo htmlspecialchars($statusLabels[$orderItem['status']] ?? $orderItem['status']);
+                                    ?>
+                                </span>
                                 <span class="order-total"><?= number_format($orderItem['total'], 2, ',', ' ') ?> €</span>
                             </div>
                         </div>

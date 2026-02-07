@@ -59,7 +59,18 @@ require_once 'theme/header.php';
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Stav:</span>
-                    <span class="detail-value status-badge-small status-<?= $orderData->status ?>"><?= $orderData->status ?></span>
+                    <span class="detail-value status-badge-small status-<?= $orderData->status ?>">
+                        <?php 
+                        $statusLabels = [
+                            'pending' => 'Čaká na spracovanie',
+                            'processing' => 'Spracováva sa',
+                            'shipped' => 'Odoslané',
+                            'delivered' => 'Doručené',
+                            'cancelled' => 'Zrušené'
+                        ];
+                        echo htmlspecialchars($statusLabels[$orderData->status] ?? $orderData->status);
+                        ?>
+                    </span>
                 </div>
                 <div class="detail-row">
                     <span class="detail-label">Spôsob doručenia:</span>

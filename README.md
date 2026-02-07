@@ -6,8 +6,6 @@
 
 ### Small Features
 
-- translate roles and order status to slovak
-
 ### Large Features
 
 - send order status emails
