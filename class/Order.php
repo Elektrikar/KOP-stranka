@@ -149,6 +149,7 @@ class Order
             }
 
             $this->db->commit();
+            $this->sendOrderConfirmationEmail($orderId, $email, $address);
             return $orderId;
         } catch (Exception $e) {
             if ($this->db->inTransaction()) {
@@ -234,8 +235,37 @@ class Order
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
-    public function updateStatus($order_id, $status)
-    {
+    private function sendOrderConfirmationEmail($orderId, $email) {
+        try {
+            require_once __DIR__ . '/Email.php';
+            
+            // Get order details for email
+            $orderStmt = $this->db->prepare("
+                SELECT o.*, 
+                    u.first_name, u.last_name
+                FROM orders o
+                LEFT JOIN users u ON u.id = o.user_id
+                WHERE o.id = ?
+            ");
+            $orderStmt->execute([$orderId]);
+            $orderData = $orderStmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($orderData) {
+                $name = !empty($orderData['first_name']) 
+                    ? $orderData['first_name'] . ' ' . $orderData['last_name']
+                    : 'Zákazník';
+                
+                $emailService = new Email($this->db);
+                return $emailService->sendOrderConfirmation($email, $name, $orderData);
+            }
+        } catch (Exception $e) {
+            // Log error but don't interrupt the order process
+            error_log("Failed to send order confirmation email: " . $e->getMessage());
+        }
+        return false;
+    }
+
+    public function updateStatus($order_id, $status) {
         if (!$this->db) return false;
 
         $allowedStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
@@ -250,14 +280,53 @@ class Order
             WHERE id = :order_id
         ");
 
-        return $stmt->execute([
+        $result = $stmt->execute([
             ':status' => $status,
             ':order_id' => $order_id
         ]);
+        
+        if ($result) {
+            $this->sendStatusUpdateEmail($order_id, $status);
+            return true;
+        }
+        
+        return false;
     }
 
-    private function populateFromRow($row)
-    {
+    private function sendStatusUpdateEmail($orderId, $newStatus) {
+        try {
+            require_once __DIR__ . '/Email.php';
+            
+            // Get order details for email
+            $orderStmt = $this->db->prepare("
+                SELECT o.*, 
+                    u.first_name, u.last_name, u.email
+                FROM orders o
+                LEFT JOIN users u ON u.id = o.user_id
+                WHERE o.id = ?
+            ");
+            $orderStmt->execute([$orderId]);
+            $orderData = $orderStmt->fetch(PDO::FETCH_ASSOC);
+            
+            if ($orderData && !empty($orderData['email'])) {
+                $name = !empty($orderData['first_name']) 
+                    ? $orderData['first_name'] . ' ' . $orderData['last_name']
+                    : 'Zákazník';
+
+                // Update the status in order data for the email template
+                $orderData['status'] = $newStatus;
+                
+                $emailService = new Email($this->db);
+                return $emailService->sendOrderStatusUpdate($orderData['email'], $name, $orderData);
+            }
+        } catch (Exception $e) {
+            // Log error but don't interrupt the status update
+            error_log("Failed to send status update email: " . $e->getMessage());
+        }
+        return false;
+    }
+
+    private function populateFromRow($row) {
         $this->id = $row['id'];
         $this->user_id = $row['user_id'];
         $this->order_email = $row['order_email'];
@@ -277,8 +346,7 @@ class Order
         $this->payment_description = $row['payment_description'];
     }
 
-    public function getSubtotal($order_id)
-    {
+    public function getSubtotal($order_id) {
         if (!$this->db) return 0;
         
         $stmt = $this->db->prepare("

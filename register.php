@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resend_verification']
         if ($existingUser && !$existingUser->is_verified) {
             // Regenerate verification token
             if ($existingUser->resendVerificationToken()) {
-                $emailService = new Email();
+                $emailService = new Email($pdo);
                 if ($emailService->sendVerificationEmail($email, $first_name . ' ' . $last_name, $existingUser->verification_token)) {
                     $success = 'Nový overovací email bol odoslaný. Skontrolujte svoju emailovú schránku.';
                     $show_verification_message = true;
@@ -84,7 +84,7 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['resend_verificat
                 
                 if ($newUser) {
                     // Send verification email
-                    $emailService = new Email();
+                    $emailService = new Email($pdo);
                     if ($emailService->sendVerificationEmail($email, $first_name . ' ' . $last_name, $newUser->verification_token)) {
                         $show_verification_message = true;
                         $success = 'Účet bol úspešne vytvorený! Skontrolujte svoj email pre potvrdenie registrácie.';

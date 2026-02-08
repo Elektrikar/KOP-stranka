@@ -68,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['resend_verification']
         if ($userData && !$userData->is_verified) {
             // Resend verification email
             require_once __DIR__ . '/class/Email.php';
-            $emailService = new Email();
+            $emailService = new Email($pdo);
             
             if ($emailService->sendVerificationEmail($email, 
                 $userData->first_name . ' ' . $userData->last_name, 
