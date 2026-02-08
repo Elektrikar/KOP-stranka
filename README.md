@@ -1,6 +1,4 @@
-# KOP-stranka
-
-elektroobchod.online
+# [KOP-stranka](https://elektroobchod.online)
 
 ## To Do
 
