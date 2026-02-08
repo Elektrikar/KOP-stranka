@@ -6,9 +6,12 @@
 
 ### Small Features
 
-### Large Features
+- for "osobný odber", only available statuses should be "pending", "delivered" and "cancelled"
 
-- send order status emails
+- Maybe:
+     - Improve order status emails - mainly the subject and description
+
+### Large Features
 
 - Maybe:
      - add notes to orders

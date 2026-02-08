@@ -83,52 +83,45 @@ class Email {
     public function sendOrderConfirmation($to, $orderData) {
         $subject = "Potvrdenie objednávky #" . str_pad($orderData['id'], 6, '0', STR_PAD_LEFT);
         
-        // Get order details with products
         $orderDetails = $this->getOrderDetails($orderData['id']);
         
-        // Check if payment is completed (based on payment method)
         $paymentMethod = strtolower($orderData['payment_name'] ?? '');
-        $paymentStatus = '';
-        if (strpos($paymentMethod, 'karta') !== false || strpos($paymentMethod, 'card') !== false) {
-            $paymentStatus = 'Uhradené';
-        } else {
-            $paymentStatus = 'Čaká na úhradu (dobierka)';
-        }
-        
-        // Check shipping method
-        $shippingMethod = strtolower($orderData['shipping_name'] ?? '');
-        $shippingInfo = '';
-        if (strpos($shippingMethod, 'osobný odber') !== false || strpos($shippingMethod, 'pickup') !== false) {
-            $shippingInfo = '<div class="shipping-note"><strong>Osobný odber:</strong> Po naskladnení si môžete objednávku vyzdvihnúť na našej predajni.</div>';
-        } else {
-            $shippingInfo = '<div class="shipping-note"><strong>Doprava:</strong> Vaša objednávka bude pripravená na odoslanie po spracovaní.</div>';
-        }
-        
-        // Build products table
+        $paymentStatus = strpos($paymentMethod, 'karta') !== false ? 'Uhradené' : 'Čaká na úhradu (dobierka)';
+
         $productsTable = '';
         $subtotal = 0;
         if (!empty($orderDetails)) {
-            $productsTable = '<table class="products-table" width="100%" cellpadding="10" cellspacing="0">';
-            $productsTable .= '<tr style="background: #f8f9fa; border-bottom: 2px solid #ddd;">';
-            $productsTable .= '<th style="text-align: left; padding: 10px;">Produkt</th>';
-            $productsTable .= '<th style="text-align: center; padding: 10px;">Množstvo</th>';
-            $productsTable .= '<th style="text-align: right; padding: 10px;">Cena</th>';
-            $productsTable .= '<th style="text-align: right; padding: 10px;">Celkom</th>';
-            $productsTable .= '</tr>';
+            $productsTable = '<table class="products-table">';
+            $productsTable .= '<tr><th>Obrázok</th><th>Produkt</th><th>Množstvo</th><th>Cena</th><th>Celkom</th></tr>';
             
             foreach ($orderDetails as $item) {
                 $itemTotal = $item['price'] * $item['quantity'];
                 $subtotal += $itemTotal;
+                $imageUrl = $this->getProductImageUrl($item['image']);
                 
-                $productsTable .= '<tr style="border-bottom: 1px solid #eee;">';
-                $productsTable .= '<td style="padding: 10px;">' . htmlspecialchars($item['name']) . '</td>';
-                $productsTable .= '<td style="text-align: center; padding: 10px;">' . $item['quantity'] . ' ks</td>';
-                $productsTable .= '<td style="text-align: right; padding: 10px;">' . number_format($item['price'], 2, ',', ' ') . ' €</td>';
-                $productsTable .= '<td style="text-align: right; padding: 10px;">' . number_format($itemTotal, 2, ',', ' ') . ' €</td>';
+                $productsTable .= '<tr>';
+                $productsTable .= '<td class="text-center">';
+                if ($imageUrl) {
+                    $productsTable .= '<img src="' . $imageUrl . '" alt="' . htmlspecialchars($item['name']) . '">';
+                } else {
+                    $productsTable .= '-';
+                }
+                $productsTable .= '</td>';
+                $productsTable .= '<td>' . htmlspecialchars($item['name']) . '</td>';
+                $productsTable .= '<td class="text-center">' . $item['quantity'] . ' ks</td>';
+                $productsTable .= '<td class="text-right">' . number_format($item['price'], 2, ',', ' ') . ' €</td>';
+                $productsTable .= '<td class="text-right">' . number_format($itemTotal, 2, ',', ' ') . ' €</td>';
                 $productsTable .= '</tr>';
             }
             
             $productsTable .= '</table>';
+        }
+        
+        $totalDisplay = '';
+        if (strpos($paymentMethod, 'karta') !== false) {
+            $totalDisplay = '<td>Uhradené</td>';
+        } else {
+            $totalDisplay = '<td>' . number_format($orderData['total'], 2, ',', ' ') . ' €</td>';
         }
         
         $html_message = "
@@ -138,100 +131,184 @@ class Email {
             <meta charset='UTF-8'>
             <title>{$subject}</title>
             <style>
-                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px; }
-                .header { background: #4a6bdf; color: white; padding: 25px; text-align: center; border-radius: 8px 8px 0 0; }
-                .content { background: #f8f9fa; padding: 35px; border-radius: 0 0 8px 8px; }
-                .order-info { background: white; padding: 25px; border-radius: 8px; margin: 25px 0; border: 1px solid #ddd; }
-                .info-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
-                .total-row { font-weight: bold; border-top: 2px solid #333; padding-top: 15px; margin-top: 15px; font-size: 1.1em; }
-                .status-badge { display: inline-block; padding: 6px 12px; border-radius: 12px; font-size: 0.9em; font-weight: bold; margin-left: 10px; }
-                .status-paid { background: #d4edda; color: #155724; }
-                .status-pending { background: #fff3cd; color: #856404; }
-                .footer { text-align: center; margin-top: 40px; color: #666; font-size: 0.9em; padding-top: 20px; border-top: 1px solid #ddd; }
-                .products-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-                .products-table th { background: #f8f9fa; font-weight: bold; }
-                .products-table td, .products-table th { padding: 12px; border-bottom: 1px solid #ddd; }
-                .shipping-note { background: #e8f4fd; padding: 15px; border-radius: 6px; margin: 15px 0; border-left: 4px solid #4a6bdf; }
-                .order-summary { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #ddd; }
-                .summary-row { display: flex; justify-content: space-between; padding: 8px 0; }
-                .summary-total { font-weight: bold; border-top: 2px solid #333; padding-top: 12px; margin-top: 12px; }
+                body { 
+                    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; 
+                    line-height: 1.6; 
+                    color: #2d3748; 
+                    background: #f7fafc; 
+                    margin: 0; 
+                    padding: 20px; 
+                }
+                .email-container { 
+                    max-width: 700px; 
+                    margin: 0 auto; 
+                    background: white; 
+                    border-radius: 12px; 
+                    overflow: hidden; 
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+                }
+                .header { 
+                    background-color: #4a6bdf;
+                    color: white; 
+                    padding: 30px; 
+                    text-align: center; 
+                }
+                .content { 
+                    padding: 40px; 
+                }
+                .order-card { 
+                    background: #fff; 
+                    border-radius: 8px; 
+                    padding: 25px; 
+                    margin: 25px 0; 
+                    border: 1px solid #e2e8f0; 
+                }
+                .info-grid { 
+                    display: grid; 
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+                    gap: 15px; 
+                    margin-top: 20px;
+                }
+                .info-item { 
+                    padding: 10px 0; 
+                    border-bottom: 1px solid #edf2f7; 
+                }
+                .products-table { 
+                    width: 100%; 
+                    border-collapse: collapse; 
+                    margin: 25px 0; 
+                }
+                .products-table th { 
+                    background: #f8fafc; 
+                    padding: 14px; 
+                    text-align: left; 
+                    font-weight: 600; 
+                    color: #4a5568; 
+                    border-bottom: 2px solid #e2e8f0; 
+                }
+                .products-table td { 
+                    padding: 14px; 
+                    border-bottom: 1px solid #edf2f7; 
+                    vertical-align: middle; 
+                }
+                .products-table tr:hover { 
+                    background: #f8fafc; 
+                }
+                .text-center { text-align: center; }
+                .text-right { text-align: right; }
+                .summary { 
+                    background: #f8fafc; 
+                    padding: 25px; 
+                    border-radius: 8px; 
+                    margin: 25px 0; 
+                }
+                .summary table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+                .summary-row td {
+                    padding: 12px 0;
+                    border-bottom: 1px solid #e2e8f0;
+                    font-size: 15px;
+                    color: #4a5568;
+                }
+                .summary-row:first-child td {
+                    padding-top: 0;
+                }
+                .summary-total td {
+                    padding-top: 15px;
+                    padding-bottom: 0;
+                    border-top: 2px solid #cbd5e0;
+                    border-bottom: none;
+                    font-weight: bold;
+                    font-size: 1.2em;
+                    color: #2d3748;
+                }
+                .summary td:first-child {
+                    text-align: left;
+                    padding-right: 15px;
+                }
+                .summary td:last-child {
+                    text-align: right;
+                    font-weight: 500;
+                    white-space: nowrap;
+                }
+                .summary-total td:last-child {
+                    font-weight: 700;
+                }
+                .footer { 
+                    text-align: center; 
+                    padding: 25px; 
+                    color: #718096; 
+                    font-size: 0.9em; 
+                    border-top: 1px solid #e2e8f0; 
+                    background: #f8fafc; 
+                }
             </style>
         </head>
         <body>
-            <div class='header'>
-                <h1>ElektroObchod</h1>
-                <h2>Potvrdenie objednávky</h2>
-            </div>
-            <div class='content'>
-                <p>Ďakujeme za vašu objednávku. Bola úspešne prijatá a spracováva sa.</p>
-                
-                <div class='order-info'>
-                    <h3>Informácie o objednávke</h3>
-                    <div class='info-row'>
-                        <span>Číslo objednávky: </span>
-                        <span><strong>#" . str_pad($orderData['id'], 6, '0', STR_PAD_LEFT) . "</strong></span>
-                    </div>
-                    <div class='info-row'>
-                        <span>Dátum objednávky: </span>
-                        <span>" . date('d.m.Y H:i', strtotime($orderData['created_at'])) . "</span>
-                    </div>
-                    <div class='info-row'>
-                        <span>Stav: </span>
-                        <span><span class='status-badge status-pending'>Čaká na spracovanie</span></span>
-                    </div>
-                    <div class='info-row'>
-                        <span>Spôsob dopravy: </span>
-                        <span>" . htmlspecialchars($orderData['shipping_name'] ?? 'Neuvedené') . "</span>
-                    </div>
-                    <div class='info-row'>
-                        <span>Spôsob platby: </span>
-                        <span>" . htmlspecialchars($orderData['payment_name'] ?? 'Neuvedené') . "</span>
-                    </div>
-                    <div class='info-row total-row'>
-                        <span>Stav platby: </span>
-                        <span><span class='status-badge " . (strpos($paymentMethod, 'karta') !== false ? 'status-paid' : 'status-pending') . "'>" . $paymentStatus . "</span></span>
-                    </div>
+            <div class='email-container'>
+                <div class='header'>
+                    <h1 style='margin:0; font-size: 28px;'>ElektroObchod</h1>
                 </div>
                 
-                {$shippingInfo}
-                
-                <h3>Produkty v objednávke</h3>
-                {$productsTable}
-                
-                <div class='order-summary'>
-                    <div class='summary-row'>
-                        <span>Suma produktov:</span>
-                        <span>" . number_format($subtotal, 2, ',', ' ') . " €</span>
+                <div class='content'>
+                    <h2>Ďakujeme za vašu objednávku!</h2>
+                    <p>Vaša objednávka bola úspešne prijatá a spracováva sa.</p>
+                    
+                    <div class='order-card'>
+                        <h3 style='margin-top:0; color: #2d3748;'>Informácie o objednávke</h3>
+                        <div class='info-grid'>
+                            <div class='info-item'>
+                                <strong>Číslo objednávky:</strong><br>
+                                #" . str_pad($orderData['id'], 6, '0', STR_PAD_LEFT) . "
+                            </div>
+                            <div class='info-item' style='border-bottom: none;'>
+                                <strong>Dátum objednávky:</strong><br>
+                                " . date('d.m.Y H:i', strtotime($orderData['created_at'])) . "
+                            </div>
+                        </div>
                     </div>
-                    <div class='summary-row'>
-                        <span>Doprava (" . htmlspecialchars($orderData['shipping_name'] ?? 'Neuvedené') . "):</span>
-                        <span>" . number_format($orderData['shipping_price'] ?? 0, 2, ',', ' ') . " €</span>
+                    
+                    <div class='summary'>
+                        <table width='100%' cellpadding='0' cellspacing='0' border='0'>
+                            <tr class='summary-row'>
+                                <td>Suma produktov:</td>
+                                <td>" . number_format($subtotal, 2, ',', ' ') . " €</td>
+                            </tr>
+                            <tr class='summary-row'>
+                                <td>Doprava (" . htmlspecialchars($orderData['shipping_name'] ?? 'Neuvedené') . "):</td>
+                                <td>" . number_format($orderData['shipping_price'] ?? 0, 2, ',', ' ') . " €</td>
+                            </tr>
+                            <tr class='summary-row'>
+                                <td>Poplatok za platbu (" . htmlspecialchars($orderData['payment_name'] ?? 'Neuvedené') . "):</td>
+                                <td>" . number_format($orderData['payment_price'] ?? 0, 2, ',', ' ') . " €</td>
+                            </tr>
+                            <tr class='summary-row summary-total'>
+                                <td>Celkovo na úhradu:</td>
+                                " . $totalDisplay . "
+                            </tr>
+                        </table>
                     </div>
-                    <div class='summary-row'>
-                        <span>Poplatok za platbu (" . htmlspecialchars($orderData['payment_name'] ?? 'Neuvedené') . "):</span>
-                        <span>" . number_format($orderData['payment_price'] ?? 0, 2, ',', ' ') . " €</span>
-                    </div>
-                    <div class='summary-row summary-total'>
-                        <span>Celková suma k úhrade:</span>
-                        <span><strong>" . number_format($orderData['total'], 2, ',', ' ') . " €</strong></span>
-                    </div>
+                    
+                    <h3>Produkty v objednávke</h3>
+                    {$productsTable}
+                    
+                    <p>Aktuálny stav a podrobnosti si môžete pozrieť ak ste prihlásený na <a href='" . $this->getOrderTrackingUrl($orderData['id']) . "'>detaile objednávky</a>.</p>
+                    
+                    <p style='margin-top: 30px;'>Ak máte akékoľvek otázky, neváhajte nás kontaktovať.</p>
                 </div>
                 
-                <p>Priebeh objednávky môžete sledovať na tejto adrese:</p>
-                <p><a href='" . $this->getOrderTrackingUrl($orderData['id']) . "'>Sledovať objednávku</a></p>
-                
-                <p>Ak máte akékoľvek otázky, neváhajte nás kontaktovať.</p>
-            </div>
-            <div class='footer'>
-                <p>Tento email bol odoslaný z webovej stránky ElektroObchod</p>
-                <p>© " . date('Y') . " elektroobchod.online</p>
+                <div class='footer'>
+                    <p>Tento email bol odoslaný z webovej stránky ElektroObchod</p>
+                    <p>© " . date('Y') . " elektroobchod.online</p>
+                </div>
             </div>
         </body>
         </html>";
         
         $plain_message = "Potvrdenie objednávky #" . str_pad($orderData['id'], 6, '0', STR_PAD_LEFT) . "\n";
         $plain_message .= "Dátum: " . date('d.m.Y H:i', strtotime($orderData['created_at'])) . "\n";
-        $plain_message .= "Stav: Čaká na spracovanie\n";
         $plain_message .= "Spôsob dopravy: " . ($orderData['shipping_name'] ?? 'Neuvedené') . "\n";
         $plain_message .= "Spôsob platby: " . ($orderData['payment_name'] ?? 'Neuvedené') . "\n";
         $plain_message .= "Stav platby: " . $paymentStatus . "\n\n";
@@ -254,7 +331,14 @@ class Email {
         return $this->sendEmail($to, $subject, $html_message, $plain_message);
     }
 
-    public function sendOrderStatusUpdate($to, $name, $orderData) {
+    public function sendOrderStatusUpdate($to, $orderData) {
+        $status = $orderData['status'];
+        
+        // Only send emails for these statuses
+        if (!in_array($status, ['shipped', 'delivered', 'cancelled'])) {
+            return false; // Don't send email for other statuses
+        }
+        
         $statusLabels = [
             'pending' => 'Čaká na spracovanie',
             'processing' => 'Spracováva sa',
@@ -263,34 +347,41 @@ class Email {
             'cancelled' => 'Zrušené'
         ];
         
-        $status = $orderData['status'];
         $statusLabel = $statusLabels[$status] ?? $status;
-        $statusClass = "status-" . $status;
         
         $subject = "Stav objednávky #" . str_pad($orderData['id'], 6, '0', STR_PAD_LEFT) . " bol aktualizovaný";
         
-        // Get order details with products
         $orderDetails = $this->getOrderDetails($orderData['id']);
-        
-        // Check shipping method for special handling
         $shippingMethod = strtolower($orderData['shipping_name'] ?? '');
         $statusDescription = $this->getStatusDescription($status, $shippingMethod);
         
-        // Build products table
+        // Calculate subtotal for the summary table
+        $subtotal = 0;
+        if (!empty($orderDetails)) {
+            foreach ($orderDetails as $item) {
+                $subtotal += $item['price'] * $item['quantity'];
+            }
+        }
+        
         $productsTable = '';
         if (!empty($orderDetails)) {
-            $productsTable = '<table class="products-table" width="100%" cellpadding="10" cellspacing="0">';
-            $productsTable .= '<tr style="background: #f8f9fa; border-bottom: 2px solid #ddd;">';
-            $productsTable .= '<th style="text-align: left; padding: 10px;">Produkt</th>';
-            $productsTable .= '<th style="text-align: center; padding: 10px;">Množstvo</th>';
-            $productsTable .= '<th style="text-align: right; padding: 10px;">Cena</th>';
-            $productsTable .= '</tr>';
+            $productsTable = '<table class="products-table">';
+            $productsTable .= '<tr><th>Obrázok</th><th>Produkt</th><th>Množstvo</th><th>Cena</th></tr>';
             
             foreach ($orderDetails as $item) {
-                $productsTable .= '<tr style="border-bottom: 1px solid #eee;">';
-                $productsTable .= '<td style="padding: 10px;">' . htmlspecialchars($item['name']) . '</td>';
-                $productsTable .= '<td style="text-align: center; padding: 10px;">' . $item['quantity'] . ' ks</td>';
-                $productsTable .= '<td style="text-align: right; padding: 10px;">' . number_format($item['price'], 2, ',', ' ') . ' €</td>';
+                $imageUrl = $this->getProductImageUrl($item['image']);
+                
+                $productsTable .= '<tr>';
+                $productsTable .= '<td class="text-center">';
+                if ($imageUrl) {
+                    $productsTable .= '<img src="' . $imageUrl . '" alt="' . htmlspecialchars($item['name']) . '">';
+                } else {
+                    $productsTable .= '-';
+                }
+                $productsTable .= '</td>';
+                $productsTable .= '<td>' . htmlspecialchars($item['name']) . '</td>';
+                $productsTable .= '<td class="text-center">' . $item['quantity'] . ' ks</td>';
+                $productsTable .= '<td class="text-right">' . number_format($item['price'], 2, ',', ' ') . ' €</td>';
                 $productsTable .= '</tr>';
             }
             
@@ -304,100 +395,203 @@ class Email {
             <meta charset='UTF-8'>
             <title>{$subject}</title>
             <style>
-                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; padding: 20px; }
-                .header { background: #4a6bdf; color: white; padding: 25px; text-align: center; border-radius: 8px 8px 0 0; }
-                .content { background: #f8f9fa; padding: 35px; border-radius: 0 0 8px 8px; }
-                .status-update { background: white; padding: 30px; border-radius: 8px; margin: 25px 0; text-align: center; border: 2px solid #4a6bdf; }
-                .status-text { font-size: 1.2em; margin: 15px 0; }
-                .status-badge { display: inline-block; padding: 10px 20px; border-radius: 25px; font-size: 1.2em; font-weight: bold; }
-                .status-pending { background: #fff3cd; color: #856404; }
-                .status-processing { background: #cce5ff; color: #004085; }
-                .status-shipped { background: #d1ecf1; color: #0c5460; }
-                .status-delivered { background: #d4edda; color: #155724; }
-                .status-cancelled { background: #f8d7da; color: #721c24; }
-                .footer { text-align: center; margin-top: 40px; color: #666; font-size: 0.9em; padding-top: 20px; border-top: 1px solid #ddd; }
-                .products-table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-                .products-table th { background: #f8f9fa; font-weight: bold; }
-                .products-table td, .products-table th { padding: 12px; border-bottom: 1px solid #ddd; }
-                .info-box { background: #f8f9fa; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #4a6bdf; }
-                .next-steps { background: #e8f4fd; padding: 20px; border-radius: 8px; margin: 20px 0; border-left: 4px solid #2196f3; }
-                .order-details { background: white; padding: 20px; border-radius: 8px; margin: 20px 0; border: 1px solid #ddd; }
-                .detail-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
-                .detail-row:last-child { border-bottom: none; }
+                body { 
+                    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; 
+                    line-height: 1.6; 
+                    color: #2d3748; 
+                    background: #f7fafc; 
+                    margin: 0; 
+                    padding: 20px; 
+                }
+                .email-container { 
+                    max-width: 700px; 
+                    margin: 0 auto; 
+                    background: white; 
+                    border-radius: 12px; 
+                    overflow: hidden; 
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+                }
+                .header { 
+                    background-color: #4a6bdf;
+                    color: white; 
+                    padding: 30px; 
+                    text-align: center; 
+                }
+                .content { 
+                    padding: 40px; 
+                }
+                .order-card { 
+                    background: #fff; 
+                    border-radius: 8px; 
+                    padding: 25px; 
+                    margin: 25px 0; 
+                    border: 1px solid #e2e8f0; 
+                }
+                .info-grid { 
+                    display: grid; 
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+                    gap: 15px; 
+                    margin-top: 20px;
+                }
+                .info-item { 
+                    padding: 10px 0; 
+                    border-bottom: 1px solid #edf2f7; 
+                }
+                .products-table { 
+                    width: 100%; 
+                    border-collapse: collapse; 
+                    margin: 25px 0; 
+                }
+                .products-table th { 
+                    background: #f8fafc; 
+                    padding: 14px; 
+                    text-align: left; 
+                    font-weight: 600; 
+                    color: #4a5568; 
+                    border-bottom: 2px solid #e2e8f0; 
+                }
+                .products-table td { 
+                    padding: 14px; 
+                    border-bottom: 1px solid #edf2f7; 
+                    vertical-align: middle; 
+                }
+                .products-table tr:hover { 
+                    background: #f8fafc; 
+                }
+                .text-center { text-align: center; }
+                .text-right { text-align: right; }
+                .summary { 
+                    background: #f8fafc; 
+                    padding: 25px; 
+                    border-radius: 8px; 
+                    margin: 25px 0; 
+                }
+                .summary table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+                .summary-row td {
+                    padding: 12px 0;
+                    border-bottom: 1px solid #e2e8f0;
+                    font-size: 15px;
+                    color: #4a5568;
+                }
+                .summary-row:first-child td {
+                    padding-top: 0;
+                }
+                .summary-total td {
+                    padding-top: 15px;
+                    padding-bottom: 0;
+                    border-top: 2px solid #cbd5e0;
+                    border-bottom: none;
+                    font-weight: bold;
+                    font-size: 1.2em;
+                    color: #2d3748;
+                }
+                .summary td:first-child {
+                    text-align: left;
+                    padding-right: 15px;
+                }
+                .summary td:last-child {
+                    text-align: right;
+                    font-weight: 500;
+                    white-space: nowrap;
+                }
+                .summary-total td:last-child {
+                    font-weight: 700;
+                }
+                .footer { 
+                    text-align: center; 
+                    padding: 25px; 
+                    color: #718096; 
+                    font-size: 0.9em; 
+                    border-top: 1px solid #e2e8f0; 
+                    background: #f8fafc; 
+                }
             </style>
         </head>
         <body>
-            <div class='header'>
-                <h1>ElektroObchod</h1>
-                <h2>Aktualizácia stavu objednávky</h2>
-            </div>
-            <div class='content'>
-                <p>Vitajte <strong>{$name}</strong>,</p>
-                <p>Stav vašej objednávky bol aktualizovaný.</p>
-                
-                <div class='status-update'>
-                    <h3>Objednávka #" . str_pad($orderData['id'], 6, '0', STR_PAD_LEFT) . "</h3>
-                    <div class='status-text'>
-                        Nový stav: <span class='status-badge {$statusClass}'>{$statusLabel}</span>
-                    </div>
+            <div class='email-container'>
+                <div class='header'>
+                    <h1 style='margin:0; font-size: 28px;'>ElektroObchod</h1>
                 </div>
                 
-                <div class='info-box'>
+                <div class='content'>
+                    <h2>Aktualizácia stavu objednávky</h2>
+                    <p>Dobrý deň,</p>
                     <p>{$statusDescription}</p>
+                    
+                    <div class='order-card'>
+                        <h3 style='margin-top:0; color: #2d3748;'>Informácie o stave objednávky</h3>
+                        <div class='info-grid'>
+                            <div class='info-item'>
+                                <strong>Nový stav:</strong><br>
+                                {$statusLabel}
+                            </div>
+                            <div class='info-item'>
+                                <strong>Číslo objednávky:</strong><br>
+                                #" . str_pad($orderData['id'], 6, '0', STR_PAD_LEFT) . "
+                            </div>
+                            <div class='info-item'>
+                                <strong>Dátum aktualizácie:</strong><br>
+                                " . date('d.m.Y H:i') . "
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class='summary'>
+                        <table width='100%' cellpadding='0' cellspacing='0' border='0'>
+                            <tr class='summary-row'>
+                                <td>Suma produktov:</td>
+                                <td>" . number_format($subtotal, 2, ',', ' ') . " €</td>
+                            </tr>
+                            <tr class='summary-row'>
+                                <td>Doprava (" . htmlspecialchars($orderData['shipping_name'] ?? 'Neuvedené') . "):</td>
+                                <td>" . number_format($orderData['shipping_price'] ?? 0, 2, ',', ' ') . " €</td>
+                            </tr>
+                            <tr class='summary-row'>
+                                <td>Poplatok za platbu (" . htmlspecialchars($orderData['payment_name'] ?? 'Neuvedené') . "):</td>
+                                <td>" . number_format($orderData['payment_price'] ?? 0, 2, ',', ' ') . " €</td>
+                            </tr>
+                            <tr class='summary-row summary-total'>
+                                <td>Celková suma:</td>
+                                <td>" . number_format($orderData['total'], 2, ',', ' ') . " €</td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <h3>Produkty v objednávke</h3>
+                    {$productsTable}
+                    
+                    <p>Aktuálny stav a podrobnosti si môžete pozrieť ak ste prihlásený na <a href='" . $this->getOrderTrackingUrl($orderData['id']) . "'>detaile objednávky</a>.</p>
+                    
+                    <p style='margin-top: 30px;'>Ak máte akékoľvek otázky, neváhajte nás kontaktovať.</p>
                 </div>
                 
-                <div class='order-details'>
-                    <h4>Detaily objednávky</h4>
-                    <div class='detail-row'>
-                        <span>Dátum objednávky:</span>
-                        <span>" . date('d.m.Y H:i', strtotime($orderData['created_at'])) . "</span>
-                    </div>
-                    <div class='detail-row'>
-                        <span>Spôsob dopravy:</span>
-                        <span>" . htmlspecialchars($orderData['shipping_name'] ?? 'Neuvedené') . "</span>
-                    </div>
-                    <div class='detail-row'>
-                        <span>Spôsob platby:</span>
-                        <span>" . htmlspecialchars($orderData['payment_name'] ?? 'Neuvedené') . "</span>
-                    </div>
-                    <div class='detail-row'>
-                        <span>Celková suma:</span>
-                        <span><strong>" . number_format($orderData['total'], 2, ',', ' ') . " €</strong></span>
-                    </div>
+                <div class='footer'>
+                    <p>Tento email bol odoslaný z webovej stránky ElektroObchod</p>
+                    <p>© " . date('Y') . " elektroobchod.online</p>
                 </div>
-                
-                <h4>Produkty v objednávke</h4>
-                {$productsTable}
-                
-                " . $this->getNextSteps($status, $shippingMethod) . "
-                
-                <p>Priebeh objednávky môžete sledovať na tejto adrese:</p>
-                <p><a href='" . $this->getOrderTrackingUrl($orderData['id']) . "'>Sledovať objednávku</a></p>
-                
-                <p>Ak máte akékoľvek otázky, neváhajte nás kontaktovať.</p>
-            </div>
-            <div class='footer'>
-                <p>Tento email bol odoslaný z webovej stránky ElektroObchod</p>
-                <p>© " . date('Y') . " elektroobchod.online</p>
             </div>
         </body>
-        </html>
-        ";
+        </html>";
         
-        $plain_message = "Vitajte {$name},\n\n";
-        $plain_message .= "Stav vašej objednávky #" . str_pad($orderData['id'], 6, '0', STR_PAD_LEFT) . " bol aktualizovaný.\n\n";
-        $plain_message .= "Nový stav: {$statusLabel}\n";
+        $plain_message = "Aktualizácia stavu objednávky #" . str_pad($orderData['id'], 6, '0', STR_PAD_LEFT) . "\n";
+        $plain_message .= "Dobrý deň,\n\n";
         $plain_message .= $statusDescription . "\n\n";
-        $plain_message .= "Detaily objednávky:\n";
-        $plain_message .= "Dátum: " . date('d.m.Y H:i', strtotime($orderData['created_at'])) . "\n";
-        $plain_message .= "Doprava: " . ($orderData['shipping_name'] ?? 'Neuvedené') . "\n";
-        $plain_message .= "Platba: " . ($orderData['payment_name'] ?? 'Neuvedené') . "\n";
-        $plain_message .= "Suma: " . number_format($orderData['total'], 2, ',', ' ') . " €\n\n";
+        $plain_message .= "Nový stav: " . $statusLabel . "\n";
+        $plain_message .= "Číslo objednávky: #" . str_pad($orderData['id'], 6, '0', STR_PAD_LEFT) . "\n";
+        $plain_message .= "Dátum aktualizácie: " . date('d.m.Y H:i') . "\n\n";
+        
+        $plain_message .= "Suma produktov: " . number_format($subtotal, 2, ',', ' ') . " €\n";
+        $plain_message .= "Doprava: " . number_format($orderData['shipping_price'] ?? 0, 2, ',', ' ') . " €\n";
+        $plain_message .= "Poplatok za platbu: " . number_format($orderData['payment_price'] ?? 0, 2, ',', ' ') . " €\n";
+        $plain_message .= "Celková suma: " . number_format($orderData['total'], 2, ',', ' ') . " €\n\n";
         
         if (!empty($orderDetails)) {
-            $plain_message .= "Produkty:\n";
+            $plain_message .= "Produkty v objednávke:\n";
             foreach ($orderDetails as $item) {
-                $plain_message .= "- " . $item['name'] . " (" . $item['quantity'] . " ks)\n";
+                $plain_message .= "- " . $item['name'] . " (" . $item['quantity'] . " ks) - " . number_format($item['price'], 2, ',', ' ') . " €\n";
             }
             $plain_message .= "\n";
         }
@@ -428,43 +622,16 @@ class Email {
         
         return $description;
     }
-    
-    private function getNextSteps($status, $shippingMethod = '') {
-        $nextSteps = '';
-        
-        if ($status === 'delivered') {
-            if (strpos($shippingMethod, 'osobný odber') !== false || strpos($shippingMethod, 'pickup') !== false) {
-                $nextSteps = '
-                <div class="next-steps">
-                    <h4>Ďalšie kroky</h4>
-                    <p><strong>Osobný odber:</strong> Vaša objednávka je pripravená na odber. Prosíme, príjdite si ju vyzdvihnúť do 7 pracovných dní.</p>
-                    <p><strong>Potrebné doklady:</strong> Pri odbere budete potrebovať číslo objednávky a občiansky preukaz.</p>
-                </div>';
-            } else {
-                $nextSteps = '
-                <div class="next-steps">
-                    <h4>Ďalšie kroky</h4>
-                    <p><strong>Doručená objednávka:</strong> Ak máte s produktom akékoľvek otázky alebo problémy, neváhajte nás kontaktovať.</p>
-                    <p><strong>Záruka:</strong> Na všetky produkty poskytujeme 2-ročnú záruku.</p>
-                </div>';
-            }
-        } elseif ($status === 'shipped') {
-            $nextSteps = '
-            <div class="next-steps">
-                <h4>Ďalšie kroky</h4>
-                <p><strong>Sledovanie zásielky:</strong> V najbližších dňoch obdržíte informácie o sledovaní zásielky.</p>
-                <p><strong>Doručenie:</strong> Pri doručovaní buďte, prosím, dostupní na uvedenom telefóne.</p>
-            </div>';
-        } elseif ($status === 'processing') {
-            $nextSteps = '
-            <div class="next-steps">
-                <h4>Ďalšie kroky</h4>
-                <p><strong>Príprava objednávky:</strong> Vaša objednávka sa pripravuje na expedíciu.</p>
-                <p><strong>Očakávaný čas:</strong> Spracovanie objednávky trvá 1-2 pracovné dni.</p>
-            </div>';
+
+    private function getProductImageUrl($image) {
+        if (empty($image)) {
+            return null;
         }
-        
-        return $nextSteps;
+
+        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+        $domain = $_SERVER['HTTP_HOST'];
+
+        return "{$protocol}://{$domain}/img/productsmall/{$image}";
     }
 
     private function getOrderDetails($orderId) {

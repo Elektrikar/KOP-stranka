@@ -238,31 +238,33 @@ class Order
     private function sendOrderConfirmationEmail($orderId, $email) {
         try {
             require_once __DIR__ . '/Email.php';
-            
-            // Get order details for email
-            $orderStmt = $this->db->prepare("
-                SELECT o.*, 
-                    u.first_name, u.last_name
-                FROM orders o
-                LEFT JOIN users u ON u.id = o.user_id
-                WHERE o.id = ?
-            ");
-            $orderStmt->execute([$orderId]);
-            $orderData = $orderStmt->fetch(PDO::FETCH_ASSOC);
-            
-            if ($orderData) {
-                $name = !empty($orderData['first_name']) 
-                    ? $orderData['first_name'] . ' ' . $orderData['last_name']
-                    : 'Zákazník';
-                
-                $emailService = new Email($this->db);
-                return $emailService->sendOrderConfirmation($email, $name, $orderData);
+
+            $order = new Order($this->db);
+            $orderData = $order->getById($orderId);
+
+            if (!$orderData) {
+                error_log("Order not found for email: $orderId");
+                return false;
             }
+
+            // Convert object to array for Email class
+            $orderArray = [
+                'id' => $orderData->id,
+                'created_at' => $orderData->created_at,
+                'total' => $orderData->total,
+                'shipping_name' => $orderData->shipping_name,
+                'shipping_price' => $orderData->shipping_price,
+                'payment_name' => $orderData->payment_name,
+                'payment_price' => $orderData->payment_price,
+            ];
+
+            $emailService = new Email($this->db);
+            return $emailService->sendOrderConfirmation($email, $orderArray);
+
         } catch (Exception $e) {
-            // Log error but don't interrupt the order process
             error_log("Failed to send order confirmation email: " . $e->getMessage());
+            return false;
         }
-        return false;
     }
 
     public function updateStatus($order_id, $status) {
@@ -286,44 +288,43 @@ class Order
         ]);
         
         if ($result) {
-            $this->sendStatusUpdateEmail($order_id, $status);
+            $this->sendStatusUpdateEmail($order_id, $status, $this->getById($order_id)->order_email);
             return true;
         }
         
         return false;
     }
 
-    private function sendStatusUpdateEmail($orderId, $newStatus) {
+    private function sendStatusUpdateEmail($orderId, $newStatus, $email) {
         try {
             require_once __DIR__ . '/Email.php';
-            
-            // Get order details for email
-            $orderStmt = $this->db->prepare("
-                SELECT o.*, 
-                    u.first_name, u.last_name, u.email
-                FROM orders o
-                LEFT JOIN users u ON u.id = o.user_id
-                WHERE o.id = ?
-            ");
-            $orderStmt->execute([$orderId]);
-            $orderData = $orderStmt->fetch(PDO::FETCH_ASSOC);
-            
-            if ($orderData && !empty($orderData['email'])) {
-                $name = !empty($orderData['first_name']) 
-                    ? $orderData['first_name'] . ' ' . $orderData['last_name']
-                    : 'Zákazník';
 
-                // Update the status in order data for the email template
-                $orderData['status'] = $newStatus;
-                
-                $emailService = new Email($this->db);
-                return $emailService->sendOrderStatusUpdate($orderData['email'], $name, $orderData);
+            $order = new Order($this->db);
+            $orderData = $order->getById($orderId);
+
+            if (!$orderData) {
+                error_log("Order not found for email: $orderId");
+                return false;
             }
+
+            $orderArray = [
+                'id' => $orderData->id,
+                'created_at' => $orderData->created_at,
+                'total' => $orderData->total,
+                'status' => $newStatus,
+                'shipping_name' => $orderData->shipping_name,
+                'shipping_price' => $orderData->shipping_price,
+                'payment_name' => $orderData->payment_name,
+                'payment_price' => $orderData->payment_price,
+            ];
+
+            $emailService = new Email($this->db);
+            return $emailService->sendOrderStatusUpdate($email, $orderArray);
+
         } catch (Exception $e) {
-            // Log error but don't interrupt the status update
-            error_log("Failed to send status update email: " . $e->getMessage());
+            error_log("Failed to send order status update email: " . $e->getMessage());
+            return false;
         }
-        return false;
     }
 
     private function populateFromRow($row) {
