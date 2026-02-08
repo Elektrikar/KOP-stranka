@@ -14,7 +14,7 @@ require_once 'theme/header.php';
         <h1>Obchodné podmienky</h1>
         
         <div class="last-updated">
-            Tieto Podmienky ochrany osobných údajov sú platné a účinné od 5. 2. 2026, pričom sú k dispozícii elektronicky na www.elektroobchod.online.
+            Tieto Obchodné podmienky sú platné a účinné od 5. 2. 2026, pričom sú k dispozícii elektronicky na www.elektroobchod.online.
         </div>
 
         <div class="important-notice">
@@ -76,7 +76,11 @@ require_once 'theme/header.php';
         <div class="contact-info">
             <h3>Kontaktné údaje:</h3>
             <p>E-mail: <a href="mailto:info@elektroobchod.online">info@elektroobchod.online</a></p>
-            <p>Táto stránka je súčasťou školského projektu.</p>
+        </div>
+
+        <div class="project-info">
+            <h3>O tomto projekte</h3>
+            <p>Táto webová stránka bola vytvorená ako <strong>školský projekt</strong>. Cieľom je ukázať technickú implementáciu, nie skutočný obchod. Všetky údaje sú testovacie a po dokončení projektu budú trvalo odstránené.</p>
         </div>
     </div>
 </div>

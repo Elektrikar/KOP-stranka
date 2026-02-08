@@ -9,7 +9,6 @@
 ### Large Features
 
 - send order status emails
-- Add working paywall (also check terms after)
 
 - Maybe:
      - add notes to orders

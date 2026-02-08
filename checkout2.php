@@ -106,7 +106,8 @@ $pageData = array(
     'metaDataDescription' => 'Výber spôsobu dopravy a platby',
     'customAssets' => array(
         array('type' => 'css', 'src' => 'assets/css/checkout.css'),
-        array('type' => 'js', 'src' => 'assets/js/checkout.js')
+        array('type' => 'js', 'src' => 'assets/js/checkout.js'),
+        array('type' => 'js', 'src' => 'assets/js/payment-popup.js')
     )
 );
 require_once 'theme/header.php';
@@ -252,6 +253,7 @@ require_once 'theme/header.php';
                                            value="<?= $method['id'] ?>"
                                            required
                                            data-price="<?= $method['price'] ?>"
+                                           data-requires-card="<?= ($method['requires_card'] ?? 0) ? 1 : 0 ?>"
                                            <?= ($_POST['payment_method'] ?? 0) == $method['id'] ? 'checked' : '' ?>>
                                     <div class="option-header">
                                         <span class="option-name"><?= htmlspecialchars($method['name']) ?></span>
@@ -282,5 +284,49 @@ require_once 'theme/header.php';
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkoutForm = document.getElementById('checkout-form');
+    let paymentPopup = null;
+    
+    checkoutForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        // Validate terms
+        const terms = document.getElementById('terms');
+        if (!terms || !terms.checked) {
+            alert('Pre pokračovanie musíte súhlasiť s obchodnými podmienkami.');
+            return;
+        }
+        
+        // Validate shipping and payment methods
+        const shippingSelected = document.querySelector('input[name="shipping_method"]:checked');
+        const paymentSelected = document.querySelector('input[name="payment_method"]:checked');
+        
+        if (!shippingSelected || !paymentSelected) {
+            alert('Prosím vyberte spôsob dopravy a platby.');
+            return;
+        }
+        
+        // Get selected payment method
+        const paymentMethodId = paymentSelected.value;
+        const paymentName = paymentSelected.closest('.payment-option').querySelector('.option-name').textContent;
+
+        const isCardPayment = paymentSelected.getAttribute('data-requires-card') === '1';
+        
+        if (isCardPayment) {
+            // Show payment popup for card payments
+            if (!paymentPopup) {
+                paymentPopup = new PaymentPopup();
+            }
+            paymentPopup.show();
+        } else {
+            // For non-card payments, submit directly
+            checkoutForm.submit();
+        }
+    });
+});
+</script>
 
 <?php require_once 'theme/footer.php'; ?>

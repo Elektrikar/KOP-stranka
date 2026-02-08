@@ -14,8 +14,7 @@ require_once 'theme/header.php';
         <h1>Ochrana osobných údajov</h1>
         
         <div class="last-updated">
-            Platné od: 01.01.2024<br>
-            Posledná aktualizácia: <?php echo date('d.m.Y'); ?>
+            Tieto Podmienky ochrany osobných údajov sú platné a účinné od 5. 2. 2026, pričom sú k dispozícii elektronicky na www.elektroobchod.online.
         </div>
 
         <div class="important-notice">
@@ -93,16 +92,14 @@ require_once 'theme/header.php';
             <p>Pre uplatnenie týchto práv nás kontaktujte na e-mailu uvedenom nižšie.</p>
         </div>
 
-        <div class="legal-section">
-            <h2>7. Kontakt</h2>
-            <p><strong>Kontakt na správcu:</strong><br>
-            E-mail: <a href="mailto:info@elektroobchod.online">info@elektroobchod.online</a></p>
+        <div class="contact-info">
+            <h3>Kontaktné údaje:</h3>
+            <p>E-mail: <a href="mailto:info@elektroobchod.online">info@elektroobchod.online</a></p>
         </div>
 
         <div class="project-info">
             <h3>O tomto projekte</h3>
-            <p>Táto webová stránka bola vytvorená ako <strong>školský projekt</strong> na demonštráciu funkčností e-shopu. Cieľom je ukázať technickú implementáciu, nie skutočný obchod.</p>
-            <p>Všetky údaje sú testovacie a po dokončení projektu budú trvalo odstránené.</p>
+            <p>Táto webová stránka bola vytvorená ako <strong>školský projekt</strong>. Cieľom je ukázať technickú implementáciu, nie skutočný obchod. Všetky údaje sú testovacie a po dokončení projektu budú trvalo odstránené.</p>
         </div>
     </div>
 </div>
