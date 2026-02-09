@@ -270,52 +270,76 @@ class Order
     public function updateStatus($order_id, $status) {
         if (!$this->db) return false;
 
-        $allowedStatuses = ['pending', 'processing', 'shipped', 'delivered', 'cancelled'];
+        $allowedStatuses = ['pending', 'processing', 'shipped', 'delivered', 'ready_for_pickup', 'picked_up', 'cancelled'];
         if (!in_array($status, $allowedStatuses)) {
             return false;
         }
 
-        $stmt = $this->db->prepare("
-            UPDATE orders 
-            SET status = :status, 
-                updated_at = NOW()
-            WHERE id = :order_id
-        ");
+        try {
+            $stmt = $this->db->prepare("
+                UPDATE orders 
+                SET status = :status, 
+                    updated_at = NOW()
+                WHERE id = :order_id
+            ");
 
-        $result = $stmt->execute([
-            ':status' => $status,
-            ':order_id' => $order_id
-        ]);
-        
-        if ($result) {
-            $this->sendStatusUpdateEmail($order_id, $status, $this->getById($order_id)->order_email);
-            return true;
+            $result = $stmt->execute([
+                ':status' => $status,
+                ':order_id' => $order_id
+            ]);
+            
+            if ($result) {
+                $this->sendStatusUpdateEmail($order_id, $status);
+                return true;
+            }
+            
+            return false;
+        } catch (PDOException $e) {
+            error_log("Error updating order status: " . $e->getMessage());
+            return false;
         }
-        
-        return false;
     }
 
-    private function sendStatusUpdateEmail($orderId, $newStatus, $email) {
+    private function sendStatusUpdateEmail($orderId, $newStatus) {
         try {
             require_once __DIR__ . '/Email.php';
 
-            $order = new Order($this->db);
-            $orderData = $order->getById($orderId);
-
-            if (!$orderData) {
+            $order = $this->getById($orderId);
+            if (!$order) {
                 error_log("Order not found for email: $orderId");
                 return false;
             }
 
+            $email = $order->order_email;
+
+            $shippingMethod = strtolower($order->shipping_name ?? '');
+            $isPickup = (strpos($shippingMethod, 'osobný odber') !== false || strpos($shippingMethod, 'pickup') !== false);
+
+            $statusDescriptions = [
+                'pending' => 'Vaša objednávka čaká na spracovanie.',
+                'processing' => 'Vaša objednávka sa spracováva.',
+                'shipped' => 'Vaša objednávka bola odoslaná.',
+                'delivered' => 'Vaša objednávka bola doručená.',
+                'ready_for_pickup' => 'Vaša objednávka je pripravená na osobný odber.',
+                'picked_up' => 'Vaša objednávka bola vyzdvihnutá.',
+                'cancelled' => 'Vaša objednávka bola zrušená.'
+            ];
+
+            if ($isPickup && $newStatus === 'delivered') {
+                $newStatus = 'ready_for_pickup';
+            }
+
+            $description = $statusDescriptions[$newStatus] ?? 'Stav vašej objednávky bol aktualizovaný.';
+
             $orderArray = [
-                'id' => $orderData->id,
-                'created_at' => $orderData->created_at,
-                'total' => $orderData->total,
+                'id' => $order->id,
+                'created_at' => $order->created_at,
+                'total' => $order->total,
                 'status' => $newStatus,
-                'shipping_name' => $orderData->shipping_name,
-                'shipping_price' => $orderData->shipping_price,
-                'payment_name' => $orderData->payment_name,
-                'payment_price' => $orderData->payment_price,
+                'shipping_name' => $order->shipping_name,
+                'shipping_price' => $order->shipping_price,
+                'payment_name' => $order->payment_name,
+                'payment_price' => $order->payment_price,
             ];
 
             $emailService = new Email($this->db);
