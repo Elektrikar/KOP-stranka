@@ -158,7 +158,7 @@ require_once 'theme/header.php';
 
             <div class="security-notice">
                 <p style="border-bottom: 1px solid #eee; padding-bottom: 10px;">Už máte účet? <a href="login.php">Prihláste sa</a></p>
-                <p style="margin-top: 10px;">Pri vytvorení účtu súhlasíte s <a href="terms.php">obchodnými podmienkami</a> a <a href="privacy_policy.php">ochranou osobných údajov</a>.</p>
+                <p style="margin-top: 10px;">Pri vytvorení účtu súhlasíte s <a href="terms.php" target="_blank">obchodnými podmienkami</a> a <a href="privacy_policy.php" target="_blank">ochranou osobných údajov</a>.</p>
             </div>
         </form>
     <?php else: ?>

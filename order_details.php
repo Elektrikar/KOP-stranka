@@ -239,7 +239,7 @@ require_once 'theme/header.php';
                     <?php endif; ?>
                     <tr class="total-row">
                         <td colspan="3" class="text-right"><strong>Celková suma:</strong></td>
-                        <td class="total-cell"><strong><?= number_format($orderData->total, 2, ',', ' ') ?> €</strong></td>
+                        <td class="total-cell"><?= number_format($orderData->total, 2, ',', ' ') ?> €</td>
                     </tr>
                 </tfoot>
             </table>
@@ -266,7 +266,7 @@ require_once 'theme/header.php';
                                     $isAllowed = true;
                                     $currentIndex = array_search($orderData->status, $statusProgression[$progressionType]);
                                     $optionIndex = array_search($statusKey, $statusProgression[$progressionType]);
-                                    
+
                                     if ($currentIndex !== false && $optionIndex !== false && $optionIndex < $currentIndex) {
                                         $isAllowed = false;
                                     }

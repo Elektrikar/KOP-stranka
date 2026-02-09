@@ -141,6 +141,8 @@ require_once 'theme/header.php';
                                     'processing' => 'Spracováva sa',
                                     'shipped' => 'Odoslané',
                                     'delivered' => 'Doručené',
+                                    'ready_for_pickup' => 'Pripravené na odber',
+                                    'picked_up' => 'Vyzdvihnuté',
                                     'cancelled' => 'Zrušené'
                                 ];
                                 echo htmlspecialchars($statusLabels[$o['status']] ?? $o['status']);

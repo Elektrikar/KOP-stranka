@@ -43,39 +43,146 @@ class Email {
             <meta charset='UTF-8'>
             <title>{$subject}</title>
             <style>
-                body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; }
-                .header { background: #4a6bdf; color: white; padding: 20px; text-align: center; border-radius: 8px 8px 0 0; }
-                .content { background: #f8f9fa; padding: 30px; border-radius: 0 0 8px 8px; }
-                .button { display: inline-block; background: #4a6bdf; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; font-weight: bold; margin: 20px 0; }
-                .footer { text-align: center; margin-top: 30px; color: #666; font-size: 0.9em; }
-                .token { background: #fff; padding: 15px; border: 1px solid #ddd; border-radius: 4px; margin: 20px 0; word-break: break-all; }
+                body { 
+                    font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; 
+                    line-height: 1.6; 
+                    color: #2d3748; 
+                    background: #f7fafc; 
+                    margin: 0; 
+                    padding: 20px; 
+                }
+                .email-container { 
+                    max-width: 700px; 
+                    margin: 0 auto; 
+                    background: white; 
+                    border-radius: 12px; 
+                    overflow: hidden; 
+                    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+                }
+                .header { 
+                    background-color: #4a6bdf;
+                    color: white; 
+                    padding: 30px; 
+                    text-align: center; 
+                }
+                .header a {
+                    color: white;
+                    text-decoration: none;
+                }
+                .content { 
+                    padding: 40px; 
+                }
+                .verification-card { 
+                    background: #fff; 
+                    border-radius: 8px; 
+                    padding: 25px; 
+                    margin: 25px 0; 
+                    border: 1px solid #e2e8f0; 
+                }
+                .info-grid { 
+                    display: grid; 
+                    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); 
+                    gap: 15px; 
+                    margin-top: 20px;
+                }
+                .info-item { 
+                    padding: 10px 0; 
+                    border-bottom: 1px solid #edf2f7; 
+                }
+                .verification-button { 
+                    display: inline-block;
+                    background: #4a6bdf;
+                    color: white;
+                    padding: 14px 28px;
+                    text-decoration: none;
+                    border-radius: 6px;
+                    font-weight: 600;
+                    margin: 20px 0;
+                    transition: all 0.2s;
+                    border: none;
+                    font-size: 1em;
+                    cursor: pointer;
+                }
+                .verification-button:hover {
+                    background: #3a5bc7;
+                    transform: translateY(-1px);
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+                }
+                .token-display { 
+                    background: #f8fafc; 
+                    padding: 15px; 
+                    border-radius: 6px; 
+                    margin: 20px 0; 
+                    border: 1px solid #e2e8f0; 
+                    word-break: break-all;
+                    font-family: monospace;
+                    font-size: 0.9em;
+                }
+                .footer { 
+                    text-align: center; 
+                    padding: 25px; 
+                    color: #718096; 
+                    font-size: 0.9em; 
+                    border-top: 1px solid #e2e8f0; 
+                    background: #f8fafc; 
+                }
             </style>
         </head>
         <body>
-            <div class='header'>
-                <h1>ElektroObchod</h1>
-            </div>
-            <div class='content'>
-                <h2>Vitajte, {$name}!</h2>
-                <p>Ďakujeme za registráciu v našom e-shope. Pre dokončenie registráciu potrebujeme overiť vašu emailovú adresu.</p>
-                <p>Kliknite na tlačidlo nižšie pre potvrdenie emailovej adresy:</p>
-                <p>
-                    <a href='{$verification_link}' class='button'>Potvrdiť email</a>
-                </p>
-                <p>Alebo použite tento odkaz:</p>
-                <div class='token'>{$verification_link}</div>
-                <p><strong>Odkaz je platný 24 hodín.</strong></p>
-                <p>Ak ste si nevytvorili účet, tento email môžete ignorovať.</p>
-            </div>
-            <div class='footer'>
-                <p>Tento email bol odoslaný z webovej stránky ElektroObchod</p>
-                <p>© " . date('Y') . " elektroobchod.online</p>
+            <div class='email-container'>
+                <div class='header'>
+                    <h1 style='margin:0; font-size: 28px;'><a href='https://elektroobchod.online'>ElektroObchod</a></h1>
+                </div>
+                
+                <div class='content'>
+                    <h2>Vitajte, {$name}!</h2>
+                    <p>Ďakujeme za registráciu v našom e-shope. Pre dokončenie registrácie potrebujeme overiť vašu emailovú adresu.</p>
+                    
+                    <div class='verification-card'>
+                        <p>Kliknite na tlačidlo nižšie pre potvrdenie emailovej adresy:</p>
+                        
+                        <p style='text-align: center;'>
+                            <a href='{$verification_link}' class='verification-button' style='color:white;'>Potvrdiť email</a>
+                        </p>
+                        
+                        <p>Alebo použite tento odkaz:</p>
+                        
+                        <div class='token-display'>{$verification_link}</div>
+                        
+                        <div class='info-grid'>
+                            <div class='info-item'>
+                                <strong>Platnosť odkazu:</strong><br>
+                                24 hodín
+                            </div>
+                            <div class='info-item'>
+                                <strong>Čas odoslania:</strong><br>
+                                " . date('d.m.Y H:i') . "
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p><strong>Ak ste si nevytvorili účet, tento email môžete ignorovať.</strong></p>
+                    
+                    <p style='margin-top: 30px;'>Ak máte akékoľvek otázky, neváhajte nás kontaktovať.</p>
+                </div>
+                
+                <div class='footer'>
+                    <p>Tento email bol odoslaný z webovej stránky ElektroObchod</p>
+                    <p>© " . date('Y') . " elektroobchod.online</p>
+                </div>
             </div>
         </body>
         </html>
         ";
         
-        $plain_message = "Vitajte {$name}!\n\nĎakujeme za registráciu v našom e-shope. Pre dokončenie registráciu potvrďte svoju emailovú adresu kliknutím na odkaz:\n\n{$verification_link}\n\nOdkaz je platný 24 hodín.\n\nAk ste si nevytvorili účet, tento email môžete ignorovať.";
+        $plain_message = "Aktualizácia stavu objednávky\n\n";
+        $plain_message .= "Dobrý deň {$name},\n\n";
+        $plain_message .= "Ďakujeme za registráciu v našom e-shope. Pre dokončenie registrácie potvrďte svoju emailovú adresu kliknutím na odkaz:\n\n";
+        $plain_message .= "{$verification_link}\n\n";
+        $plain_message .= "Odkaz je platný 24 hodín.\n\n";
+        $plain_message .= "Čas odoslania: " . date('d.m.Y H:i') . "\n\n";
+        $plain_message .= "Ak ste si nevytvorili účet, tento email môžete ignorovať.\n\n";
+        $plain_message .= "© " . date('Y') . " elektroobchod.online\n";
         
         return $this->sendEmail($to, $subject, $html_message, $plain_message);
     }
@@ -152,6 +259,10 @@ class Email {
                     color: white; 
                     padding: 30px; 
                     text-align: center; 
+                }
+                .header a {
+                    color: white;
+                    text-decoration: none;
                 }
                 .content { 
                     padding: 40px; 
@@ -249,7 +360,7 @@ class Email {
         <body>
             <div class='email-container'>
                 <div class='header'>
-                    <h1 style='margin:0; font-size: 28px;'>ElektroObchod</h1>
+                    <h1 style='margin:0; font-size: 28px;'><a href='https://elektroobchod.online'>ElektroObchod</a></h1>
                 </div>
                 
                 <div class='content'>
@@ -335,8 +446,8 @@ class Email {
         $status = $orderData['status'];
         
         // Only send emails for these statuses
-        if (!in_array($status, ['shipped', 'delivered', 'cancelled'])) {
-            return false; // Don't send email for other statuses
+        if (!in_array($status, ['shipped', 'delivered', 'ready_for_pickup', 'cancelled'])) {
+            return false;
         }
         
         $statusLabels = [
@@ -344,16 +455,32 @@ class Email {
             'processing' => 'Spracováva sa',
             'shipped' => 'Odoslané',
             'delivered' => 'Doručené',
+            'ready_for_pickup' => 'Pripravené na odber',
+            'picked_up' => 'Vyzdvihnuté',
             'cancelled' => 'Zrušené'
         ];
         
         $statusLabel = $statusLabels[$status] ?? $status;
         
-        $subject = "Stav objednávky #" . str_pad($orderData['id'], 6, '0', STR_PAD_LEFT) . " bol aktualizovaný";
+        $subjectTemplates = [
+            'shipped' => "Vaša objednávka #%s bola odoslaná",
+            'delivered' => "Vaša objednávka #%s bola doručená",
+            'ready_for_pickup' => "Vaša objednávka #%s je pripravená na odber",
+            'picked_up' => "Vaša objednávka #%s bola vyzdvihnutá",
+            'cancelled' => "Objednávka #%s bola zrušená"
+        ];
+        
+        $orderNumber = str_pad($orderData['id'], 6, '0', STR_PAD_LEFT);
+        
+        if (isset($subjectTemplates[$status])) {
+            $subject = sprintf($subjectTemplates[$status], $orderNumber);
+        } else {
+            // Fallback for any other status
+            $subject = "Stav objednávky #" . $orderNumber . " bol aktualizovaný";
+        }
         
         $orderDetails = $this->getOrderDetails($orderData['id']);
-        $shippingMethod = strtolower($orderData['shipping_name'] ?? '');
-        $statusDescription = $this->getStatusDescription($status, $shippingMethod);
+        $statusDescription = $this->getStatusDescription($status);
         
         // Calculate subtotal for the summary table
         $subtotal = 0;
@@ -361,6 +488,14 @@ class Email {
             foreach ($orderDetails as $item) {
                 $subtotal += $item['price'] * $item['quantity'];
             }
+        }
+
+        $paymentMethod = strtolower($orderData['payment_name'] ?? '');
+        $totalDisplay = '';
+        if (strpos($paymentMethod, 'karta') !== false) {
+            $totalDisplay = '<td>Uhradené</td>';
+        } else {
+            $totalDisplay = '<td>' . number_format($orderData['total'], 2, ',', ' ') . ' €</td>';
         }
         
         $productsTable = '';
@@ -416,6 +551,10 @@ class Email {
                     color: white; 
                     padding: 30px; 
                     text-align: center; 
+                }
+                .header a {
+                    color: white;
+                    text-decoration: none;
                 }
                 .content { 
                     padding: 40px; 
@@ -513,21 +652,16 @@ class Email {
         <body>
             <div class='email-container'>
                 <div class='header'>
-                    <h1 style='margin:0; font-size: 28px;'>ElektroObchod</h1>
+                    <h1 style='margin:0; font-size: 28px;'><a href='https://elektroobchod.online'>ElektroObchod</a></h1>
                 </div>
                 
                 <div class='content'>
-                    <h2>Aktualizácia stavu objednávky</h2>
-                    <p>Dobrý deň,</p>
+                    <h2>Dobrý deň,</h2>
                     <p>{$statusDescription}</p>
                     
                     <div class='order-card'>
-                        <h3 style='margin-top:0; color: #2d3748;'>Informácie o stave objednávky</h3>
+                        <h3 style='margin-top:0; color: #2d3748;'>Informácie o objednávke</h3>
                         <div class='info-grid'>
-                            <div class='info-item'>
-                                <strong>Nový stav:</strong><br>
-                                {$statusLabel}
-                            </div>
                             <div class='info-item'>
                                 <strong>Číslo objednávky:</strong><br>
                                 #" . str_pad($orderData['id'], 6, '0', STR_PAD_LEFT) . "
@@ -539,7 +673,7 @@ class Email {
                         </div>
                     </div>
                     
-                    <div class='summary'>
+                     <div class='summary'>
                         <table width='100%' cellpadding='0' cellspacing='0' border='0'>
                             <tr class='summary-row'>
                                 <td>Suma produktov:</td>
@@ -554,8 +688,8 @@ class Email {
                                 <td>" . number_format($orderData['payment_price'] ?? 0, 2, ',', ' ') . " €</td>
                             </tr>
                             <tr class='summary-row summary-total'>
-                                <td>Celková suma:</td>
-                                <td>" . number_format($orderData['total'], 2, ',', ' ') . " €</td>
+                                <td>Celkovo na úhradu:</td>
+                                " . $totalDisplay . "
                             </tr>
                         </table>
                     </div>
@@ -602,23 +736,17 @@ class Email {
         return $this->sendEmail($to, $subject, $html_message, $plain_message);
     }
 
-    private function getStatusDescription($status, $shippingMethod = '') {
+    private function getStatusDescription($status) {
         $descriptions = [
             'pending' => 'Vaša objednávka čaká na spracovanie. O jej ďalšom postupe vás budeme informovať.',
             'processing' => 'Vaša objednávka sa momentálne spracováva. Pripravujeme ju na odoslanie.',
-            'shipped' => 'Vaša objednávka bola odoslaná. Čoskoro by mala byť doručená.',
+            'shipped' => 'Vaša objednávka bola odoslaná. Čoskoro by mala byť doručená na zvolenú adresu.',
             'delivered' => 'Vaša objednávka bola úspešne doručená. Ďakujeme za nákup!',
+            'ready_for_pickup' => 'Vaša objednávka je pripravená na osobný odber. Môžete si ju vyzdvihnúť v našej predajni.',
+            'picked_up' => 'Vaša objednávka bola vyzdvihnutá. Ďakujeme za nákup!',
             'cancelled' => 'Vaša objednávka bola zrušená. Ak máte otázky, kontaktujte nás.'
         ];
-        
-        $description = $descriptions[$status] ?? 'Stav vašej objednávky bol aktualizovaný.';
-        
-        // Special handling for delivery status based on shipping method
-        if ($status === 'delivered') {
-            if (strpos($shippingMethod, 'osobný odber') !== false || strpos($shippingMethod, 'pickup') !== false) {
-                $description = 'Vaša objednávka je pripravená na osobný odber. Môžete si ju vyzdvihnúť na našej predajni.';
-            }
-        }
+        $description = $descriptions[$status];
         
         return $description;
     }
