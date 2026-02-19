@@ -818,7 +818,7 @@ class Email {
             }
             
             // Debugging
-            $mail->SMTPDebug = 2; // Enable verbose debug output
+            $mail->SMTPDebug = 2;
             $mail->Debugoutput = function($str, $level) {
                 error_log("PHPMailer [$level]: $str");
             };

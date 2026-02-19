@@ -68,7 +68,7 @@ function resizeImage($srcPath, $destPath, $mime, $maxSize) {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($type === 'category') {
-        // CATEGORY CREATION LOGIC
+        // Create category
         $name        = trim($_POST['name'] ?? '');
         $description = trim($_POST['description'] ?? '');
 
@@ -129,7 +129,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
     } else {
-        // PRODUCT CREATION LOGIC
+        // Create product
         $name        = trim($_POST['name'] ?? '');
         $category_id = (int)($_POST['category_id'] ?? 0);
         $stock       = isset($_POST['stock']) ? (int)$_POST['stock'] : 0;

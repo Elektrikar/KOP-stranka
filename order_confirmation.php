@@ -139,7 +139,7 @@ require_once 'theme/header.php';
         </div>
 <!--
         <div class="confirmation-help">
-            <p>Ak máte akékoľvek otázky ohľadom vašej objednávky, kontaktujte nás na <a href="mailto:info@eshop.sk">info@eshop.sk</a></p>
+            <p>Ak máte akékoľvek otázky ohľadom vašej objednávky, kontaktujte nás na <a href="mailto:info@elektroobchod.online">info@elektroobchod.online</a></p>
         </div>-->
     </div>
 </div>

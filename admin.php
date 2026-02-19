@@ -8,7 +8,7 @@ require_once __DIR__ . '/class/User.php';
 $db = new Database(env('DB_HOST'), env('DB_NAME'), env('DB_USER'), env('DB_PASS'));
 $pdo = $db->getConnection();
 
-// Logout functionality
+// Logout
 if (isset($_GET['logout'])) {
     $_SESSION = [];
 
@@ -30,7 +30,7 @@ if (isset($_GET['logout'])) {
     exit();
 }
 
-// Check if user is logged in and has admin or manager role
+// Check if user is an admin or manager
 $loggedIn = false;
 $currentUser = null;
 $showLoginSuccess = false;

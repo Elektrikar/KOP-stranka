@@ -24,7 +24,7 @@ if (!$orderData) {
     exit();
 }
 
-// Check permission
+// Redirect if not allowed
 $isAdmin = isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
 $isManager = isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'manager';
 $isOwner = isset($_SESSION['user_id']) && $orderData->user_id == $_SESSION['user_id'];
@@ -47,9 +47,7 @@ $allStatuses = [
 ];
 
 $statusProgression = [
-    // Regular shipping progression
     'regular' => ['pending', 'processing', 'shipped', 'delivered', 'cancelled'],
-    // Personal pickup progression
     'pickup' => ['pending', 'processing', 'ready_for_pickup', 'picked_up', 'cancelled']
 ];
 
@@ -74,14 +72,12 @@ if (strpos($shippingMethod, 'osobný odber') !== false || strpos($shippingMethod
     ];
 }
 
-// Handle status update
 $error = '';
 $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
     $newStatus = $_POST['status'] ?? '';
-    
-    // Validate status
+
     if (!array_key_exists($newStatus, $availableStatuses)) {
         $error = 'Neplatný stav objednávky.';
     } else {
@@ -306,7 +302,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const currentStatus = '<?= $orderData->status ?>';
     const progressionType = '<?= $progressionType ?>';
     
-    // Define status progression orders
+    // Define status progression
     const statusProgression = {
         'regular': ['pending', 'processing', 'shipped', 'delivered', 'cancelled'],
         'pickup': ['pending', 'processing', 'ready_for_pickup', 'picked_up', 'cancelled']

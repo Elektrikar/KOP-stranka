@@ -35,11 +35,11 @@ if (!isset($pageData) || !is_array($pageData)) {
 }
 $pageData = array_merge([
     'title' => 'E-Shop',
-    'metaDataDescription' => 'add meta description here',
+    'metaDataDescription' => 'Nakupujte kvalitnú elektroniku za skvelé ceny. Široký výber smartfónov, notebookov, TV, audio techniky a príslušenstva.',
     'customAssets' => []
 ], $pageData);
 
-// Cart badge logic
+// Cart badge
 $cartBadge = '';
 $cartCount = 0;
 if (isset($_SESSION['cart']) && is_array($_SESSION['cart'])) {

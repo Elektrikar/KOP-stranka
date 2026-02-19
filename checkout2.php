@@ -26,10 +26,7 @@ $order = new Order($pdo);
 $items = $cart->getItems();
 $total = $cart->getTotal();
 
-// Fetch shipping methods from database
 $shipping_methods = $pdo->query("SELECT * FROM shipping_methods WHERE is_active = 1 ORDER BY price")->fetchAll(PDO::FETCH_ASSOC);
-
-// Fetch payment methods from database
 $payment_methods = $pdo->query("SELECT * FROM payment_methods WHERE is_active = 1 ORDER BY id")->fetchAll(PDO::FETCH_ASSOC);
 
 $error = '';
@@ -39,8 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $shipping_id = (int)($_POST['shipping_method'] ?? 0);
     $payment_id = (int)($_POST['payment_method'] ?? 0);
     $terms = isset($_POST['terms']) && $_POST['terms'] === 'on';
-    
-    // Validate selections
+
     if (!$terms) {
         $error = 'Pre pokračovanie musíte súhlasiť s obchodnými podmienkami.';
     } elseif ($shipping_id === 0 || $payment_id === 0) {

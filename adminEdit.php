@@ -38,7 +38,6 @@ if (!$item) {
     exit();
 }
 
-// For products, we need categories list
 $categories = null;
 if ($type === 'product') {
     $categories = $pdo->query("SELECT id, name FROM categories ORDER BY name")->fetchAll(PDO::FETCH_ASSOC);
@@ -91,12 +90,10 @@ $success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($type === 'category') {
-        // CATEGORY EDIT LOGIC
+        // Edit category
         $name        = trim($_POST['name']);
         $description = trim($_POST['description']);
-
-        // IMAGE UPLOAD HANDLING
-        $imagePath = $item['image']; // Keep existing image by default
+        $imagePath = $item['image'];
 
         if ($error === '' && !empty($_FILES['image']['name'])) {
             $img = $_FILES['image'];
@@ -165,13 +162,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $success = 'Kategória bola upravená.';
         }
     } else {
-        // PRODUCT EDIT LOGIC
+        // Edit product
         $name        = trim($_POST['name']);
         $category_id = (int)$_POST['category_id'];
         $stock       = (int)$_POST['stock'];
         $description = trim($_POST['description']);
-
-        // PRICE VALIDATION
         $price = null;
         $priceRaw = str_replace(',', '.', trim($_POST['price']));
 
@@ -181,7 +176,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $price = (float)$priceRaw;
         }
 
-        // DISCOUNT PRICE VALIDATION
+        // Discount price
         $discountPrice = null;
         $discountPriceRaw = str_replace(',', '.', trim($_POST['discount_price'] ?? ''));
 
@@ -196,8 +191,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
-        // IMAGE UPLOAD HANDLING
-        $imagePath = $item['image']; // Keep existing image by default
+        $imagePath = $item['image'];
 
         if ($error === '' && !empty($_FILES['image']['name'])) {
             $img = $_FILES['image'];

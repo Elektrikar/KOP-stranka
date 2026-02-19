@@ -53,7 +53,6 @@ elseif ($_SERVER['REQUEST_METHOD'] === 'POST' && !isset($_POST['resend_verificat
     $last_name = trim($_POST['last_name'] ?? '');
     $role = 'user';
 
-    // Validate registration form fields
     if (empty($email) || empty($password) || empty($confirm_password) || empty($first_name) || empty($last_name)) {
         $error = 'Všetky polia sú povinné.';
     } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
@@ -133,7 +132,6 @@ require_once 'theme/header.php';
     <?php endif; ?>
 
     <?php if (!$show_verification_message): ?>
-        <!-- REGISTRATION FORM -->
         <form method="post" autocomplete="off" id="registration-form">
             <input type="email" id="email" name="email" placeholder="Email"
                 value="<?= htmlspecialchars($_POST['email'] ?? '') ?>"
@@ -183,7 +181,7 @@ require_once 'theme/header.php';
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    // Handle registration form validation
+    // Validate passwords
     const regForm = document.getElementById('registration-form');
     if (regForm) {
         regForm.addEventListener('submit', function(e) {

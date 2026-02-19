@@ -96,7 +96,6 @@ $categories = $pdo->query("
     </div>
 </section>
 
-<!-- Features Section -->
 <section class="features-section">
     <div class="container">
         <div class="features-grid">
@@ -133,7 +132,7 @@ $categories = $pdo->query("
 </section>
 
 <div class="container">
-    <!-- Featured Categories -->
+    <!-- Categories -->
     <section class="section-categories">
         <div class="section-header">
             <h2>Populárne kategórie</h2>
@@ -153,7 +152,7 @@ $categories = $pdo->query("
         </div>
     </section>
 
-    <!-- Featured Products -->
+    <!-- Most popular products (most sales, most views) -->
     <section class="section-products" id="featured-products">
         <div class="section-header">
             <h2>Odporúčané produkty</h2>
@@ -175,7 +174,7 @@ $categories = $pdo->query("
         <?php endif; ?>
     </section>
 
-    <!-- Discount Banner -->
+    <!-- Discount banner -->
     <?php if (!empty($discountedProducts)): ?>
     <section class="discount-banner">
         <div class="banner-content">
@@ -189,7 +188,7 @@ $categories = $pdo->query("
     </section>
     <?php endif; ?>
 
-    <!-- New Arrivals -->
+    <!-- New products -->
     <section class="section-products">
         <div class="section-header">
             <h2>Novinky</h2>
@@ -211,7 +210,7 @@ $categories = $pdo->query("
         <?php endif; ?>
     </section>
 
-    <!-- Discounted Products -->
+    <!-- Discounted products -->
     <?php if (!empty($discountedProducts)): ?>
     <section class="section-products" id="discounted-products">
         <div class="section-header">

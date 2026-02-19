@@ -116,9 +116,7 @@ require_once 'theme/header.php';
     </div>
 
     <div class="product-detail-container">
-        <!-- Product Images and Info -->
         <div class="product-main">
-            <!-- Images -->
             <div class="product-images">
                 <div class="main-image">
                     <img src="img/product/<?= htmlspecialchars($product['image']) ?>" 
@@ -127,11 +125,10 @@ require_once 'theme/header.php';
                 </div>
             </div>
 
-            <!-- Product Info -->
             <div class="product-info">
                 <h1 class="product-title"><?= htmlspecialchars($product['name']) ?></h1>
                 
-                <!-- Product Meta -->
+                <!-- Product category -->
                 <div class="product-meta">
                     <?php if ($product['category_name']): ?>
                         <span class="category">Kategória: 
@@ -172,7 +169,7 @@ require_once 'theme/header.php';
                     <?php endif; ?>
                 </div>
 
-                <!-- Cart actions -->
+                <!-- Add to cart -->
                 <?php if ($product['stock'] > 0): ?>
                     <div class="cart-actions" data-product-id="<?= $productId ?>">
                         <?php if ($inCart): ?>
@@ -209,7 +206,7 @@ require_once 'theme/header.php';
             </div>
         </div>
 
-        <!-- Product description -->
+        <!-- Description -->
         <div class="product-description-section">
             <h2>Popis produktu</h2>
             <div class="description-content">

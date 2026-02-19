@@ -12,15 +12,15 @@ if (empty($_SESSION['user_id']) || empty($_SESSION['user_role']) || !in_array($_
 $db = new Database(env('DB_HOST'), env('DB_NAME'), env('DB_USER'), env('DB_PASS'));
 $pdo = $db->getConnection();
 
+// Pagination
 $categoriesPerPage = 16;
 $currentPage = isset($_GET['page']) ? max(1, (int)$_GET['page']) : 1;
 $offset = ($currentPage - 1) * $categoriesPerPage;
 
-// Sorting logic
+// Sorting
 $sort = $_GET['sort'] ?? 'id';
 $order = $_GET['order'] ?? 'DESC';
 
-// Validate sort and order parameters
 $allowedSortColumns = ['id', 'name', 'created_at'];
 if (!in_array($sort, $allowedSortColumns)) {
     $sort = 'id';
@@ -29,7 +29,6 @@ if (!in_array($order, ['ASC', 'DESC'])) {
     $order = 'DESC';
 }
 
-// Build sort column name with table prefix
 $sortColumn = "c.$sort";
 $nextOrder = ($order === 'ASC') ? 'DESC' : 'ASC';
 

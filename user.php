@@ -25,7 +25,6 @@ if (!$userData) {
 $error = '';
 $success = '';
 
-// Handle form submissions
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['update_password'])) {
         $current_password = $_POST['current_password'] ?? '';
@@ -54,7 +53,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $zip_code = trim($_POST['zip_code'] ?? '');
         $country = trim($_POST['country'] ?? '');
         
-        // Validate address if any field is filled
+        // Check if anything is empty
         if (!empty($address) || !empty($city) || !empty($zip_code) || !empty($country)) {
             if (empty($address)) {
                 $error = 'Ulica je povinná.';
@@ -90,7 +89,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             // Delete user account
             if ($userData->delete()) {
-                // Clear session and redirect
                 session_destroy();
                 header('Location: index.php?account_deleted=1');
                 exit();
