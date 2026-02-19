@@ -10,8 +10,6 @@
 
 - Maybe:
      - add notes to orders
-     - Responsivity for phones
-     - About us and contact page
      - Product ratings
      - wishlist
      - Notify feature
